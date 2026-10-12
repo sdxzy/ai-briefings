@@ -4,8 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="基于 Meta 官方三篇公开文的 Muse 技术扩展：Secure VM（systemd-nspawn runtime cell）、Sentinel 出口审批、surrogate 凭证与 eBPF tainted egress；区分官方确认与合理推测，并给出开发者可落地的建造输入。">
 <title>Muse 技术扩展：Secure VM、Sentinel 与隔离审批</title>
+<meta name="doc-type" content="deepdive">
+<meta name="description" content="基于 Meta 官方三篇公开文的 Muse 技术扩展：Secure VM（systemd-nspawn runtime cell）、Sentinel 出口审批、surrogate 凭证与 eBPF tainted egress；区分官方确认与合理推测，并给出开发者可落地的建造输入。">
+<meta name="parent" content="2026-10-12-overview.html#s1-1">
 <style>
 :root{
   --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
@@ -202,14 +204,24 @@ footer.site{
   .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
 }
 @media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
 </style>
 </head>
 <body>
 <div class="layout">
 <div class="wrap">
 
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a> <a href="2026-10-12-overview.html#s1-1">↑ 返回所属简报《AI 研究进展简报（约 2026 年 4–10 月）》</a></nav>
 <header>
-  <p class="kicker">AI 研究进展简报</p>
+  <p class="kicker">扩展阅读</p>
   <h1>Muse 技术扩展：Secure VM、Sentinel 与隔离审批</h1>
   <!-- optional -->
   <div class="byline">

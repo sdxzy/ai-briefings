@@ -12,17 +12,34 @@ h1{font-size:1.85rem;line-height:1.28;margin:.3rem 0 .4rem}
 .deck{font-family:var(--font-sans);font-size:.95rem;color:var(--ink-2);margin:0 0 2rem;padding-bottom:1.2rem;border-bottom:1px solid var(--rule)}
 ol{list-style:none;padding:0;margin:0}
 li{padding:1.1rem 0;border-bottom:1px solid var(--rule)}
-time{display:block;font-family:var(--font-sans);font-size:.78rem;color:var(--ink-3);margin-bottom:.15rem}
-li a{color:var(--ink);text-decoration:none;font-size:1.15rem;font-weight:700}
-li a:hover{color:var(--link);text-decoration:underline}
+.line{display:flex;gap:.7rem;align-items:baseline;font-family:var(--font-sans);font-size:.78rem;color:var(--ink-3);margin-bottom:.15rem}
+.tag{font-size:.7rem;letter-spacing:.06em;color:var(--ink-2);border:1px solid var(--rule);padding:0 .4rem;border-radius:2px}
+.tag-deepdive{color:var(--accent);border-color:currentColor}
+a.t{color:var(--ink);text-decoration:none;font-size:1.15rem;font-weight:700}
+a.t:hover{color:var(--link);text-decoration:underline}
+li p.ext{font-family:var(--font-sans);font-size:.8rem;color:var(--ink-3);margin:.2rem 0 0}
+li p.ext a{color:var(--ink-2)}
+.tabs{display:none;gap:1.2rem;font-family:var(--font-sans);font-size:.85rem;margin:-1rem 0 .5rem}
+.js .tabs{display:flex}
+.tabs button{background:none;border:0;padding:.2rem 0;font:inherit;color:var(--ink-3);cursor:pointer;border-bottom:1px solid transparent}
+.tabs button[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--accent)}
 li p{margin:.3rem 0 0;color:var(--ink-2);font-size:.95rem}
 footer{margin-top:2.5rem;font-family:var(--font-sans);font-size:.75rem;color:var(--ink-3)}
 </style></head><body><main>
 <div class="kicker">AI Briefings</div><h1>科技与 AI 简报</h1>
 <p class="deck">个人智能体与记忆、RSI、模型能力、世界模型——每个工作日一期，新的在前。</p>
+<div class="tabs" role="group" aria-label="筛选"><button aria-pressed="true" data-f="all">全部</button><button aria-pressed="false" data-f="briefing">研究简报</button><button aria-pressed="false" data-f="deepdive">扩展阅读</button></div>
 <ol>
-<li><time datetime="2026-10-12">2026-10-12</time><a href="2026-10-12-overview.html">AI 研究进展简报（约 2026 年 4–10 月）</a></li>
-<li><time datetime="2026-10-12">2026-10-12</time><a href="2026-10-12-muse-deepdive.html">Muse 技术扩展：Secure VM、Sentinel 与隔离审批</a><p>基于 Meta 官方三篇公开文的 Muse 技术扩展：Secure VM（systemd-nspawn runtime cell）、Sentinel 出口审批、surrogate 凭证与 eBPF tainted egress；区分官方确认与合理推测，并给出开发者可落地的建造输入。</p></li>
+<li data-type="briefing"><div class="line"><time datetime="2026-10-12">2026-10-12</time><span class="tag tag-briefing">研究简报</span></div><a class="t" href="2026-10-12-overview.html">AI 研究进展简报（约 2026 年 4–10 月）</a><p>2026 年 4–10 月 AI 研究进展综述：个人智能体与记忆、RSI、模型能力、世界模型四个方向，每条按论文摘要体例重写并附原文链接。</p></li>
+<li data-type="deepdive"><div class="line"><time datetime="2026-10-12">2026-10-12</time><span class="tag tag-deepdive">扩展阅读</span></div><a class="t" href="2026-10-12-muse-deepdive.html">Muse 技术扩展：Secure VM、Sentinel 与隔离审批</a><p class="ext">扩展自 <a href="2026-10-12-overview.html#s1-1">《AI 研究进展简报（约 2026 年 4–10 月）》</a></p><p>基于 Meta 官方三篇公开文的 Muse 技术扩展：Secure VM（systemd-nspawn runtime cell）、Sentinel 出口审批、surrogate 凭证与 eBPF tainted egress；区分官方确认与合理推测，并给出开发者可落地的建造输入。</p></li>
 </ol>
-<footer>共 2 期 · 更新于 2026-10-12 15:40（UTC+8）</footer>
-</main></body></html>
+<footer>共 2 期 · 更新于 2026-10-12 15:49（UTC+8）</footer>
+</main>
+<script>
+document.documentElement.className+=" js";
+document.querySelectorAll(".tabs button").forEach(function(b){b.onclick=function(){
+  var f=b.dataset.f;
+  document.querySelectorAll(".tabs button").forEach(function(x){x.setAttribute("aria-pressed",x===b)});
+  document.querySelectorAll("ol li[data-type]").forEach(function(li){li.hidden=!(f==="all"||li.dataset.type===f)});
+}});
+</script></body></html>
