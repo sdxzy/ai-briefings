@@ -292,7 +292,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
   <li><div class="toc-sec"><span class="n">01</span><a href="#s1">个人智能体 / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">Meta 发布 Muse Wonder / Muse Wonder Full</a></li></ol></li>
   <li><div class="toc-sec"><span class="n">02</span><a href="#s2">近 RSI / 自主复制</a></div><ol class="toc-items"><li><a href="#s2-1">Anthropic：小模型或距在 IoT 上自主复制仅数月</a></li><li><a href="#s2-2">Anthropic：蒸馏攻击数据被收割量约降 90%–99%</a></li></ol></li>
   <li><div class="toc-sec"><span class="n">03</span><a href="#s3">模型能力</a></div><ol class="toc-items"><li><a href="#s3-1">OpenAI 公开 719 篇 AI 数学手稿（10 月 6 日发布，讨论仍热）</a></li></ol></li>
-  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界模型</a></div><ol class="toc-items"><li><a href="#s4-1">WOVEN：把「视觉状态转移推理」做成可迁移的训练基元</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界模型</a></div><ol class="toc-items"><li><a href="#s4-1">WOVEN：教多模态模型看懂「做了什么动作，画面会变成什么样」</a></li></ol></li>
   <li><div class="toc-sec"><span class="n">05</span><a href="#s5">落地应用</a></div><ol class="toc-items"><li><a href="#s5-1">Google：疾病理解与诊疗相关 AI 工作盘点</a></li></ol></li>
   <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
 </ol>
@@ -309,7 +309,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
 
   <article class="item" id="s1-1">
     <h3 class="item-title"><a href="https://research.meta.ai/blog/muse-wonder" target="_blank" rel="noopener">Meta 发布 Muse Wonder / Muse Wonder Full</a></h3>
-    <p class="item-meta">Meta Superintelligence Labs · 2026-10-12 · 原文 约 6 分钟；评测细节另见 <a href="https://artificialanalysis.ai/articles/muse-wonder" target="_blank" rel="noopener">Artificial Analysis</a></p>
+    <p class="item-meta">Meta Superintelligence Labs · 2026-10-12 · 原文 约 6 分钟；评测细节另见 [Artificial Analysis](https://artificialanalysis.ai/articles/muse-wonder)</p>
     <div class="item-body"><p>Meta 10 月 12 日推出 Muse Wonder 与更强的 Muse Wonder Full，自称面向个人与专业智能体任务的 frontier 模型，并强调 Active Memory（跨对话记住并主动取回相关细节）与 Active Focus（遇到阻碍仍换路径推进、重要动作前会确认）。Wonder 即日起可通过 Meta Model API 与 Muse Code 使用；Wonder Full 目前仅对 Muse Code 订阅者开放。官方称 Wonder 将很快接入 Muse 产品，并先面向订阅用户。</p><p>独立评测方 Artificial Analysis 给出 Intelligence Index v4.3（最大推理力度）分数：Wonder Full 56、Wonder 52，相对六周前的 Muse Spark 1.3（48）分别提升 8 与 4 分；智能体向指标涨幅更明显，例如 Terminal-Bench 4.0 上 Wonder Full 从 Spark 的 33% 到 57%。上下文仍为 100 万 token；Wonder API 定价为每百万 input $4、cached input $0.20、output $20。知识类指标相对偏弱，但幻觉率下降。官方博客本身几乎不列具体分数，安全报告称「即将发布」。</p></div>
     <p class="item-verdict"><strong>是否值得读原文</strong> · 官方博文约 6 分钟，看定位与 Active Memory/Focus 表述即可；要数字优先读 Artificial Analysis 那篇。</p>
     <p class="item-sources">
@@ -367,10 +367,10 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
   </header>
 
   <article class="item" id="s4-1">
-    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.12417" target="_blank" rel="noopener">WOVEN：把「视觉状态转移推理」做成可迁移的训练基元</a></h3>
-    <p class="item-meta">arXiv:2610.12417 · 西北大学、CMU、UNC、Amazon · 原文 长文，精读约 40–60 分钟</p>
-    <div class="item-body"><p>作者认为多模态模型在空间、具身、物理、时间推理上的失败，共享一个缺口：对 \((s,a,s')\) 视觉转移的推理。他们用视频生成模型滚出可控轨迹，建成 WOVEN：36,076 道题，覆盖 20 类场景、5 类动作、8 类推理。评 38 个前沿 MLLM，最强 GPT-5.4 仅 65.8%，人类基线 92.3%。把 Qwen2.5-VL-3B 在全量训练集上微调后，分布内准确率从 26.4% 提到 89.3%；约 2,000 条的受控子集合起来可让 26 个外部基准中的 22 个提升，最高约 +27.3 个百分点，且可替换任务自有训练数据的 30%–50% 而保持相近精度。配方要点：按「推理操作」选监督，而不是按动作/场景相似；状态变化大的动作更利于鲁棒性。</p></div>
-    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心世界模型训练配方的值得读第 1、3、5 节与表 2–5；只想拿结论可先读摘要。</p>
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.12417" target="_blank" rel="noopener">WOVEN：教多模态模型看懂「做了什么动作，画面会变成什么样」</a></h3>
+    <p class="item-meta">arXiv:2610.12417 · 西北大学、CMU、UNC、Amazon · 2026-10-08 · 原文 长文，精读约 40–60 分钟；本摘要约 2 分钟</p>
+    <div class="item-body"><p><strong>它想解决什么问题。</strong> 多模态大模型（能同时看图和读文字的模型，下称 MLLM）认东西很强，但一碰到「变化」就容易错：判断错相机转了多少、预测出违反物理的结果、把视频帧排错顺序。作者认为这些失败有同一个根源：不会做「视觉状态转移推理」。一次转移可以写成 (s, a, s′)：s 是动作前的画面，a 是动作，s′ 是动作后的画面。比如 s 是桌边放着一杯水，a 是「手把杯子推出桌沿」，s′ 是杯子摔在地上、水洒了一地。已知前两项猜第三项叫「正向推断」，看前后两张图猜做了什么叫「逆向推断」，问「如果换成轻轻挪一下会怎样」叫「反事实」。</p><p><strong>方法一句话 + 怎么做。</strong> 用视频生成模型批量造出可控的 (s, a, s′) 片段，做成选择题来训练和考模型。真实视频没法让同一个起点换个动作重来一遍，模拟器又不够逼真，所以作者改用视频生成模型。数据集 WOVEN 共 36,076 道题，按 20 类场景（厨房、公园等）、5 类动作（被动物理事件、相机移动、操作物体等）、8 类推理（正向、逆向、反事实、时间排序等）分格标注，错误选项也按错误类型设计。之所以叫「可迁移的训练基元」（基元：可复用的基础能力单元），是因为作者要证明：不同数据来源都能练出这同一种能力，而且它能拿去帮各种别的任务。</p><p><strong>怎么验证、结果如何。</strong> 测了 38 个前沿 MLLM，最强的 GPT-5.4 只有 65.8%，人类是 92.3%。用全量训练集微调 Qwen2.5-VL-3B，分布内准确率从 26.4% 升到 89.3%，没见过的场景上也有 88.2%。每份约 2,000 题的子集合起来，让 26 个外部基准中的 22 个提升，最多 27.3 个百分点；在训练量不变时，用 WOVEN 替换某任务 30%–50% 的自有训练数据，准确率相近。子集在 WOVEN 上涨得越多，外部提升也越大（相关系数 r=0.86）。由此得出的训练配方：按「要教哪种推理」挑数据，而不是按动作或场景挑；画面变化越大的动作（如操作物体）练出的能力越稳。</p><p><strong>局限。</strong> 只管单步转移，不涉及长程规划、符号环境，也不涉及只在隐空间里预测的世界模型；能力迁移跨不过「时间类推理」与其他推理之间的界线，也跨不过「被动物理事件」与「主动动作」之间的界线；静态识别能力也不会因此变强，仍要单独训练。数据来自生成视频，本身也可能带着生成模型的偏差。</p><p><strong>和世界模型方向的关系。</strong> 世界模型的核心就是「给定当前状态和动作，预测下一个状态」。这篇不做视频生成，而是反过来，把视频生成模型当作「世界模拟器」来造题，把这种预测能力教给语言类多模态模型，并给出一份可复用的训练配方。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做多模态训练或世界模型数据的值得读第 1、3、5 节（问题设定、迁移结果、训练配方）；只想知道结论，读摘要和图 1 就够。</p>
     <p class="item-sources">
       <a class="src" href="https://arxiv.org/abs/2610.12417" target="_blank" rel="noopener">WOVEN: Weaving Visual World Modeling into Multimodal LLMs <span style="opacity:.65">(arxiv.org)</span></a>
     </p>
