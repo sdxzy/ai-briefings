@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-10-13</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="10 月 12–13 日要点：Meta Muse Wonder 面向个人/专业智能体；Anthropic 警示小模型或可在 IoT 上自主复制，并公布蒸馏防御成效；OpenAI 公开 719 篇数学手稿；WOVEN 论文把视觉转移推理当作世界模型训练基元；Google 汇总疾病 AI 应用。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-10-13</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-10-13">截至 2026 年 10 月 13 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Mark（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>约过去 24 小时，截止 <strong>2026 年 10 月 13 日上午（CST）</strong>；个别条目因仍在发酵而略超出窗口，文中已标明日期。</span></div><div class="meta-row"><span class="k">信息来源</span><span>各公司官方博客、Artificial Analysis、arXiv、GitHub；条目均经核读原文后重写。X 新闻流用于选题，不单独作事实来源。</span></div><div class="meta-row"><span class="k">原则</span><span>摘要按论文摘要体例写，约 250–450 字；不编造数字与链接；无法核验处会标明。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">个人智能体 / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">Meta 发布 Muse Wonder / Muse Wonder Full</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">近 RSI / 自主复制</a></div><ol class="toc-items"><li><a href="#s2-1">Anthropic：小模型或距在 IoT 上自主复制仅数月</a></li><li><a href="#s2-2">Anthropic：蒸馏攻击数据被收割量约降 90%–99%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">模型能力</a></div><ol class="toc-items"><li><a href="#s3-1">OpenAI 公开 719 篇 AI 数学手稿（10 月 6 日发布，讨论仍热）</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界模型</a></div><ol class="toc-items"><li><a href="#s4-1">WOVEN：把「视觉状态转移推理」做成可迁移的训练基元</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">落地应用</a></div><ol class="toc-items"><li><a href="#s5-1">Google：疾病理解与诊疗相关 AI 工作盘点</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人智能体与记忆</h2>
+  </header>
+  <p class="sec-lead">昨天 Meta 把 Muse 产品线的模型能力推到了「frontier」档，明确对准个人与专业智能体场景。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://research.meta.ai/blog/muse-wonder" target="_blank" rel="noopener">Meta 发布 Muse Wonder / Muse Wonder Full</a></h3>
+    <p class="item-meta">Meta Superintelligence Labs · 2026-10-12 · 原文 约 6 分钟；评测细节另见 [Artificial Analysis](https://artificialanalysis.ai/articles/muse-wonder)</p>
+    <div class="item-body"><p>Meta 10 月 12 日推出 Muse Wonder 与更强的 Muse Wonder Full，自称面向个人与专业智能体任务的 frontier 模型，并强调 Active Memory（跨对话记住并主动取回相关细节）与 Active Focus（遇到阻碍仍换路径推进、重要动作前会确认）。Wonder 即日起可通过 Meta Model API 与 Muse Code 使用；Wonder Full 目前仅对 Muse Code 订阅者开放。官方称 Wonder 将很快接入 Muse 产品，并先面向订阅用户。</p><p>独立评测方 Artificial Analysis 给出 Intelligence Index v4.3（最大推理力度）分数：Wonder Full 56、Wonder 52，相对六周前的 Muse Spark 1.3（48）分别提升 8 与 4 分；智能体向指标涨幅更明显，例如 Terminal-Bench 4.0 上 Wonder Full 从 Spark 的 33% 到 57%。上下文仍为 100 万 token；Wonder API 定价为每百万 input $4、cached input $0.20、output $20。知识类指标相对偏弱，但幻觉率下降。官方博客本身几乎不列具体分数，安全报告称「即将发布」。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 官方博文约 6 分钟，看定位与 Active Memory/Focus 表述即可；要数字优先读 Artificial Analysis 那篇。</p>
+    <p class="item-sources">
+      <a class="src" href="https://research.meta.ai/blog/muse-wonder" target="_blank" rel="noopener">Muse Wonder: A Frontier Model For Personal &amp; Professional AI Agents <span style="opacity:.65">(research.meta.ai)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">自我复制与安全（近 RSI）</h2>
+  </header>
+  <p class="sec-lead">Anthropic 同日发了两篇硬内容：一篇谈「没有数据中心也能自我复制」，一篇谈防蒸馏。</p>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://www.anthropic.com/research/self-replicating-ai" target="_blank" rel="noopener">Anthropic：小模型或距在 IoT 上自主复制仅数月</a></h3>
+    <p class="item-meta">Anthropic Frontier Red Team · 2026-10-12 · 原文 长文，约 25–35 分钟</p>
+    <div class="item-body"><p>Frontier Red Team 评估认为，小于约 30B 的开源模型已能完成复制链条中的许多单步；在简化评测里，GLM-5.2 及以上可端到端完成「找目标—获执行—搭推理—继续传播」。作者把 Gemma4-26B-A4B 切分跑在 15 台约 55 美元的杂牌 Android TV 盒上，约 0.39 tok/s。按历史能力趋势，他们估计「足够小、又够强」的复制者可能在 2026 年底前后相交。文中强调评测把网络入侵步骤故意简化（ADB 无鉴权），因此是上界；并演示后代继承笔记后，Qwen3.5-9B 的推理搭建成功率可从约 45% 升到 61%–84%。文末给出 ISP 流量异常、隔离通知、出厂默认安全等蓝队建议。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。威胁模型与「能力地板 × 尺寸天花板」两段信息密度最高；附录可跳过。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.anthropic.com/research/self-replicating-ai" target="_blank" rel="noopener">AI models may be capable of self-replicating without access to a datacenter <span style="opacity:.65">(anthropic.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s2-2">
+    <h3 class="item-title"><a href="https://www.anthropic.com/research/distillation-defenses" target="_blank" rel="noopener">Anthropic：蒸馏攻击数据被收割量约降 90%–99%</a></h3>
+    <p class="item-meta">Anthropic · 2026-10-12 · 原文 约 12–15 分钟</p>
+    <div class="item-body"><p>Anthropic 称近期防蒸馏措施已使攻击者从自家平台收割到的推理（reasoning）token 量下降约 90%–99%。手段包括：对新 API 账户限制「preserved thinking」、跨模型/跨账户转移受保护推理更难、两阶段分类器拦截提取请求（称对最强公开模型假阳性 &lt;0.1%）、对反复尝试限流并封禁，以及自 9 月 24 日起对部分被拦请求重新收费。文中点名 Zhipu 在 GLM-5.3 开发中曾蒸馏美国模型网络能力，并称 GLM-5.3 被评估为当时最强网络开源权重之一且防护易绕过。作者承认 legitimate 用户也要改集成，并呼吁其他平台协同。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做平台或安全的值得读；只关心结论的看开头与「How well our new methods work」即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.anthropic.com/research/distillation-defenses" target="_blank" rel="noopener">Strengthening our defenses against distillation attacks <span style="opacity:.65">(anthropic.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">模型能力进展</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://openai.com/index/sharing-ai-progress-in-mathematics/" target="_blank" rel="noopener">OpenAI 公开 719 篇 AI 数学手稿（10 月 6 日发布，讨论仍热）</a></h3>
+    <p class="item-meta">OpenAI · 2026-10-06；目录见 openai/math README · 原文 公告约 3 分钟；仓库导览另计</p>
+    <div class="item-body"><p>OpenAI 用未公开内部模型产出一批数学结果，经 IAS 数学与 AI 顾问组建议后放到 GitHub。仓库 README 写明现有 <strong>719</strong> 篇手稿、归入 <strong>372</strong> 个结果族；约 <strong>42%</strong> 的顶线结果已有 Lean 形式化。多数结果按固定流程获得，平均约等于 <strong>3 小时</strong> ChatGPT Pro thinking 算力；共尝试约 <strong>4,000</strong> 道题。另有 10 份推理摘要公开。未形式化结果可能有问题，修正会保留版本历史。条目日期早于本报 24 小时窗口，但 10 月 12 日前后数学界讨论仍在发酵，故收录。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 公告本身很短；要判断价值应看 overview.pdf / CONTENTS.md 与 Lean 覆盖，而非社交媒体情绪。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openai.com/index/sharing-ai-progress-in-mathematics/" target="_blank" rel="noopener">Sharing AI progress in mathematics <span style="opacity:.65">(openai.com)</span></a>
+      <a class="src" href="https://github.com/openai/math" target="_blank" rel="noopener">openai/math README <span style="opacity:.65">(github.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型</h2>
+  </header>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.12417" target="_blank" rel="noopener">WOVEN：把「视觉状态转移推理」做成可迁移的训练基元</a></h3>
+    <p class="item-meta">arXiv:2610.12417 · 西北大学、CMU、UNC、Amazon · 原文 长文，精读约 40–60 分钟</p>
+    <div class="item-body"><p>作者认为多模态模型在空间、具身、物理、时间推理上的失败，共享一个缺口：对 \((s,a,s')\) 视觉转移的推理。他们用视频生成模型滚出可控轨迹，建成 WOVEN：36,076 道题，覆盖 20 类场景、5 类动作、8 类推理。评 38 个前沿 MLLM，最强 GPT-5.4 仅 65.8%，人类基线 92.3%。把 Qwen2.5-VL-3B 在全量训练集上微调后，分布内准确率从 26.4% 提到 89.3%；约 2,000 条的受控子集合起来可让 26 个外部基准中的 22 个提升，最高约 +27.3 个百分点，且可替换任务自有训练数据的 30%–50% 而保持相近精度。配方要点：按「推理操作」选监督，而不是按动作/场景相似；状态变化大的动作更利于鲁棒性。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心世界模型训练配方的值得读第 1、3、5 节与表 2–5；只想拿结论可先读摘要。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.12417" target="_blank" rel="noopener">WOVEN: Weaving Visual World Modeling into Multimodal LLMs <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AI 产品与落地</h2>
+  </header>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/technology/health/ai-health-research/" target="_blank" rel="noopener">Google：疾病理解与诊疗相关 AI 工作盘点</a></h3>
+    <p class="item-meta">Google Research / DeepMind · 2026-10-12 · 原文 约 8–10 分钟</p>
+    <div class="item-body"><p>这是一篇汇总帖，不是单一模型发布。文中称过去五年 Google 团队发表约 90 篇疾病相关同行评审论文、引用逾 9 万次；举例包括用 AlphaFold 为恰加斯病虚拟筛选约 3 万化合物并找到两个可再利用的 FDA 药、与斯坦福合作用 DeepVariant/DeepConsensus 在不到 8 小时完成全基因组诊断、与帝国理工/NHS 的乳腺筛查研究称在 12.5 万女性队列中抓住 25% 既往漏诊的间期癌并可减少专科阅片负担最高约 40%、流感住院预测模型在 CDC 2025–2026 季排名第一，以及 Google.org 2026 年向相关组织提供逾 6,000 万美元。多为合作结果汇编，独立复现细节需回原论文。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 想快速摸 Google 健康 AI 版图可读；要方法与证据请跟文内各合作论文，不宜只凭这篇下判断。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/technology/health/ai-health-research/" target="_blank" rel="noopener">Applying technology to understand and treat disease <span style="opacity:.65">(blog.google)</span></a>
+    </p>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>总览</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>个人智能体 / 记忆</td><td>Muse Wonder 把 Active Memory/Focus 写进 frontier 模型叙事，并开 API</td></tr>
+      <tr><td>近 RSI / 自主复制</td><td>Anthropic：IoT 上慢速「权重蠕虫」或近在眼前；同日加码防蒸馏</td></tr>
+      <tr><td>模型能力</td><td>OpenAI 数学仓库给出可核验的规模数字（719 / 372 / ~42% Lean）</td></tr>
+      <tr><td>世界模型</td><td>WOVEN 用可控 \((s,a,s')\) 监督证明视觉转移推理可学、可迁移</td></tr>
+      <tr><td>落地应用</td><td>Google 健康汇总帖：筛查、基因组、疫情与资助</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong>阅读建议：</strong> 今天优先读 Anthropic 自我复制长文与 Meta Muse Wonder（配 Artificial Analysis 数字）；世界模型方向抽 WOVEN 摘要与第 5 节配方即可。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-10-13 工作日晨报 · 公开页将发布于 sdxzy.github.io/ai-briefings</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
