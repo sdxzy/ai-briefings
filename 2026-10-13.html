@@ -338,6 +338,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
     <p class="item-meta">Anthropic · 2026-10-12 · 原文 约 12–15 分钟</p>
     <div class="item-body"><p>Anthropic 称近期防蒸馏措施已使攻击者从自家平台收割到的推理（reasoning）token 量下降约 90%–99%。手段包括：对新 API 账户限制「preserved thinking」、跨模型/跨账户转移受保护推理更难、两阶段分类器拦截提取请求（称对最强公开模型假阳性 &lt;0.1%）、对反复尝试限流并封禁，以及自 9 月 24 日起对部分被拦请求重新收费。文中点名 Zhipu 在 GLM-5.3 开发中曾蒸馏美国模型网络能力，并称 GLM-5.3 被评估为当时最强网络开源权重之一且防护易绕过。作者承认 legitimate 用户也要改集成，并呼吁其他平台协同。</p></div>
     <p class="item-verdict"><strong>是否值得读原文</strong> · 做平台或安全的值得读；只关心结论的看开头与「How well our new methods work」即可。</p>
+    <!-- optional --><p class="item-ext"><span class="k">扩展阅读</span><a href="2026-10-13-distillation-deepdive.html">蒸馏攻击与反蒸馏：推理痕迹为何值钱 →</a></p>
     <p class="item-sources">
       <a class="src" href="https://www.anthropic.com/research/distillation-defenses" target="_blank" rel="noopener">Strengthening our defenses against distillation attacks <span style="opacity:.65">(anthropic.com)</span></a>
     </p>
