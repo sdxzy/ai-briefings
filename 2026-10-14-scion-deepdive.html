@@ -299,6 +299,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
   <li><div class="toc-sec"><span class="n">07</span><a href="#s7">给开发者和团队的启示</a></div><ol class="toc-items"><li><a href="#s7-1">现在就能做的〔建议〕</a></li><li><a href="#s7-2">合入量真涨上去之后〔建议〕</a></li></ol></li>
   <li><div class="toc-sec"><span class="n">08</span><a href="#s8">仍不清楚的</a></div><ol class="toc-items"><li><a href="#s8-1">原文没讲或讲不清的地方</a></li></ol></li>
   <li><div class="toc-sec"><span class="n">09</span><a href="#s9">术语表</a></div><ol class="toc-items"><li><a href="#s9-1">本页用到的词</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">10</span><a href="#s10">Dong 的理解（复习用）</a></div></li>
 </ol>
 </details>
 </nav>
@@ -535,6 +536,13 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
     <h3 class="item-title">本页用到的词</h3>
     <div class="item-body"><div class="grid-wrap"><table class="grid"><thead><tr><th>术语</th><th>白话解释</th></tr></thead><tbody><tr><td>monorepo</td><td>全公司的代码放在一个仓库里</td></tr><tr><td>commit / 提交</td><td>Git 里一次保存，指向整棵目录树的快照和父提交</td></tr><tr><td>changeset</td><td>Scion 的提交单位：只记录相对第一个父提交改了哪些文件，加文件内容哈希；是预写日志里的一条</td></tr><tr><td>tree / blob</td><td>目录对象 / 文件内容对象，都按内容哈希寻址</td></tr><tr><td>内容寻址</td><td>用内容的哈希当地址；内容不变地址就不变，所以可以随便缓存</td></tr><tr><td>packfile</td><td>Git 把一批对象压在一起传输和存储的格式</td></tr><tr><td>协商（negotiation）</td><td>拉取时客户端和服务端确定「要传哪些对象」的过程</td></tr><tr><td>ref</td><td>指向提交的指针，如分支、标签；Scion 只鼓励保留 main 和发布分支</td></tr><tr><td>merge / rebase</td><td>合并两条历史 / 把提交挪到另一条历史的末端重放</td></tr><tr><td>merge base</td><td>两个提交最近的共同祖先</td></tr><tr><td>blame</td><td>查每一行最后是哪次提交改的</td></tr><tr><td>bisect</td><td>二分查找是哪次提交引入了问题</td></tr><tr><td>合并队列</td><td>让改动排队、跟最新 main 一起测过才合入的机制</td></tr><tr><td>浅克隆 / 稀疏检出 / 部分克隆</td><td>只拿最近历史 / 只把部分目录放到磁盘 / 先不拿文件内容，用到再要</td></tr><tr><td>虚拟化检出</td><td>文件在被读到时才真正生成到磁盘上</td></tr><tr><td>seed / 种子</td><td>存在 blob 存储里的仓库快照，新机器用它起步</td></tr><tr><td>派生数据</td><td>Scion 从 changeset 算出来的索引（blame、路径历史、提交图跳表等）</td></tr><tr><td>跳表</td><td>一种多层索引，能快速跨越很长的提交链</td></tr><tr><td>Spanner</td><td>Google Cloud 的全球分布式数据库；Scion 用它存元数据</td></tr><tr><td>CAS</td><td>compare-and-swap：只有当值仍是预期的旧值时才改成新值</td></tr><tr><td>scn / scion-daemon / scion-cache / scion-server</td><td>Scion 的客户端 / 节点守护进程 / 区域缓存 / 权威服务器</td></tr><tr><td>Antique</td><td>Anthropic 自建的代码评审工具，change request 走它落地</td></tr><tr><td>superfan</td><td>专门盯某一个组件健康状况的 Claude（基于 Claude Tag）</td></tr><tr><td>trunk-based development</td><td>主干开发：大家都频繁合入 main，很少长期分支</td></tr></tbody></table></div></div>
   </article>
+</section>
+<section class="section" id="s10">
+  <header class="sec-head">
+    <span class="sec-num">第 10 节</span>
+    <h2 class="sec-title">Dong 的理解（复习用）</h2>
+  </header>
+  <p class="sec-lead">用自己的话串一遍，回头看时先读这里。1. <strong>Git 每个 commit 是一个快照</strong>：逻辑上是完整的文件夹，物理上是一份索引——tree（文件树，每个目录一个 tree，记录"文件名 → blob 哈希 / 子目录 → 子 tree"），commit 指向根 tree。文件内容是 blob，按内容哈希存放，没变的文件直接复用。物理存储和快照索引是分开的。2. <strong>commit 还记录父提交哈希</strong>（merge 提交有两个父），所有提交串成历史链。父哈希参与计算，所以改旧提交或 rebase 会让后续哈希都变。3. <strong>Git 不存 diff</strong>：diff 是拿两个快照现算，哈希相同的子树直接跳过；blame 要沿父链一路比较，历史越长越贵。4. <strong>Scion 本质是回到中心化</strong>（类似 Google Piper）：完整历史只在服务端存一份。客户端提交的不是逐行 diff，而是 changeset（改了哪些文件 + 新内容哈希）；服务端拼出新快照，并用比较并交换（CAS）移动 main 指针<span class="tag tag-ok">官方</span>。若 main 已被别人推进，服务端是否自动 rebase，原文未说<span class="tag tag-guess">推测</span>。5. <strong>本地 git 操作搬到服务端</strong>：提交、变基、合并、log、diff、blame 改由服务端执行并通过 API 提供；blame 等是递归定义的派生数据，增量计算、算一次大家共用，客户端不必拉近 100 GB 历史<span class="tag tag-ok">官方</span>。代价：必须在线，服务端是关键依赖。6. <strong>切分支</strong>：客户端说要哪个提交、哪些路径，文件经 daemon → 区域缓存 → 服务端三层按哈希按需取<span class="tag tag-ok">官方</span>；更可能是拿目标树清单在本地比较、只取变化的文件，而不是服务端算好 diff 下发<span class="tag tag-guess">推测</span>。</p>
 </section>
 </main>
 
