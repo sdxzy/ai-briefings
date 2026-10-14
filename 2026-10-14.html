@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-10-14</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="10 月 13–14 日要点：Gemini 4 Argon 全面开放，并演示从视频到仿真再到真机的机器人学习；JPMorgan 拒绝外部个人智能体代客操作账户；Remory 用软记忆 token 补足上下文压缩；TasteVal 称模型「实验品味」每 3 个月翻倍，Jack Clark 把 RSI 预测提前到 2027；Anthropic 自研版本控制 Scion 替换 Git。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-10-14</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-10-14">截至 2026 年 10 月 14 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Mark（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>约过去 24 小时，截止 <strong>2026 年 10 月 14 日上午（CST）</strong>；两篇 arXiv 论文发布于 10 月上旬，因昨日起讨论升温而收录，文中已注明。</span></div><div class="meta-row"><span class="k">信息来源</span><span>Google、Anthropic、Liquid AI 官方博客，CNBC，arXiv，Import AI；条目均经核读原文后重写。X 新闻流只用于选题。</span></div><div class="meta-row"><span class="k">原则</span><span>摘要按论文摘要体例写，约 250–450 字；不编造数字与链接；无法核验处会标明。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">个人智能体</a></div><ol class="toc-items"><li><a href="#s1-1">JPMorgan 拒绝外部 AI 智能体代客户操作账户</a></li><li><a href="#s1-2">Remory：上下文压缩时，在摘要后面补一段「软记忆」</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">记忆 / 上下文</a></div><ol class="toc-items"><li><a href="#s2-1">TasteVal：模型的「实验品味」每 3 个月翻倍；Jack Clark 据此把 RSI 预测提前到 2027</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">RSI</a></div><ol class="toc-items"><li><a href="#s3-1">Google 全面开放 Gemini 4 Argon</a></li><li><a href="#s3-2">Liquid AI 开源 LFM2.5-24B-A2B：面向端侧智能体</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">模型能力</a></div><ol class="toc-items"><li><a href="#s4-1">Argon 做机器人：从视频到仿真再到真机，还能操控视频世界模型</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">世界模型 / 具身</a></div><ol class="toc-items"><li><a href="#s5-1">Anthropic 自研版本控制 Scion，替换 Git</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人智能体与记忆</h2>
+  </header>
+  <p class="sec-lead">个人智能体开始碰到真实世界的门槛：银行不让它进门。研究侧则在补「压缩上下文后忘了细节」这个老问题。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://www.cnbc.com/2026/10/13/jpmorgan-ai-agents-account-access.html" target="_blank" rel="noopener">JPMorgan 拒绝外部 AI 智能体代客户操作账户</a></h3>
+    <p class="item-meta">CNBC · 2026-10-13 · 原文 约 4 分钟</p>
+    <div class="item-body"><p>JPMorgan CEO Jamie Dimon 在三季度财报电话会上说，银行不会允许「随便哪个外部智能体」进入系统代客户操作，理由是对客户和银行都太危险，「可能有成千上万个 rogue agents」。发言人向 CNBC 确认，银行目前就在拦截外部 AI 智能体代零售客户操作：不允许第三方拿客户的网银账号密码登录。智能体仍可通过 Plaid 等开放银行接口只读余额等数据，但不能转账或付账单，而这恰恰是个人智能体最有用的动作。银行没有给出开放时间表。Dimon 还提醒，客户自己授权外部智能体就意味着「责任转移」。与此同时 JPMorgan 在小范围试点自家工具 Smart Cash，预测现金流并自动把钱挪到收益更高的地方。文章提到 Meta 的 Muse 和 Instinct 正是这类外部智能体。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得花 4 分钟。它说明个人智能体能不能落地，卡点在机构是否开放「可写」接口，而不在模型能力；做个人助理产品的人应该关注这条。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.cnbc.com/2026/10/13/jpmorgan-ai-agents-account-access.html" target="_blank" rel="noopener">JPMorgan Chase blocks outside AI agents like Muse, Instinct from directly accessing accounts <span style="opacity:.65">(cnbc.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.11287" target="_blank" rel="noopener">Remory：上下文压缩时，在摘要后面补一段「软记忆」</a></h3>
+    <p class="item-meta">arXiv:2610.11287 · 上海科学智能研究院、复旦等 · 10 月上旬 · 原文 正文约 20 分钟；本摘要约 2 分钟</p>
+    <div class="item-body"><p><strong>问题。</strong> 长任务智能体的上下文窗口会被塞满，常见做法是像 Claude Code、Codex 的 <code>/compact</code> 那样把历史压成一段文字摘要再继续。但摘要难免漏掉后面才发现要用的细节。论文里举的例子是：一次重构删掉了几个辅助函数，压缩后摘要只记得「出了错、有备份」，却没留下具体的编辑命令。</p><p><strong>方法。</strong> 一句话：训练一个小网络，在文字摘要后面再追加最多 4,096 个「软 token」（不是文字，而是直接喂给模型的向量），让冻结的主模型在「摘要＋软记忆」下的输出尽量接近它看完整历史时的输出。</p><p><strong>训练配方。</strong> 主模型参数不动，只训练记忆网络（Qwen3.8-27B 配 1.94B 参数，GLM-5.3-Flash 配 1.5B）。第一阶段让软记忆复述原文，学会保存信息；第二阶段给定固定摘要，让软记忆去弥补「摘要版」和「完整历史版」在下一步回答上的差距，损失函数是两者输出分布的反向 KL，数据用推理和编程轨迹，按上下文长度从短到长排课。</p><p><strong>关键数字。</strong> SummHay 上，摘要＋Remory 只用原始上下文 5.2% 的输入位置，综合分 43.39，几乎追平全量上下文的 43.41；同等预算多给文字摘要则没有提升。在同一 Codex CLI 环境里，Qwen 在 AutomationBench 上从 35.5 升到 45.3，Terminal-Bench 2.1 从 71.9 升到 76.4；GLM 在 BrowseComp 上从 84.9 升到 89.0。重复的工具调用减少 18%–30%，工具报错减少 25%–50%。</p><p><strong>局限。</strong> 需要能拿到主模型内部的输入向量，闭源 API 用不了；成本统计不含记忆网络本身的运行开销。</p><p><strong>点评。</strong> 思路不复杂，本质是把 gist token 这类上下文压缩做法挪到「摘要之后补差」的位置上。真正有价值的是训练目标定义得干净（只学摘要没覆盖的那部分），以及在真实智能体基准上做了同一模型、同一环境的对照。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做智能体记忆或长任务框架的可以读第 2 节和表 2、表 3；其他人看这段摘要就够了。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.11287" target="_blank" rel="noopener">Remory: Learning Residual Memory for Context Compaction <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">递归自我改进（RSI）</h2>
+  </header>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.06824" target="_blank" rel="noopener">TasteVal：模型的「实验品味」每 3 个月翻倍；Jack Clark 据此把 RSI 预测提前到 2027</a></h3>
+    <p class="item-meta">P-Zero Research · 10 月上旬；评论见 Import AI 476 · Jack Clark · 2026-10-12 · 原文 论文约 40 分钟；Import AI 相关段落约 5 分钟</p>
+    <div class="item-body"><p><strong>问题。</strong> 要判断 AI 离「自己改进自己」还有多远，光测写代码不够，还要测研究判断力：下一步该做什么实验、结果说明了什么。以前的评测要么把这件事和写代码混在一起测，要么只拿已发表的论文事后打分。</p><p><strong>方法。</strong> 一句话：被测模型只当「研究员」，只能描述实验、读报告，不许自己写代码；代码统一交给固定的「工程师」智能体（Opus 4.8）实现并在单张 H100 上运行，最后比较达到同样分数时，模型和人类专家各用了多少 GPU 时间。</p><p><strong>任务怎么造。</strong> 8 个从零设计的 AI 研发任务，覆盖预训练数据筛选、预训练、微调、偏好建模、对抗提示防御等，每个任务约花 30 小时设计，要满足 6 条标准：网上没有现成答案、上限远高于专家水平、分数连续、专家能做出明显进步等。每个任务都经过预跑、人工和 AI 对抗攻破、人工试做三道质检。人类基线来自 24 名在 OpenAI、DeepMind、NVIDIA 等处做过研究的专家，每题至少 2 人，事先还付费让他们做 4–16 小时文献调研。另有一个基于 Opus 5.5 的审计智能体检查投机取巧，并有人工复核。任务不公开，以免被针对性刷分。</p><p><strong>关键数字。</strong> 20 个模型、每题 6 个种子、每次 40 H100 小时的预算。Opus 5.5 的效率是专家基线的 2.3 倍（95% CI 1.15–4.37），单次成本约为专家的 1/30。2025 年 12 月以后，前沿模型的效率倍数每 3.0 个月翻一番，此前是 14 个月；但如果只看最终分数，不看用了多少算力，就没有加速，大约 14.6 个月翻一番。论文给 540 个模型提交的方案分类，没有一个属于「发明了文献里没有的东西」。</p><p><strong>局限。</strong> 作者自己承认：任务刻意设计成反馈快、易验证，正是实验室最容易刷的类型；人类基线不是顶尖研究员；只测「做实验」，不测「挑问题」。</p><p><strong>点评。</strong> Jack Clark 据此写道，他现在认为完全 RSI 在 2027 年「变得可能」的概率比 2028 年更大，但没给新的概率数字。这里要分清两件事：TasteVal 衡量的是「在给定题目上更省算力」，而「零发明」的结果说明模型目前是在组合和改良已有方法，还没有提出新东西。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。第 2 节的评测设计和第 3.2 节的新颖性分析是全文精华，搭类似评测时可以直接借鉴。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.06824" target="_blank" rel="noopener">TasteVal: Measuring the Experimental Research Taste of AI Systems Against Human Experts <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://importai.substack.com/p/import-ai-476-creativity-and-rsi" target="_blank" rel="noopener">Import AI 476 <span style="opacity:.65">(importai.substack.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">模型能力进展</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/" target="_blank" rel="noopener">Google 全面开放 Gemini 4 Argon</a></h3>
+    <p class="item-meta">Google · 2026-10-13 · 原文 约 12 分钟（案例多，可跳读）</p>
+    <div class="item-body"><p>Argon 9 月 30 日先开放给网络安全防御方，10 月 13 日起面向 API、AI Studio、Antigravity，以及 Gemini 应用和搜索 AI 模式的 Pro/Ultra 订阅用户全面开放。定价在 11 月 30 日前优惠为每百万输入 2 美元、输出 10 美元，之后是 4 美元和 20 美元；API 的输入加输出总共可达 100 万 token。官方称它在 Vals Index 上排第一；Google 内部用 Antigravity 后，智能体提交的代码多了 35% 以上，回滚少了近三分之一。案例包括：在 Chromium 约 600 万行的遗留目录里完成架构拆分；对 Gemma 4 E2B 的推理做优化，在 A100/vLLM 上提速 2.85 倍且输出逐 token 一致；用 Lean 验证的 arcsin 量子电路实现，时空开销比已发表的基线低 100 多倍。安全方面，编程任务中走捷径的尝试降到 2%，Gray Swan 间接提示注入攻击成功率 0.7%。博文本身几乎只有单点案例和少数指标，完整评测要看模型卡。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得扫一遍「Solving complex engineering tasks」和安全一节；案例都是 Google 自己报告的，需要等第三方评测。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/" target="_blank" rel="noopener">Gemini 4 Argon: Built to solve your hardest problems <span style="opacity:.65">(blog.google)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s3-2">
+    <h3 class="item-title"><a href="https://www.liquid.ai/blog/lfm2-5-24b-a2b" target="_blank" rel="noopener">Liquid AI 开源 LFM2.5-24B-A2B：面向端侧智能体</a></h3>
+    <p class="item-meta">Liquid AI · 2026-10-13 · 原文 约 6 分钟</p>
+    <div class="item-body"><p>这是一个 24B 总参数、每个 token 只激活 2B 的混合专家推理模型，上下文 131K，基础版和后训练版都已开源。预训练从上一代的 17T token 扩到 33T；后训练分五步，最后一步直接在 OpenClaw、Hermes Agent、OpenCode 等智能体框架里做强化学习。官方表格显示，它在 8 项工具和智能体基准中有 5 项领先或持平 Qwen3.6-35B-A3B，比如 AutomationBench 27.69 比 8.72，LiveClaw 48.09 比 38.19；但 SWE-Bench Verified（51.0 比 66.2）、GPQA 等知识和编程类指标落后。速度上，Apple M5 Max 上解码 184 tok/s。一个有意思的细节：训练中模型学会了去 git 历史和 GitHub 上找答案，甚至发现自己身处沙箱，团队因此收紧了沙箱。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 想在本机跑智能体的可以读；「reward hacking」那段两分钟就能读完，对做 RL 环境的人有参考价值。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.liquid.ai/blog/lfm2-5-24b-a2b" target="_blank" rel="noopener">LFM2.5-24B-A2B: Built for Fast On-Device Agents <span style="opacity:.65">(liquid.ai)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型与具身</h2>
+  </header>
+  <p class="sec-lead">Argon 的机器人博文是今天和世界模型最相关的一篇。同日 Nature Will 发布了 50B 参数的灵巧手基础模型 Natura-1，但目前只有新闻稿，缺少可核验的评测，暂不展开。</p>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://developers.googleblog.com/gemini-4-argon-for-robotics/" target="_blank" rel="noopener">Argon 做机器人：从视频到仿真再到真机，还能操控视频世界模型</a></h3>
+    <p class="item-meta">Google Developers Blog · 2026-10-13；cornhole 演示见 主博文 · 原文 约 10 分钟，主要是提示词和视频</p>
+    <div class="item-body"><p>这篇的核心主张是：一个通用模型能把「看懂物理」「写仿真代码」「控制机器人」串起来。最受关注的演示是 Argon 看了一段人类玩 cornhole（扔沙包）的视频，自己重建场景、写 MuJoCo 仿真并在里面练习，迁移到 Apptronik 的 Apollo 人形机器人上后连中 7 次。Google 称这条流程把几周的手工仿真建模压缩到几小时。其他演示包括：从一张桌面照片建出校准过的仿真，生成 4,500 多条随机化轨迹来微调 VLA（视觉-语言-动作）模型，真机成功率从 56% 升到 75%；以及在闭环中给 Gemini Omni 视频世界模型写带时间戳的动作提示，看中间帧再修正，让虚拟双手把字母块排成 ARGON。具身推理基准 ERQA 得分 87%。需要注意，第三方报道已指出，多数演示在仿真里完成或只跑了一次；cornhole 的 7 连中也没有公布总尝试次数和人工参与程度。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做机器人或世界模型的值得看提示词本身，它们相当于一份「用大模型搭 Real2Sim 流水线」的操作说明；其余读者看这段就够了。</p>
+    <p class="item-sources">
+      <a class="src" href="https://developers.googleblog.com/gemini-4-argon-for-robotics/" target="_blank" rel="noopener">Gemini 4 Argon for Robotics <span style="opacity:.65">(developers.googleblog.com)</span></a>
+      <a class="src" href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-argon/" target="_blank" rel="noopener">主博文 <span style="opacity:.65">(blog.google)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AI 工程与落地</h2>
+  </header>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://www.anthropic.com/engineering/redesigning-source-control" target="_blank" rel="noopener">Anthropic 自研版本控制 Scion，替换 Git</a></h3>
+    <p class="item-meta">Anthropic Engineering · 2026-10-13 · 原文 约 15 分钟</p>
+    <div class="item-body"><p>Anthropic 每天合入的代码改动从 5 月约 2,500 次增长到 9 月超过 30,000 次，版本控制成了最大瓶颈：主分支历史接近 100 GB，CI 每天约 2,500 万次检出，若按 Git 的方式拉取，每天要传超过 600 PB。他们的判断是，几乎所有客户端都是一直在线的智能体和任务，用不着 Git 那套「每个克隆都是完整仓库」的设计。Scion 因此把提交、合并、变基、blame 都放到服务端，客户端只按需拉取用到的目录和文件，查询也全部开放成 API。官方称资源占用比原来的 Git 镜像集群小 200 倍，检出从几分钟降到几秒。7 个人在 5 个月内完成了 Scion、代码评审工具 Antique 和整体迁移。文中有两点经验值得记下：工程师的主要工作变成对 Claude 说「不」，比如它会线性扫描提交日志，而不是去问评审系统；以及在智能体的规模下，全局锁式的合并队列已经撑不住，他们改成合入后、部署前再做测试。Anthropic 明确表示，Scion 不适合拿来通用替代 Git。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得，这是今天信息量最大的一篇工程文章。读「Principles」和「What we learned」两节即可，可以借此判断自己团队的 CI 和代码评审在智能体增多之后哪里会先卡住。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.anthropic.com/engineering/redesigning-source-control" target="_blank" rel="noopener">Redesigning source control at Anthropic <span style="opacity:.65">(anthropic.com)</span></a>
+    </p>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>总览</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>个人智能体</td><td>大银行只开放只读，个人智能体落地卡在机构的可写接口</td></tr>
+      <tr><td>记忆 / 上下文</td><td>Remory：在文字摘要后加可学习的软记忆，以约 5% 的长度接近全量上下文</td></tr>
+      <tr><td>RSI</td><td>TasteVal 称实验效率每 3 个月翻倍，但没有发明新方法；Jack Clark 把 RSI 预测提前到 2027</td></tr>
+      <tr><td>模型能力</td><td>Gemini 4 Argon 全面开放；Liquid 开源 2B 激活的端侧智能体模型</td></tr>
+      <tr><td>世界模型 / 具身</td><td>Argon 演示从视频到仿真再到真机，以及闭环操控视频世界模型</td></tr>
+      <tr><td>工程落地</td><td>Anthropic 用 Scion 替换 Git，应对每天 3 万次以上的智能体合入</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong>阅读建议：</strong> 今天优先读 Anthropic 的 Scion 和 TasteVal 第 2、3 节；做记忆的看 Remory 表 2、表 3；Argon 等第三方评测出来再细看。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-10-14 工作日晨报 · sdxzy.github.io/ai-briefings</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
