@@ -300,6 +300,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
   <li><div class="toc-sec"><span class="n">08</span><a href="#s8">仍不清楚的</a></div><ol class="toc-items"><li><a href="#s8-1">原文没讲或讲不清的地方</a></li></ol></li>
   <li><div class="toc-sec"><span class="n">09</span><a href="#s9">术语表</a></div><ol class="toc-items"><li><a href="#s9-1">本页用到的词</a></li></ol></li>
   <li><div class="toc-sec"><span class="n">10</span><a href="#s10">Dong 的理解（复习用）</a></div></li>
+  <li><div class="toc-sec"><span class="n">11</span><a href="#s11">可复用的 insight</a></div></li>
 </ol>
 </details>
 </nav>
@@ -543,6 +544,13 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
     <h2 class="sec-title">Dong 的理解（复习用）</h2>
   </header>
   <p class="sec-lead">用自己的话串一遍，回头看时先读这里。1. <strong>Git 每个 commit 是一个快照</strong>：逻辑上是完整的文件夹，物理上是一份索引——tree（文件树，每个目录一个 tree，记录"文件名 → blob 哈希 / 子目录 → 子 tree"），commit 指向根 tree。文件内容是 blob，按内容哈希存放，没变的文件直接复用。物理存储和快照索引是分开的。2. <strong>commit 还记录父提交哈希</strong>（merge 提交有两个父），所有提交串成历史链。父哈希参与计算，所以改旧提交或 rebase 会让后续哈希都变。3. <strong>Git 不存 diff</strong>：diff 是拿两个快照现算，哈希相同的子树直接跳过；blame 要沿父链一路比较，历史越长越贵。4. <strong>Scion 本质是回到中心化</strong>（类似 Google Piper）：完整历史只在服务端存一份。客户端提交的不是逐行 diff，而是 changeset（改了哪些文件 + 新内容哈希）；服务端拼出新快照，并用比较并交换（CAS）移动 main 指针<span class="tag tag-ok">官方</span>。若 main 已被别人推进，服务端是否自动 rebase，原文未说<span class="tag tag-guess">推测</span>。5. <strong>本地 git 操作搬到服务端</strong>：提交、变基、合并、log、diff、blame 改由服务端执行并通过 API 提供；blame 等是递归定义的派生数据，增量计算、算一次大家共用，客户端不必拉近 100 GB 历史<span class="tag tag-ok">官方</span>。代价：必须在线，服务端是关键依赖。6. <strong>切分支</strong>：客户端说要哪个提交、哪些路径，文件经 daemon → 区域缓存 → 服务端三层按哈希按需取<span class="tag tag-ok">官方</span>；更可能是拿目标树清单在本地比较、只取变化的文件，而不是服务端算好 diff 下发<span class="tag tag-guess">推测</span>。</p>
+</section>
+<section class="section" id="s11">
+  <header class="sec-head">
+    <span class="sec-num">第 11 节</span>
+    <h2 class="sec-title">可复用的 insight</h2>
+  </header>
+  <p class="sec-lead">从 Scion 抽出、可迁移到其他领域的设计思路<span class="tag tag-tip">建议</span>。1. <strong>用户变了，就重审设计前提</strong>：Git 为「人、偶尔离线、每天提交几次」设计；换成一直在线、每天几万次提交的智能体，前提失效。给智能体用的系统都值得把隐含前提列出来逐条重问。2. <strong>把「存什么」和「怎么看」分开</strong>：内容按哈希存一份，快照只是一份索引。数据湖、Docker 镜像分层、文档版本管理同理：不可变内容可随意缓存、去重、共享。3. <strong>贵的计算在中心算一次，大家共用</strong>：blame 等派生数据在服务端预算并增量更新，比每人本地重算便宜得多；推荐系统特征库、知识库 embedding 同理。4. <strong>按需取，层层缓存</strong>：不拉全量，要什么取什么，加多级缓存；内容寻址让命中率做到 99% 以上。5. <strong>把「事前严防」换成「事后快修」</strong>：放弃合入前排队全测，改为先合入、出问题快速定位/回滚/让 Claude 修；前提是定位和回滚足够便宜。改动快且多时，可快速恢复往往比绝不出错更划算。6. <strong>人的角色从逐行审改为把方向</strong>：评审看意图、对 Claude 说「不」；智能体产出量大后，人只能把关方向。</p>
 </section>
 </main>
 
