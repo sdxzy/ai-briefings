@@ -397,6 +397,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
     <p class="item-meta">Anthropic Engineering · 2026-10-13 · 原文 约 15 分钟</p>
     <div class="item-body"><p>Anthropic 每天合入的代码改动从 5 月约 2,500 次增长到 9 月超过 30,000 次，版本控制成了最大瓶颈：主分支历史接近 100 GB，CI 每天约 2,500 万次检出，若按 Git 的方式拉取，每天要传超过 600 PB。他们的判断是，几乎所有客户端都是一直在线的智能体和任务，用不着 Git 那套「每个克隆都是完整仓库」的设计。Scion 因此把提交、合并、变基、blame 都放到服务端，客户端只按需拉取用到的目录和文件，查询也全部开放成 API。官方称资源占用比原来的 Git 镜像集群小 200 倍，检出从几分钟降到几秒。7 个人在 5 个月内完成了 Scion、代码评审工具 Antique 和整体迁移。文中有两点经验值得记下：工程师的主要工作变成对 Claude 说「不」，比如它会线性扫描提交日志，而不是去问评审系统；以及在智能体的规模下，全局锁式的合并队列已经撑不住，他们改成合入后、部署前再做测试。Anthropic 明确表示，Scion 不适合拿来通用替代 Git。</p></div>
     <p class="item-verdict"><strong>是否值得读原文</strong> · 值得，这是今天信息量最大的一篇工程文章。读「Principles」和「What we learned」两节即可，可以借此判断自己团队的 CI 和代码评审在智能体增多之后哪里会先卡住。</p>
+    <!-- optional --><p class="item-ext"><span class="k">扩展阅读</span><a href="2026-10-14-scion-deepdive.html">Scion：当每天三万次合入压垮 Git，Anthropic 怎么重做版本控制 →</a></p>
     <p class="item-sources">
       <a class="src" href="https://www.anthropic.com/engineering/redesigning-source-control" target="_blank" rel="noopener">Redesigning source control at Anthropic <span style="opacity:.65">(anthropic.com)</span></a>
     </p>
