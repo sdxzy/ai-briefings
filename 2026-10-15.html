@@ -130,7 +130,9 @@ h1{
 }
 .item-verdict strong{font-weight:600; color:var(--ink)}
 .item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
-.item-sources a{margin-right:0.75rem}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
 
 .callout-trend{
   font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
@@ -311,7 +313,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
   <article class="item" id="s1-1">
     <h3 class="item-title"><a href="https://arxiv.org/abs/2610.10778" target="_blank" rel="noopener">MemoWM：世界模型能猜到的，就不必再存一遍</a></h3>
     <p class="item-meta">arXiv:2610.10778 · 华南理工、中科院大学、北邮、中科大、清华、北大、复旦、上交等 · 10 月 arXiv · 原文 长文，精读约 40–60 分钟；本摘要约 2 分钟</p>
-    <div class="item-body"><p><strong>问题。</strong> 网页/GUI 智能体一跑就上百步：点按钮、填表单、翻页。若把每帧截图和状态原样塞进记忆，存储会随寿命线性涨。只存「预测误差大」的也不行——几乎没变的字段可能对答案致命，而界面上不可预测的噪声却无关痛痒。</p><p><strong>方法。</strong> 一句话：把观察压成离散状态坐标，用动作条件世界模型当共享先验；只存「猜错了会伤任务、又不好猜」的坐标，其余用世界模型填回去。</p><p><strong>数据与训练简述。</strong> 观察经 Q-Former + OPQ 变成 1,024 个离散坐标；12 层 Transformer 世界模型（约 2,900 万参数）根据重建历史与动作预测下一状态。离线用单坐标反事实，估每个坐标对答题损失的影响 \(V_j\)，再结合预测熵做在线取舍。写端与读端共用同一套重建历史，因此不用传「保留掩码」。评测覆盖 WorldMemArena、AMA-Bench、LongMemEval-V2、WebQuest、MemEye 等五个长程记忆基准。</p><p><strong>关键数字。</strong> <span class="tag tag-ok">官方</span>五基准平均答题准确率 <strong>42.42%</strong>，比最强基线高 <strong>2.62</strong> 个百分点；相对最省存储的 MIRIX，经验相关存储平均再降 <strong>53.9%</strong>（表 1 平均约 6.0 vs 13.1 kbit/观察）。消融显示：在量化之上，世界模型编码 + 任务感知省略相对「只量化」再省 <strong>30.6%–67.6%</strong> 存储，准确率变动 ≤0.31 点。把世界模型参数也摊销进去后，存储最优容量随保留交互数增大（短地平线约 0.54M，长地平线可到约 29M）。</p><p><strong>局限。</strong> 主表不含共享世界模型权重；闭源 API 拿不到内部状态时难直接套；MemEye 训练数据为合成界面，作者写明不宣称对未见 UI 风格零样本成立。</p><p><strong>点评。</strong> 和昨天 Remory「摘要后补软 token」互补：Remory 补的是上下文窗口里的向量；MemoWM 补的是持久化磁盘上的「世界先验 vs 情节比特」分工。真正有价值的是把「可恢复」和「任务影响」拆开再乘在一起，而不是只看 surprise。</p></div>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 网页/GUI 智能体一跑就上百步：点按钮、填表单、翻页。若把每帧截图和状态原样塞进记忆，存储会随寿命线性涨。只存「预测误差大」的也不行——几乎没变的字段可能对答案致命，而界面上不可预测的噪声却无关痛痒。</p><p><strong class="runin">方法。</strong> 一句话：把观察压成离散状态坐标，用动作条件世界模型当共享先验；只存「猜错了会伤任务、又不好猜」的坐标，其余用世界模型填回去。</p><p><strong class="runin">数据与训练简述。</strong> 观察经 Q-Former + OPQ 变成 1,024 个离散坐标；12 层 Transformer 世界模型（约 2,900 万参数）根据重建历史与动作预测下一状态。离线用单坐标反事实，估每个坐标对答题损失的影响 \(V_j\)，再结合预测熵做在线取舍。写端与读端共用同一套重建历史，因此不用传「保留掩码」。评测覆盖 WorldMemArena、AMA-Bench、LongMemEval-V2、WebQuest、MemEye 等五个长程记忆基准。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">官方</span>五基准平均答题准确率 <strong>42.42%</strong>，比最强基线高 <strong>2.62</strong> 个百分点；相对最省存储的 MIRIX，经验相关存储平均再降 <strong>53.9%</strong>（表 1 平均约 6.0 vs 13.1 kbit/观察）。消融显示：在量化之上，世界模型编码 + 任务感知省略相对「只量化」再省 <strong>30.6%–67.6%</strong> 存储，准确率变动 ≤0.31 点。把世界模型参数也摊销进去后，存储最优容量随保留交互数增大（短地平线约 0.54M，长地平线可到约 29M）。</p><p><strong class="runin">局限。</strong> 主表不含共享世界模型权重；闭源 API 拿不到内部状态时难直接套；MemEye 训练数据为合成界面，作者写明不宣称对未见 UI 风格零样本成立。</p><p><strong class="runin">点评。</strong> 和昨天 Remory「摘要后补软 token」互补：Remory 补的是上下文窗口里的向量；MemoWM 补的是持久化磁盘上的「世界先验 vs 情节比特」分工。真正有价值的是把「可恢复」和「任务影响」拆开再乘在一起，而不是只看 surprise。</p></div>
     <p class="item-verdict"><strong>是否值得读原文</strong> · 做个人智能体记忆或 GUI 智能体的值得读第 3 节与表 1、表 2；其他人看本摘要即可。</p>
     <p class="item-sources">
       <a class="src" href="https://arxiv.org/abs/2610.10778" target="_blank" rel="noopener">MemoWM: How World Models Change What Agents Need to Remember <span style="opacity:.65">(arxiv.org)</span></a>
@@ -326,8 +328,8 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
 
   <article class="item" id="s2-1">
     <h3 class="item-title"><a href="https://www.paperinstruments.com/blog/ultramarine" target="_blank" rel="noopener">Ultramarine 1 Flash：五人、约 30 万美元，把「没法单元测试」的知识工作做成 RL 课表</a></h3>
-    <p class="item-meta">Paper Instruments · 2026-10-14；CEO 原帖见 X · 原文 技术博文约 15–25 分钟；本摘要约 2 分钟</p>
-    <div class="item-body"><p><strong>问题。</strong> 写代码可以用单测打分；写尽职调查备忘录、诉讼时间线、董事会预测更新却不行——答案对不对取决于判断与「品味」，正则和单元测试帮不上忙。多数 agent 后训练仍挤在可验证任务上。</p><p><strong>方法。</strong> 一句话：在开源基座 GLM-5.3 Flash 上，用大规模合成环境 + 按准则二元打分的 rubric，做非可验证领域的强化学习。</p><p><strong>数据怎么造。</strong> 覆盖金融、法律、咨询、运营四大域、19 个执业方向、<strong>88</strong> 类环境；每类环境沿交付物格式、冲突源、干系人等轴采样，名义组合空间约 \(10^7\)–\(10^{10}\)。任务按 Harbor 规格打包（指令 + Docker 工作区 + 加权 rubric）。作者明确放弃直接用生产轨迹做奖励（隐含偏好会惩罚其他合法答案），也承认专家手写扩不出来，因此走纯合成。训练用自研 Feather harness（工具接口对齐常见 coding agent，但系统提示故意压到约 50 token，避免「生产提示词」锁死探索）。Office 文件走 <code>paper-docx</code> / <code>paper-pptx</code> / <code>paper-xlsx</code>，拒绝不安全操作。</p><p><strong>关键数字。</strong> <span class="tag tag-ok">官方</span>六项知识工作基准上相对基座平均 +<strong>4.1</strong> 分，且少生成约 <strong>6.5%</strong> token。内部 PI Knowledge Work：<strong>59.3</strong> 分 / 每任务约 <strong>$0.13</strong>，对比同套件上 Claude Fable 5（max）<strong>57.8</strong> / <strong>$8.19</strong>、GPT-5.6 Sol <strong>55.1</strong> / <strong>$2.09</strong>；相对 Claude Opus 5.5、GPT-6 Sol（max）大约落后 2–3 分但贵一个数量级更少。CEO 称全流程约 <strong>5 人、~$300k</strong>；API 已开，权重称约两周后开源。编码类 Terminal-Bench / DeepSWE 上并不领先——定位明确是知识工作而非刷代码榜。</p><p><strong>局限。</strong> 主打分数来自自家与部分自跑对照；「60× 更便宜」是相对 Fable 5 的成本叙事，第三方复现前应保留怀疑。权重尚未放出。</p><p><strong>点评。</strong> 方法不神秘，难在「准则怎么写才既不贴死金标、又不奖励空话」。对 Dong：若在搭 agent 评测或非代码 RL，第「Scaling Non-Verifiable Verification」与 Table 1 环境分类比模型分数更值得偷。</p></div>
+    <p class="item-meta">Paper Instruments · 2026-10-14 · 原文 技术博文约 15–25 分钟；本摘要约 2 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 写代码可以用单测打分；写尽职调查备忘录、诉讼时间线、董事会预测更新却不行——答案对不对取决于判断与「品味」，正则和单元测试帮不上忙。多数 agent 后训练仍挤在可验证任务上。</p><p><strong class="runin">方法。</strong> 一句话：在开源基座 GLM-5.3 Flash 上，用大规模合成环境 + 按准则二元打分的 rubric，做非可验证领域的强化学习。</p><p><strong class="runin">数据怎么造。</strong> 覆盖金融、法律、咨询、运营四大域、19 个执业方向、<strong>88</strong> 类环境；每类环境沿交付物格式、冲突源、干系人等轴采样，名义组合空间约 \(10^7\)–\(10^{10}\)。任务按 Harbor 规格打包（指令 + Docker 工作区 + 加权 rubric）。作者明确放弃直接用生产轨迹做奖励（隐含偏好会惩罚其他合法答案），也承认专家手写扩不出来，因此走纯合成。训练用自研 Feather harness（工具接口对齐常见 coding agent，但系统提示故意压到约 50 token，避免「生产提示词」锁死探索）。Office 文件走 <code>paper-docx</code> / <code>paper-pptx</code> / <code>paper-xlsx</code>，拒绝不安全操作。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">官方</span>六项知识工作基准上相对基座平均 +<strong>4.1</strong> 分，且少生成约 <strong>6.5%</strong> token。内部 PI Knowledge Work：<strong>59.3</strong> 分 / 每任务约 <strong>$0.13</strong>，对比同套件上 Claude Fable 5（max）<strong>57.8</strong> / <strong>$8.19</strong>、GPT-5.6 Sol <strong>55.1</strong> / <strong>$2.09</strong>；相对 Claude Opus 5.5、GPT-6 Sol（max）大约落后 2–3 分但贵一个数量级更少。CEO 称全流程约 <strong>5 人、~$300k</strong>；API 已开，权重称约两周后开源。编码类 Terminal-Bench / DeepSWE 上并不领先——定位明确是知识工作而非刷代码榜。</p><p><strong class="runin">局限。</strong> 主打分数来自自家与部分自跑对照；「60× 更便宜」是相对 Fable 5 的成本叙事，第三方复现前应保留怀疑。权重尚未放出。</p><p><strong class="runin">点评。</strong> 方法不神秘，难在「准则怎么写才既不贴死金标、又不奖励空话」。对 Dong：若在搭 agent 评测或非代码 RL，第「Scaling Non-Verifiable Verification」与 Table 1 环境分类比模型分数更值得偷。</p></div>
     <p class="item-verdict"><strong>是否值得读原文</strong> · 值得扫数据配方与 Feather 设计；只想知有无便宜模型的，看定价与 Table 8 即可。</p>
     <p class="item-sources">
       <a class="src" href="https://www.paperinstruments.com/blog/ultramarine" target="_blank" rel="noopener">Ultramarine 1 Flash: Scaling Non-Verifiable RL <span style="opacity:.65">(paperinstruments.com)</span></a>
@@ -337,7 +339,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
   <article class="item" id="s2-2">
     <h3 class="item-title"><a href="https://arxiv.org/abs/2610.18861" target="_blank" rel="noopener">HybridAgent：在潜空间里想，用文字去调工具</a></h3>
     <p class="item-meta">arXiv:2610.18861 · Stanford、UIUC、Together AI 等 · 10 月 arXiv · 原文 长文；本摘要约 2 分钟</p>
-    <div class="item-body"><p><strong>问题。</strong> 智能体要调搜索、跑代码，媒介几乎全是文字；潜空间推理更省 token，却不好调工具、也不好审计。两条线一直各走各的。</p><p><strong>方法。</strong> 一句话：同一条生成轨迹里动态切换「潜空间思考」和「文字行动」——轻量 HybridLink 把末层隐状态映回输入嵌入；跨轮用连续 KV 工作记忆保住混合上下文；再用 HybridSFT + HybridRL 教模型何时潜入、何时出文字。</p><p><strong>训练简述。</strong> 基座 Qwen3-Base（4B/8B/14B）。HybridSFT：先教进出潜空间的锚点 token，再自条件两遍前向对齐 train–infer；HybridRL：证明只需在采样文字位置做重要性比，并用精确回放保留潜向量上下文。奖励含正确性、格式、多工具使用，<strong>不</strong>显式奖励某一种模式占比。</p><p><strong>关键数字。</strong> <span class="tag tag-ok">官方</span>11 项基准上相对匹配的文字/潜空间基线，平均性能约 <strong>+10.4%</strong>；token 用量降 <strong>35.5%–54.7%</strong>，推理约 <strong>1.8×–2.6×</strong> 加速，成本约 <strong>2.7×–3.7×</strong> 节省。8B/14B 在 GAIA、WebWalker 等 agentic 集上可压过部分更强框架与更大模型的对照。作者称潜空间步骤可映射成可读「伪文本」供检查。</p><p><strong>局限。</strong> 现有服务栈默认不支持混合多轮，作者改了训练/推理基建；数字来自论文自报，独立复现仍缺。</p><p><strong>点评。</strong> 和 Remory/MemoWM 不同，这里省的是<strong>生成过程中的文字</strong>，不是持久记忆。对做 agent 成本控制的人，比再堆一个「thinking 模式」开关更有结构。</p></div>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 智能体要调搜索、跑代码，媒介几乎全是文字；潜空间推理更省 token，却不好调工具、也不好审计。两条线一直各走各的。</p><p><strong class="runin">方法。</strong> 一句话：同一条生成轨迹里动态切换「潜空间思考」和「文字行动」——轻量 HybridLink 把末层隐状态映回输入嵌入；跨轮用连续 KV 工作记忆保住混合上下文；再用 HybridSFT + HybridRL 教模型何时潜入、何时出文字。</p><p><strong class="runin">训练简述。</strong> 基座 Qwen3-Base（4B/8B/14B）。HybridSFT：先教进出潜空间的锚点 token，再自条件两遍前向对齐 train–infer；HybridRL：证明只需在采样文字位置做重要性比，并用精确回放保留潜向量上下文。奖励含正确性、格式、多工具使用，<strong>不</strong>显式奖励某一种模式占比。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">官方</span>11 项基准上相对匹配的文字/潜空间基线，平均性能约 <strong>+10.4%</strong>；token 用量降 <strong>35.5%–54.7%</strong>，推理约 <strong>1.8×–2.6×</strong> 加速，成本约 <strong>2.7×–3.7×</strong> 节省。8B/14B 在 GAIA、WebWalker 等 agentic 集上可压过部分更强框架与更大模型的对照。作者称潜空间步骤可映射成可读「伪文本」供检查。</p><p><strong class="runin">局限。</strong> 现有服务栈默认不支持混合多轮，作者改了训练/推理基建；数字来自论文自报，独立复现仍缺。</p><p><strong class="runin">点评。</strong> 和 Remory/MemoWM 不同，这里省的是<strong>生成过程中的文字</strong>，不是持久记忆。对做 agent 成本控制的人，比再堆一个「thinking 模式」开关更有结构。</p></div>
     <p class="item-verdict"><strong>是否值得读原文</strong> · 关心 agent 延迟/成本或潜空间推理的读第 3–4 节；追榜的人先等第三方复现。</p>
     <p class="item-sources">
       <a class="src" href="https://arxiv.org/abs/2610.18861" target="_blank" rel="noopener">Hybrid Reasoning Agents <span style="opacity:.65">(arxiv.org)</span></a>
@@ -368,7 +370,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
 
   <article class="item" id="s4-1">
     <h3 class="item-title"><a href="https://platform.claude.com/docs/en/manage-claude/opentelemetry" target="_blank" rel="noopener">Anthropic：Claude 平台原生导出 OpenTelemetry，agent 轨迹可进现有观测栈</a></h3>
-    <p class="item-meta">Anthropic 文档（beta）；配套教程 MLflow · 2026-10-14 · 原文 文档可按需跳读；MLflow 教程约 9 分钟</p>
+    <p class="item-meta">Anthropic 文档（beta） · 2026-10-14 · 原文 文档可按需跳读；MLflow 教程约 9 分钟</p>
     <div class="item-body"><p>Claude Messages API、SDK、Managed Agents、以及 Claude Code / Agent SDK，可把模型请求、工具调用、会话 turn 以 <strong>OTLP</strong> 打到 Langfuse、LangSmith、Honeycomb、Grafana、Datadog、Sentry、MLflow 等。可只开 SDK、只开平台（Console 配目的地，需 Admin），或两边一起以便一条 trace 串起客户端与服务端。默认 <strong>metadata only</strong>；<code>content</code> 模式才会带上完整提示与回复（单 span 默认最多约 0.75 MB，可调）。平台侧投递是 best-effort，不能当计费真相源——用量仍应看 Usage API。对 Dong：跑多步 agent 时，「哪次工具返回坏了、这一轮烧了多少 token」终于能嵌进现有 APM，而不必自写中间件。</p></div>
     <p class="item-verdict"><strong>是否值得读原文</strong> · 正在用 Claude 做生产 agent 的值得按文档配一版；只想知道有没有这功能的，看本段就够。</p>
     <p class="item-sources">
@@ -378,7 +380,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
   </article>
   <article class="item" id="s4-2">
     <h3 class="item-title"><a href="https://openai.com/index/the-eus-next-chapter-in-ai-is-agentic" target="_blank" rel="noopener">OpenAI：欧盟企业侧「智能体用量」已过半，中小企业周活约 8 倍</a></h3>
-    <p class="item-meta">OpenAI Economic Research · 2026-10-14；PDF：Europe’s Agentic Opportunity · 原文 博文约 5 分钟；报告可扫图表</p>
+    <p class="item-meta">OpenAI Economic Research · 2026-10-14 · 原文 博文约 5 分钟；报告可扫图表</p>
     <div class="item-body"><p><span class="tag tag-ok">官方</span>在 OpenAI 的欧盟 ChatGPT Enterprise 样本里，<strong>Codex + ChatGPT Work</strong> 已占输出 token 的一半以上——人们不只在提问，而在让工具把任务做完。自 2026 年 5 月以来，欧盟中小企业（定义：关联用户 ≤200）在 Codex/Work 上的周活增长超过 <strong>8 倍</strong>，且每个成员国都超过 5 倍。企业间强度差很大：样本里 agentic 输出占比从斯洛文尼亚约 <strong>22%</strong> 到立陶宛约 <strong>85%</strong>。9 月，欧盟「前沿」企业（按每活跃用户输出 token 的前 10%）强度约为一般欧盟企业的 <strong>4 倍以上</strong>，但仍低于欧盟外前沿企业约一半以上；欧盟总部企业只占全球前沿企业约 <strong>10%</strong>。叙事是「广度有了，深度还不够」——对 Dong：个人/团队 agent 产品的对标，应看「任务完成型用量」而不只是 DAU。</p></div>
     <p class="item-verdict"><strong>是否值得读原文</strong> · 做市场或产品策略的值得看报告里的国别分布图；纯工程读者扫博文结论即可。</p>
     <p class="item-sources">
@@ -408,7 +410,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
     <span class="sec-num">第 06 节</span>
     <h2 class="sec-title">X 热点精选</h2>
   </header>
-  <p class="sec-lead">- <strong>Ultramarine 发布帖炸了。</strong> Paper Instruments CEO Daanish Khazi（@bertgodel）10 月 14 日美西上午发帖称五人、约 $300k 训出对标 Fable 5、便宜约 60× 的开源知识工作模型，原帖互动极高（阅读量约 84 万量级）。点评：叙事完整（人少、钱少、开源、垂直场景），但分数多来自自有套件——先当「值得跟进的开源实验」，别当已验证的通用 frontier。原帖：<a href="https://x.com/bertgodel/status/2110400987622265232" target="_blank" rel="noopener">x.com/bertgodel/status/2110400987622265232</a>- <strong>「小团队也能做垂直后训练」成为转述母题。</strong> TestingCatalog、DocumentingAGI 等账号强调面向银行/律所/咨询的文档工作流与价格差。点评：和昨天 Liquid「端侧 agent」同属「小而专」叙事，差别是 Ultramarine 押注 Office 交付物 + 非可验证 RL。例：<a href="https://x.com/testingcatalog/status/2110444117289488740" target="_blank" rel="noopener">x.com/testingcatalog/status/2110444117289488740</a></p>
+  <div class="sec-lead item-body"><ul><li><strong>Ultramarine 发布帖炸了。</strong> Paper Instruments CEO Daanish Khazi（@bertgodel）10 月 14 日美西上午发帖称五人、约 $300k 训出对标 Fable 5、便宜约 60× 的开源知识工作模型，原帖互动极高（阅读量约 84 万量级）。点评：叙事完整（人少、钱少、开源、垂直场景），但分数多来自自有套件——先当「值得跟进的开源实验」，别当已验证的通用 frontier。原帖：<a href="https://x.com/bertgodel/status/2110400987622265232" target="_blank" rel="noopener">x.com/bertgodel/status/2110400987622265232</a></li><li><strong>「小团队也能做垂直后训练」成为转述母题。</strong> TestingCatalog、DocumentingAGI 等账号强调面向银行/律所/咨询的文档工作流与价格差。点评：和昨天 Liquid「端侧 agent」同属「小而专」叙事，差别是 Ultramarine 押注 Office 交付物 + 非可验证 RL。例：<a href="https://x.com/testingcatalog/status/2110444117289488740" target="_blank" rel="noopener">x.com/testingcatalog/status/2110444117289488740</a></li></ul></div>
 </section>
 
 <section class="summary" id="summary">
@@ -424,7 +426,7 @@ figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color
       <tr><td>X 热点精选</td><td>Ultramarine「五人 30 万刀」帖成为今日传播核心</td></tr>
     </tbody>
   </table>
-  <!-- optional --><div class="note"><strong>阅读建议：</strong> 做记忆的优先 MemoWM 表 1–2；做 agent 训练/成本的看 Ultramarine 数据配方与 HybridAgent 第 3–4 节；跑 Claude 生产 agent 的今天就可以试 OTel。</div>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 做记忆的优先 MemoWM 表 1–2；做 agent 训练/成本的看 Ultramarine 数据配方与 HybridAgent 第 3–4 节；跑 Claude 生产 agent 的今天就可以试 OTel。</div>
 </section>
 </main>
 
