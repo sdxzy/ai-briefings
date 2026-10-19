@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>四个 Gemini Agent 怎样靠「共享笔记」撑过 27 小时、打败末影龙</title>
+<meta name="doc-type" content="deepdive">
+<meta name="description" content="精读 DeepMind 论文 arXiv:2610.22319：四个通用编码 Agent 不训练、不给游戏工具，靠写 JavaScript、游戏聊天和团队共享记忆，27 小时 14 分钟从空手打到末影龙。重点拆分工怎么自发形成、共享笔记论文写了什么没写什么、为什么能撑过一天以上，配架构图、一条「末影之眼」子目标的端到端例子、批评和可复用到个人 Agent 记忆管理的做法。">
+<meta name="parent" content="2026-10-19.html#s1-1">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a> <a href="2026-10-19.html#s1-1">↑ 返回所属简报《科技与 AI 每日简报 · 2026-10-19》</a></nav>
+<header>
+  <p class="kicker">扩展阅读</p>
+  <h1>四个 Gemini Agent 怎样靠「共享笔记」撑过 27 小时、打败末影龙</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-10-19">截至 2026 年 10 月 19 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 10 月 19 日（CST）</strong>；核心来源为 arXiv 2026-10-15 提交的 v1</span></div><div class="meta-row"><span class="k">信息来源</span><span><a href="https://arxiv.org/abs/2610.22319" target="_blank" rel="noopener">A team of Gemini 4 Argon agents beats Minecraft</a>（arXiv:2610.22319v1，PDF 17 页全文与 TeX 源文件均已核读）；Google DeepMind <a href="https://x.com/GoogleDeepMind/status/2111127991401247033" target="_blank" rel="noopener">官方 X 帖</a>（10-16）与一作 Maxence Faldor 的 <a href="https://x.com/maxencefaldor/status/2111023397106770026" target="_blank" rel="noopener">X 帖</a>。截至本页写作，未找到官方博客文章、代码、提示词或运行日志的公开发布。</span></div><div class="meta-row"><span class="k">标记</span><span><span class="tag tag-ok">论文</span>论文正文、图表或聊天截图写明 · <span class="tag tag-ok">官方</span>DeepMind / 作者在论文之外的公开表述 · <span class="tag tag-guess">推测</span>本页推断，论文没写 · <span class="tag tag-guess">评论</span>编者观点 · <span class="tag tag-tip">示意</span>为讲解构造的例子 · <span class="tag tag-tip">建议</span>给 Dong 的做法</span></div><div class="meta-row"><span class="k">本页是 2026-10-19 简报第 1 节「四个 Gemini 4 Argon Agent 27 小时通关 Minecraft」的扩展阅读。论文是一份单次运行的实验记录，不是方法论文</span><span>没有训练、没有消融实验，共享笔记的格式和读写规则写得很少。下面凡是论文没写的地方都会明说。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">一句话读懂</a></div><ol class="toc-items"><li><a href="#s1-1">先把结论放在前面</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">先看一个具体问题</a></div><ol class="toc-items"><li><a href="#s2-1">第 13 小时，12 颗末影之眼</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">白话背景</a></div><ol class="toc-items"><li><a href="#s3-1">通关 Minecraft 到底要做什么</a></li><li><a href="#s3-2">Agent 怎么「玩」</a></li><li><a href="#s3-3">上下文压缩和外部记忆</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">任务定义、数据与关键数字</a></div><ol class="toc-items"><li><a href="#s4-1">任务怎么定义</a></li><li><a href="#s4-2">有没有数据和训练</a></li><li><a href="#s4-3">关键数字</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">四个 Agent 怎么分工</a></div><ol class="toc-items"><li><a href="#s5-1">架构总图</a></li><li><a href="#s5-2">分工是怎么形成的</a></li><li><a href="#s5-3">角色一直延续到最后</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">共享笔记：论文写了什么、没写什么</a></div><ol class="toc-items"><li><a href="#s6-1">论文明确写了的</a></li><li><a href="#s6-2">论文没写的</a></li><li><a href="#s6-3">论文给出的「纠错」机制</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">端到端例子：从找到要塞到点亮末地传送门</a></div><ol class="toc-items"><li><a href="#s7-1">为什么选这条链，而不是「拿钻石」</a></li><li><a href="#s7-2">一步一步看</a></li><li><a href="#s7-3">这条链里笔记大概起了什么作用</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">为什么能撑过一天以上</a></div><ol class="toc-items"><li><a href="#s8-1">论文给出的直接因素</a></li><li><a href="#s8-2">本页的推断</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">09</span><a href="#s9">局限与批评</a></div><ol class="toc-items"><li><a href="#s9-1">论文自己承认的</a></li><li><a href="#s9-2">编者的批评</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">10</span><a href="#s10">Dong 能拿走什么</a></div><ol class="toc-items"><li><a href="#s10-1">直接可用的做法</a></li><li><a href="#s10-2">论文没解决、需要自己补的</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">11</span><a href="#s11">仍不清楚的</a></div><ol class="toc-items"><li><a href="#s11-1">本页无法核实的地方</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">12</span><a href="#s12">是否值得读原文</a></div><ol class="toc-items"><li><a href="#s12-1">结论</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">13</span><a href="#s13">术语表</a></div><ol class="toc-items"><li><a href="#s13-1">本页用到的词</a></li></ol></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">一句话读懂</h2>
+  </header>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title">先把结论放在前面</h3>
+    <div class="item-body"><div class="takeaway">
+<p class="tk-label">一句话</p>
+<p class="tk-main">四个日常写软件用的同一个 Gemini 4 Argon 编码 Agent，不看画面、只写 JavaScript 指挥游戏角色，靠游戏聊天和一份团队共享记忆自己分工，从空手到打败末影龙用了 27 小时 14 分钟。</p>
+<ol>
+<li><strong>任务。</strong>随机种子、Easy 难度的生存世界，唯一目标是打败末影龙；没有任何人写的游戏工具、技能库、课程或路线<span class="tag tag-ok">论文</span>。</li>
+<li><strong>结果。</strong>2,783 个程序、229 条聊天、605 次死亡；四个玩家到赢为止约 520 美元（按标准价约 1,040 美元）<span class="tag tag-ok">论文</span>。</li>
+<li><strong>分工。</strong>开局 10 分钟 janesick 在聊天里提议分工，auratian 一分钟内给出另一版，很快就定了下来<span class="tag tag-ok">论文</span>。</li>
+<li><strong>记忆。</strong>每个 Agent 有私有记忆和团队共享记忆；上下文太长会自动压缩，指令要求压缩前把进行中的工作和下一步写进记忆<span class="tag tag-ok">论文</span>。</li>
+<li><strong>短板。</strong>只跑了一次；没有消融，说不清共享笔记到底贡献多少；笔记的格式、冲突和过时怎么处理，论文几乎没写<span class="tag tag-guess">评论</span>。</li>
+</ol>
+<p class="tk-sum">值得带走的不是「AI 会玩 Minecraft」，而是一套朴素的长任务工作法：<strong>压缩前存档、教训写成规则、坐标写到精确值、工具留着复用、另设一个只对账的观察者</strong><span class="tag tag-guess">评论</span>。</p>
+</div><p>阅读顺序：第 2 节先看一个具体难题；第 3 节补背景；第 4 节讲任务和数字；第 5–6 节讲分工和共享笔记；第 7 节走一遍完整例子；第 8–9 节讲为什么撑得住、哪里不足；第 10 节是 Dong 能拿走的做法。</p></div>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">先看一个具体问题</h2>
+  </header>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title">第 13 小时，12 颗末影之眼</h3>
+    <div class="item-body"><p><strong class="runin">场景。</strong> 跑到第 13 个小时，auratian 背着团队全部 12 颗末影之眼，在要塞附近溺水死了<span class="tag tag-ok">论文</span>。死亡掉落的物品过一会儿就会消失；聊天里给出的是死亡后 5 分钟<span class="tag tag-ok">论文</span><span class="tag-q">聊天原文 01:49:40Z → 01:54:40Z</span>。</p><p><strong class="runin">要解决什么。</strong> 能不能救回来，取决于几条信息：auratian 死在哪个坐标、几点几分会消失、离谁最近<span class="tag tag-ok">论文</span>。这些信息本身不难，难的是它们得在正确的时刻出现在正确的 Agent 面前。</p><p><strong class="runin">结果。</strong> janesick 在聊天里发出警报：精确坐标、死亡时间（01:49:40Z）、消失时间（01:54:40Z）。auratian 自己也发了一条。34 秒后，bulicame 回复「已回收 12 颗末影之眼」<span class="tag tag-ok">论文</span><span class="tag-q">聊天原文</span>。论文说离消失还剩约两分半<span class="tag tag-ok">论文</span>。</p><p><strong class="runin">为什么这是长任务问题。</strong> 这 12 颗眼是前 10 个小时的产物：找下界要塞、造掩体刷末影珍珠、把烈焰粉运回主世界、三角定位要塞<span class="tag tag-ok">论文</span>。这期间四个 Agent 各写了几百个程序。<span class="tag tag-guess">推测</span>每个 Agent 的上下文都已被压缩过多次，早期细节很难原样留在上下文里。论文要回答的问题就是：<strong>一群 Agent 能不能在这种条件下保持一个连贯的计划，连续干一天以上。</strong></p></div>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">白话背景</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title">通关 Minecraft 到底要做什么</h3>
+    <div class="item-body"><p>从空手开始，要依次完成一串相互依赖的步骤<span class="tag tag-ok">论文</span>：</p><ul><li><strong class="runin">主世界：</strong>砍树、做石器和铁器、做桶、做打火石，搭下界传送门。</li><li><strong class="runin">下界：</strong>找到下界要塞，打烈焰人拿烈焰棒；另外打末影人拿末影珍珠。</li><li><strong class="runin">合成末影之眼：</strong>烈焰粉 + 末影珍珠。扔出去的眼会飞向最近的要塞<span class="tag tag-ok">论文</span>。</li><li><strong class="runin">要塞：</strong>找到地下的末地传送门，放满 12 颗眼进入末地。</li><li><strong class="runin">末地：</strong>打掉柱子顶上 10 个会给末影龙回血的水晶，再打龙<span class="tag tag-ok">论文</span>。</li></ul><p>论文把这条链拆成 13 步，并标出每步谁第一个到达（见第 5 节）<span class="tag tag-ok">论文</span>。</p></div>
+  </article>
+  <article class="item" id="s3-2">
+    <h3 class="item-title">Agent 怎么「玩」</h3>
+    <div class="item-body"><p><span class="tag tag-ok">论文</span>Agent 不看像素、不按键盘。它写一段 JavaScript，比如「走到这些坐标，挖掉 16 格内所有铁矿」，交给开源库 Mineflayer 在游戏里执行，再读回文本：位置、血量、背包、找到了什么、或者报了什么错。读完再写下一段。</p><p><span class="tag tag-ok">论文</span>Mineflayer 能读位置、背包、周围方块，能执行走路、挖、放、合成、攻击这些基本动作，但它「不会玩」：做什么、按什么顺序做，全由 Agent 决定。程序中位运行 33.5 秒；每个玩家大约 40% 的时间有程序在跑，其余时间在读结果、思考、写下一段。</p></div>
+  </article>
+  <article class="item" id="s3-3">
+    <h3 class="item-title">上下文压缩和外部记忆</h3>
+    <div class="item-body"><p><strong class="runin">上下文压缩。</strong> 模型一次能看的文本有限。对话太长时，Agent 会把旧内容压成摘要，细节随之丢失<span class="tag tag-ok">论文</span><span class="tag-q">Agent 会「compact its context when it grows too long」</span>。</p><p><strong class="runin">外部记忆。</strong> 解决办法是把要长期保留的东西写到上下文之外的文件里，需要时再读回来。<span class="tag tag-ok">论文</span>这里每个 Agent 有一份持久记忆，分私有部分和团队共享部分。</p></div>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">任务定义、数据与关键数字</h2>
+  </header>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title">任务怎么定义</h3>
+    <div class="item-body"><p><strong class="runin">环境。</strong> Minecraft Java 版 1.20.4，生存模式，Easy 难度，随机生成的世界，禁用作弊命令，运行中无人工输入<span class="tag tag-ok">论文</span>。</p><p><strong class="runin">指令。</strong> 关于游戏只有一段话：目标是从共享世界的出生点出发打败末影龙；这是唯一标准；生存模式规则内任何方法都允许；玩家自己决定怎么分工<span class="tag tag-ok">论文</span><span class="tag-q">指令原文</span>。另有一句说明四人是一个团队<span class="tag tag-ok">论文</span>。</p><p><strong class="runin">通用指令。</strong> 和做任何软件任务时一样<span class="tag tag-ok">论文</span><span class="tag-q">§2.2</span>：</p><ul><li>动手前先观察，动手后核对结果；</li><li>新工具先在短任务上验证再信任；</li><li>手工操作限制速度或可靠性时，自己造工具、改工具；</li><li>把机制、策略和绕坑方法记进记忆，「同一个障碍不遇到两次」；</li><li>后台任务运行时继续干活；</li><li>如实汇报行动和结果；</li><li>追求目标本身，不钻环境或评测的漏洞。</li></ul><p><strong class="runin">成功标准。</strong> 服务器日志里出现成就 [Free the End]：bulicame 在第一个程序之后 27 小时 14 分钟获得<span class="tag tag-ok">论文</span><span class="tag-q">§5</span>。没有任何程序用过服务器命令<span class="tag tag-ok">论文</span>。</p></div>
+  </article>
+  <article class="item" id="s4-2">
+    <h3 class="item-title">有没有数据和训练</h3>
+    <div class="item-body"><p><strong class="runin">没有训练。</strong> 这不是训练论文：没有微调、没有强化学习、没有游戏数据集，模型权重不变<span class="tag tag-ok">论文</span><span class="tag-q">全文未提任何训练；方法部分只有环境、工具和指令</span>。</p><p><strong class="runin">「数据」只有运行记录。</strong> 每个程序及其输出、每条聊天、完整服务器日志都被记录<span class="tag tag-ok">论文</span>。<span class="tag tag-guess">评论</span>但这些记录、Agent 的完整提示词、共享记忆文件都没有公开，外人无法复现或核查。</p><p><strong class="runin">先验知识。</strong> 论文承认 Gemini 4 Argon 的训练数据里有大量 Minecraft 和 Mineflayer 知识；这次测的是「能否把已知知识变成能跑的程序和团队协作」，不是「能否学会一个没见过的游戏」<span class="tag tag-ok">论文</span><span class="tag-q">§8</span>。</p></div>
+  </article>
+  <article class="item" id="s4-3">
+    <h3 class="item-title">关键数字</h3>
+    <div class="item-body"><div class="grid-wrap"><table class="grid"><thead><tr><th>指标</th><th>数值</th></tr></thead><tbody><tr><td>用时</td><td>27 小时 14 分钟（第一个程序到打败龙），含 6 次服务器重启共约 20 分钟，约 81 个游戏日<span class="tag tag-ok">论文</span></td></tr><tr><td>程序</td><td>2,783 个（整个会话 2,839 个），63,313 行不重复 JavaScript；22% 以报错结束<span class="tag tag-ok">论文</span></td></tr><tr><td>聊天</td><td>229 条；其中 173 条含精确坐标，64 条涉及共享箱子，24 条警告，20 条物品抢救，11 条教训（简单模式匹配，可重叠）<span class="tag tag-ok">论文</span><span class="tag-q">图 13</span></td></tr><tr><td>死亡</td><td>605 次：怪物 351、末影龙 69、溺水 67、坠落与虚空 57、岩浆与火 47、其他 14<span class="tag tag-ok">论文</span><span class="tag-q">图 13</span></td></tr><tr><td>自建工具</td><td>146 项跨程序保留的状态和代码，其中 42 个辅助函数；一个「让超时残留代码自行停止」的计数器被 1,519 个程序引用<span class="tag tag-ok">论文</span></td></tr><tr><td>token</td><td>约 13.5 亿输入（91% 来自上下文缓存）、1,600 万输出（含 400 万思考 token），约 24,000 次模型调用<span class="tag tag-ok">论文</span></td></tr><tr><td>花费</td><td>四个玩家到赢约 520 美元（标准价约 1,040）；整个会话含 Observer 和赢后一天约 810 美元（1,620）；按公开价目估算，不是实际服务成本<span class="tag tag-ok">论文</span></td></tr><tr><td>人类参照</td><td>HowLongToBeat 主线中位 45 小时；随机种子速通纪录不到 7 分钟<span class="tag tag-ok">论文</span></td></tr></tbody></table></div><p><span class="tag tag-guess">推测</span>由上表粗算：平均每次调用约 5.6 万输入 token、约 670 输出 token；每个玩家约 6,000 次调用，平均十几秒一次。也就是说绝大部分开销是「反复读上下文」，91% 的缓存命中率是成本能压到几百美元的关键。</p></div>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">四个 Agent 怎么分工</h2>
+  </header>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title">架构总图</h3>
+    <div class="item-body"><figure class="diagram wide" id="arch-diagram">
+<div class="scroll"><svg class="dg" viewBox="0 0 880 620" role="img" aria-labelledby="ma-t"><title id="ma-t">架构：四个玩家 Agent 各自写 JavaScript 程序交给 Mineflayer 在同一个 Minecraft 世界里执行，读回文本；它们通过游戏聊天和团队共享记忆协调；第五个 Observer Agent 只读记录、写报告</title><defs><marker id="Ma" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0L10,5L0,10z"/></marker><marker id="Mb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-acc" d="M0,0L10,5L0,10z"/></marker></defs><rect class="host" x="14" y="40" width="300" height="456" rx="10"/><text x="28" y="63" class="b">玩家 Agent × 4</text><text x="136" y="63" class="sm">同一个通用编码 Agent</text><rect class="box" x="28" y="76" width="272" height="170" rx="8"/><text x="40" y="98" class="b">每个 Agent 一台云主机</text><text x="40" y="118" class="sm">代码工作区（带版本控制）· shell</text><text x="40" y="135" class="sm">文件编辑 · web search</text><rect class="cell" x="40" y="146" width="122" height="44" rx="6"/><text x="101" y="164" text-anchor="middle" class="sm b">上下文窗口</text><text x="101" y="181" text-anchor="middle" class="xs">太长时自动压缩</text><rect class="box" x="176" y="146" width="112" height="44" rx="6"/><text x="232" y="164" text-anchor="middle" class="sm b">私有记忆</text><text x="232" y="181" text-anchor="middle" class="xs">持久保存</text><path class="ln-acc" d="M162,168 H173" marker-end="url(#Mb)"/><text x="40" y="208" class="xs acc">指令：压缩前把「进行中的工作、下一步」</text><text x="40" y="222" class="xs acc">写进记忆，让它活过压缩</text><text x="290" y="238" text-anchor="end" class="xs t-ok">论文 §2.1</text><rect class="box" x="28" y="258" width="272" height="48" rx="7"/><text x="40" y="278" class="b">janesick</text><text x="120" y="278" class="sm">铁器与工具 · 找要塞 · 三角定位</text><text x="120" y="295" class="xs">646 程序 · 50 条消息</text><rect class="box" x="28" y="314" width="272" height="48" rx="7"/><text x="40" y="334" class="b">gyldenia</text><text x="120" y="334" class="sm">食物与补给 · 打掉 6/10 水晶</text><text x="120" y="351" class="xs">727 程序 · 79 条消息</text><rect class="box" x="28" y="370" width="272" height="48" rx="7"/><text x="40" y="390" class="b">auratian</text><text x="120" y="390" class="sm">下界传送门 · 想出打水晶方案</text><text x="120" y="407" class="xs">735 程序 · 53 条消息</text><rect class="box" x="28" y="426" width="272" height="48" rx="7"/><text x="40" y="446" class="b">bulicame</text><text x="120" y="446" class="sm">末影人掩体 · 最后一击</text><text x="120" y="463" class="xs">675 程序 · 47 条消息</text><text x="300" y="488" text-anchor="end" class="xs t-ok">角色为自发形成，论文图 1 / §4</text><rect class="cell" x="340" y="40" width="226" height="250" rx="10"/><text x="354" y="63" class="b">团队共享</text><text x="420" y="63" class="sm">四个玩家都能读</text><rect class="key" x="354" y="76" width="198" height="92" rx="7"/><text x="453.0" y="113.0" text-anchor="middle" class="b acc">团队共享记忆（笔记）</text><text x="453.0" y="129.0" text-anchor="middle" class="sm">坐标 · 箱子 · 危险 · 工具怪癖</text><text x="453.0" y="143.0" text-anchor="middle" class="xs">例：~/memory/team/world.md</text><text x="552" y="182" text-anchor="end" class="xs t-ok">论文；路径见于聊天原文</text><rect class="box" x="354" y="194" width="198" height="80" rx="7"/><text x="453.0" y="225.0" text-anchor="middle" class="b">游戏聊天</text><text x="453.0" y="241.0" text-anchor="middle" class="sm">229 条（赢之前）</text><text x="453.0" y="255.0" text-anchor="middle" class="xs">经服务器转发，进下一个程序输出</text><rect class="ext" x="592" y="40" width="274" height="456" rx="10"/><text x="606" y="63" class="b">游戏环境</text><text x="670" y="63" class="sm">沙箱，无作弊命令</text><rect class="box" x="606" y="78" width="246" height="62" rx="7"/><text x="729.0" y="100.0" text-anchor="middle" class="b">一段 JavaScript 程序</text><text x="729.0" y="116.0" text-anchor="middle" class="sm">几秒到几分钟的动作</text><text x="729.0" y="130.0" text-anchor="middle" class="xs">中位运行 33.5 秒；超时默认 60 秒，可自选</text><rect class="box" x="606" y="162" width="246" height="56" rx="7"/><text x="729.0" y="187.0" text-anchor="middle" class="b">命令行客户端</text><text x="729.0" y="204.0" text-anchor="middle" class="sm">送程序、等待、打印日志与返回值</text><rect class="box" x="606" y="240" width="246" height="62" rx="7"/><text x="729.0" y="262.0" text-anchor="middle" class="b">Mineflayer bot + 寻路插件</text><text x="729.0" y="278.0" text-anchor="middle" class="sm">每个玩家一个</text><text x="729.0" y="292.0" text-anchor="middle" class="xs">不能起进程或写文件；global 值跨程序保留</text><rect class="key" x="606" y="324" width="246" height="70" rx="7"/><text x="729.0" y="350.0" text-anchor="middle" class="b acc">Minecraft 服务器</text><text x="729.0" y="366.0" text-anchor="middle" class="sm">Java 1.20.4 · 生存 · Easy · 随机种子</text><text x="729.0" y="380.0" text-anchor="middle" class="xs">每 5 分钟存档；日志记聊天、死亡、成就</text><path class="ln" d="M729,140 V159" marker-end="url(#Ma)"/><path class="ln" d="M729,218 V237" marker-end="url(#Ma)"/><path class="ln" d="M729,302 V321" marker-end="url(#Ma)"/><text x="729" y="420" text-anchor="middle" class="sm">不看像素，不按键盘鼠标</text><text x="729" y="438" text-anchor="middle" class="xs">文本回传：位置、血量、背包、找到了什么、报错</text><text x="852" y="488" text-anchor="end" class="xs t-ok">论文 图 2 / §2.1</text><path class="ln-acc" d="M284,76 V22 H729 V75" marker-end="url(#Mb)"/><path class="ln dash" d="M603,372 C470,372 450,470 303,470" marker-end="url(#Ma)"/><text x="452" y="452" text-anchor="middle" class="xs">文本结果 → 读完再写下一段</text><rect x="404" y="12" width="104" height="20" rx="4" style="fill:var(--bg,#fff)"/><text x="456" y="26" text-anchor="middle" class="sm acc b">写程序、提交运行</text><path class="ln" d="M300,150 C326,150 330,122 351,122" marker-end="url(#Ma)" marker-start="url(#Ma)"/><path class="ln" d="M300,300 C330,300 330,234 351,234" marker-end="url(#Ma)" marker-start="url(#Ma)"/><path class="ln dash" d="M552,234 C580,234 580,272 603,272" marker-end="url(#Ma)" marker-start="url(#Ma)"/><rect class="ext" x="340" y="316" width="226" height="118" rx="10"/><text x="354" y="340" class="b">Observer（第五个 Agent）</text><text x="354" y="360" class="sm">读程序、聊天、服务器日志</text><text x="354" y="377" class="sm">把玩家说法和记录对账</text><text x="354" y="394" class="sm">发布实时报告；从不进游戏</text><text x="354" y="411" class="xs">只在环境故障时介入，不管策略</text><text x="556" y="426" text-anchor="end" class="xs t-ok">论文 §2.3</text><path class="ln dash" d="M603,360 H569" marker-end="url(#Ma)"/><rect class="band" x="14" y="510" width="852" height="98" rx="6"/><text x="440" y="534" text-anchor="middle" class="b">27 小时 14 分钟 · 2,783 个程序 · 63,313 行不重复 JS · 229 条消息 · 605 次死亡</text><text x="440" y="556" text-anchor="middle" class="sm">约 24,000 次模型调用 · 13.5 亿输入 token（91% 命中上下文缓存）· 1,600 万输出 token</text><text x="440" y="576" text-anchor="middle" class="sm">跨程序保留 146 项状态与代码，其中 42 个辅助函数；没有人写的游戏工具、技能库、课程或路线</text><text x="440" y="597" text-anchor="middle" class="xs t-ok">数字与组件均来自论文；排版为本页重画。共享记忆的具体格式与读写协议论文没写</text></svg></div>
+<figcaption>四个玩家 Agent 各在自己的云主机上运行，写 JavaScript 程序交给各自的 Mineflayer bot 在同一个世界里执行，读回文本。协调只走两条路：<strong>游戏聊天</strong>和<strong>团队共享记忆</strong>。第五个 Observer Agent 只读记录、写报告。组件和数字来自论文图 2、§2 与 §6 <span class="tag tag-ok">论文</span>；排版为本页重画，共享记忆的内部格式论文没写。</figcaption>
+</figure></div>
+  </article>
+  <article class="item" id="s5-2">
+    <h3 class="item-title">分工是怎么形成的</h3>
+    <div class="item-body"><p><strong class="runin">开局 10 分钟。</strong> janesick 第一条消息报了出生点和附近煤、铁、箱子的坐标；第 10 分钟发出分工提议：自己炼铁做工具和桶，gyldenia 收集木头、食物、床和燧石，另外两人找钻石和黑曜石<span class="tag tag-ok">论文</span><span class="tag-q">聊天原文</span>。</p><p><strong class="runin">一分钟内出现第二版。</strong> auratian 给出不同方案，按方向分区挖矿，并提醒大家看 <code>~/memory/team/world.md</code>；gyldenia 回了句「Copy that!」<span class="tag tag-ok">论文</span><span class="tag-q">聊天原文</span>。</p><p><strong class="runin">最后定下来的角色。</strong> gyldenia 侦察食物、床和燧石；bulicame 下矿找钻石；janesick 炼铁做工具；auratian 准备下界传送门<span class="tag tag-ok">论文</span><span class="tag-q">§3.1</span>。</p><p><span class="tag tag-guess">评论</span>两版提议撞车，论文只写了「角色很快定下来」，没有说明是谁的方案胜出、按什么规则。从结果看是两版的混合：找钻石、做工具沿用了 janesick 的方案，传送门和侦察沿用了 auratian 的方案。这不是协商机制，更像一群人在群里各说一句、默认就按最合理的那个来。</p></div>
+  </article>
+  <article class="item" id="s5-3">
+    <h3 class="item-title">角色一直延续到最后</h3>
+    <div class="item-body"><div class="grid-wrap"><table class="grid"><thead><tr><th>玩家</th><th>主要贡献</th><th>程序 / 消息</th><th>第一个到达的步骤（读论文图 4）</th></tr></thead><tbody><tr><td>janesick</td><td>工具、找到下界要塞、三角定位要塞</td><td>646 / 50</td><td>石器、铁器、桶、下界要塞、烈焰棒、末影之眼</td></tr><tr><td>gyldenia</td><td>食物补给；打掉 10 个水晶中的 6 个</td><td>727 / 79</td><td>末影珍珠、十个水晶（最后一个）</td></tr><tr><td>auratian</td><td>点亮下界传送门；想出不用镐打水晶的办法</td><td>735 / 53</td><td>打火石、下界传送门</td></tr><tr><td>bulicame</td><td>帮忙造末影人掩体；最后一击</td><td>675 / 47</td><td>要塞、进入末地、末影龙</td></tr></tbody></table></div><p>前两列与程序数来自论文图 1 和 §4<span class="tag tag-ok">论文</span>；最后一列按图 4 的颜色读出<span class="tag tag-ok">论文</span><span class="tag-q">读图</span>。四人程序数之和正好是 2,783，消息数之和正好是 229。</p><p><span class="tag tag-guess">评论</span>分工没有一个「指挥官」。四个 Agent 是同一个模型、同一套指令，差别只在名字和开局位置。分工更像是从「谁离什么近、谁先开口」里长出来的。论文没有测试过不同开局会不会形成不同分工。</p></div>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">共享笔记：论文写了什么、没写什么</h2>
+  </header>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title">论文明确写了的</h3>
+    <div class="item-body"><p><strong class="runin">存在什么。</strong> 每个 Agent 有一份持久记忆，分私有部分和团队共享部分<span class="tag tag-ok">论文</span><span class="tag-q">§2.1</span>。论文图 2 的说法是「每个 Agent 各自维护、其他人都能读的笔记」<span class="tag tag-ok">论文</span>。</p><p><strong class="runin">存在哪。</strong> 聊天原文里出现过路径 <code>~/memory/team/world.md</code><span class="tag tag-ok">论文</span><span class="tag-q">图 5 聊天原文</span>。<span class="tag tag-guess">推测</span>共享记忆至少有一部分是 Markdown 文件，按主题命名（world = 世界信息）。</p><p><strong class="runin">写什么。</strong> 指令要求把「机制、策略和绕坑方法」记进记忆，让同一个障碍不遇到两次<span class="tag tag-ok">论文</span><span class="tag-q">§2.2</span>。实际写进去的有：箱子、传送门和危险地点的坐标，以及各自工具的怪癖<span class="tag tag-ok">论文</span><span class="tag-q">§4</span>。</p><p><strong class="runin">和上下文的关系。</strong> 上下文太长时 Agent 会压缩；指令要求把必须活过压缩的东西存进记忆，例如进行中的工作和下一步<span class="tag tag-ok">论文</span><span class="tag-q">§2.1</span>。这是论文里唯一直接把记忆和上下文限制挂钩的一句。</p><p><strong class="runin">效果的证据。</strong> 开局 19 分钟，gyldenia 提醒全队 Mineflayer 合成功能的一个怪癖和避开办法；一个包含修复的辅助函数后来出现在四个 Agent 写的 655 个程序里<span class="tag tag-ok">论文</span><span class="tag-q">§4</span>。</p></div>
+  </article>
+  <article class="item" id="s6-2">
+    <h3 class="item-title">论文没写的</h3>
+    <div class="item-body"><ul><li><strong class="runin">格式。</strong>除了一个文件路径，没有给出任何笔记内容、字段、长度或组织方式。</li><li><strong class="runin">谁写、谁读、什么时候读。</strong>图 2 说「各自维护、互相可读」，§2.1 说「团队共享的部分」，两种说法是否一致没有交代。读取是每次调用自动注入上下文，还是 Agent 自己用 shell 去读，也没写<span class="tag tag-guess">推测</span><span class="tag-q">既然有 shell 和文件编辑工具，后者可能性更大</span>。</li><li><strong class="runin">冲突。</strong>两个 Agent 同时改同一个文件怎么办？没有提锁、合并或版本号。<span class="tag tag-guess">推测</span>每个 Agent 的工作区带版本控制，但论文没说共享记忆是否也在版本控制里。</li><li><strong class="runin">过时。</strong>坐标、箱子里有什么、谁背着什么都会变。论文没有提时间戳、失效标记或清理规则。</li><li><strong class="runin">聊天 vs 笔记的分工。</strong>图 13 统计的是聊天消息，不是笔记；哪些信息进了笔记、哪些只在聊天里，无从区分。</li><li><strong class="runin">那个辅助函数怎么传开的。</strong>它在 655 个程序里出现，但 bot 的全局对象是每个玩家各自的<span class="tag tag-guess">推测</span>；是从共享笔记里复制、还是看聊天自己重写，论文没写。</li></ul></div>
+  </article>
+  <article class="item" id="s6-3">
+    <h3 class="item-title">论文给出的「纠错」机制</h3>
+    <div class="item-body"><p><span class="tag tag-ok">论文</span>记忆本身没有防错机制，纠错靠的是另外三样东西：</p><ul><li><strong class="runin">自我更正。</strong>auratian 的程序在聊天里宣布「14 颗末影之眼已存进箱子」，其实没有发生；两分钟后它自己更正：「我上一条聊天是一个没加检查的脚本分支」<span class="tag tag-ok">论文</span><span class="tag-q">图 14</span>。</li><li><strong class="runin">队友质疑。</strong>janesick 被烧死一秒后报告「带着 12 份烈焰粉回来了」，gyldenia 三分钟内指出矛盾<span class="tag tag-ok">论文</span><span class="tag-q">§4</span>。</li><li><strong class="runin">Observer 对账。</strong>第五个 Agent 按记录核对玩家的说法后才写进报告，专门找钻评测漏洞和谎报结果<span class="tag tag-ok">论文</span><span class="tag-q">§2.3</span>。</li></ul><p><span class="tag tag-guess">评论</span>这三样都发生在聊天层面，没有证据表明错误信息被写进共享笔记后会被谁更正。对 Dong 来说这是最值得自己补上的一块。</p></div>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">端到端例子：从找到要塞到点亮末地传送门</h2>
+  </header>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title">为什么选这条链，而不是「拿钻石」</h3>
+    <div class="item-body"><p>论文关于钻石只有两句：开局 bulicame 下矿找钻石；两小时内团队有了铁器、钻石和下界传送门<span class="tag tag-ok">论文</span><span class="tag-q">§3.1</span>。没有坐标、没有聊天、没有笔记，硬写就是编。所以本节换成论文记录最完整的一条子目标：<strong>做出 12 颗末影之眼并点亮末地传送门</strong>。它横跨 10 个多小时，四个 Agent 都参与了。</p><figure class="diagram wide" id="flow-diagram">
+<div class="scroll"><svg class="dg" viewBox="0 0 880 500" role="img" aria-labelledby="mf-t"><title id="mf-t">端到端例子：从找到要塞到点亮末地传送门，信息怎样在聊天、共享笔记和四个 Agent 之间流动</title><defs><marker id="Fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0L10,5L0,10z"/></marker><marker id="Fb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-acc" d="M0,0L10,5L0,10z"/></marker></defs><rect class="box" x="16" y="36" width="200" height="120" rx="8"/><text x="28" y="62" class="b">① +2h57 下界要塞</text><text x="28" y="88" class="sm">janesick 找到要塞和</text><text x="28" y="106" class="sm">烈焰人刷怪笼</text><text x="206" y="146" text-anchor="end" class="xs t-ok">论文</text><path class="ln-acc" d="M216,96.0 H233" marker-end="url(#Fb)"/><rect class="box" x="236" y="36" width="200" height="120" rx="8"/><text x="248" y="62" class="b">② +3h06 → +5h30 珍珠</text><text x="248" y="88" class="sm">三人在诡异森林造 2 格高掩体</text><text x="248" y="106" class="sm">15 颗珍珠存进共享箱子</text><text x="426" y="146" text-anchor="end" class="xs t-ok">论文</text><path class="ln-acc" d="M436,96.0 H453" marker-end="url(#Fb)"/><rect class="key" x="456" y="36" width="200" height="120" rx="8"/><text x="468" y="62" class="b">③ +9h04 → +9h06 教训</text><text x="468" y="88" class="sm">auratian：别停在 (41,101,-8)</text><text x="468" y="106" class="sm">janesick 2 分钟后补根因+修路</text><text x="646" y="146" text-anchor="end" class="xs t-ok">论文原文</text><path class="ln-acc" d="M656,96.0 H673" marker-end="url(#Fb)"/><rect class="box" x="676" y="36" width="200" height="120" rx="8"/><text x="688" y="62" class="b">④ +10h43 → +10h46 定位</text><text x="688" y="88" class="sm">janesick 两处各投一颗眼</text><text x="688" y="106" class="sm">两条射线交点距实际 43 m</text><text x="866" y="146" text-anchor="end" class="xs t-ok">论文</text><path class="ln-acc" d="M776.0,156 V174 H556.0 V207" marker-end="url(#Fb)"/><rect class="box" x="456" y="210" width="200" height="120" rx="8"/><text x="468" y="236" class="b">⑤ +12h02 → +12h04 更正</text><text x="468" y="262" class="sm">auratian 程序误报「14 颗眼已入箱」</text><text x="468" y="280" class="sm">2 分钟后自己更正</text><text x="646" y="320" text-anchor="end" class="xs t-ok">论文原文</text><rect class="key" x="236" y="210" width="200" height="120" rx="8"/><text x="248" y="236" class="b">⑥ +13h10 抢救 12 颗眼</text><text x="248" y="262" class="sm">auratian 溺亡，两人报坐标+时限</text><text x="248" y="280" class="sm">34 秒后 bulicame 报已回收</text><text x="426" y="320" text-anchor="end" class="xs t-ok">论文原文</text><rect class="box" x="16" y="210" width="200" height="120" rx="8"/><text x="28" y="236" class="b">⑦ +13h17 末地传送门</text><text x="28" y="262" class="sm">bulicame 报告点亮</text><text x="28" y="280" class="sm">12 颗眼全部放好</text><text x="206" y="320" text-anchor="end" class="xs t-ok">论文</text><path class="ln-acc" d="M456,270 H439" marker-end="url(#Fb)"/><path class="ln-acc" d="M236,270 H219" marker-end="url(#Fb)"/><rect class="cell" x="676" y="210" width="200" height="120" rx="8"/><text x="688" y="236" class="b">这条链要记住的东西</text><text x="688" y="258" class="sm">要塞、箱子、隧道的精确坐标</text><text x="688" y="276" class="sm">「哪里不能停」及其根因</text><text x="688" y="294" class="sm">谁背着什么、几点消失</text><text x="866" y="320" text-anchor="end" class="xs t-guess">示意：本页归纳</text><rect class="band" x="16" y="350" width="860" height="136" rx="8"/><text x="30" y="374" class="b">时间跨度：约 10 小时 20 分钟（+2h57 → +13h17）</text><text x="30" y="398" class="sm">这段里四个 Agent 各自的上下文很可能已多次压缩〔推测：论文给了压缩机制，没给压缩次数〕；</text><text x="30" y="418" class="sm">能跨过去的信息只有三种载体：共享 / 私有记忆、聊天记录、游戏世界本身（箱子、隧道、传送门）。</text><text x="30" y="442" class="xs">①–⑦ 的时间、人物、坐标、数量均来自论文正文与聊天截图〔论文〕；</text><text x="30" y="460" class="xs">哪些信息具体写进了笔记文件、哪些只在聊天里，论文没有区分；右上框是本页的归纳〔示意〕。</text><text x="30" y="478" class="xs">⑥ 的「34 秒」= bulicame +13h10m39s 回复 − janesick +13h10m05s 首条警报，由聊天时间戳相减得到；论文另说离消失还剩约 2.5 分钟。</text></svg></div>
+<figcaption>①–⑦ 的时间、人物、坐标、数量均来自论文正文与聊天截图 <span class="tag tag-ok">论文</span>；右上框「这条链要记住的东西」为本页归纳 <span class="tag tag-tip">示意</span>。</figcaption>
+</figure></div>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title">一步一步看</h3>
+    <div class="item-body"><p><strong class="runin">① 找要塞（+2h57）。</strong> 一颗末影之眼要烈焰粉（来自守卫下界要塞的烈焰人）和末影珍珠（来自末影人）。团队分头行动，janesick 找到要塞和烈焰人刷怪笼<span class="tag tag-ok">论文</span>。</p><p><strong class="runin">② 刷珍珠（+3h06 起）。</strong> gyldenia、auratian、bulicame 在诡异森林造了两格高的掩体：被看的末影人会传送过来，但它将近三格高，钻不进两格的顶，于是末影人自己送上门<span class="tag tag-ok">论文</span>。第 5.5 小时，共享箱子里已有 15 颗珍珠<span class="tag tag-ok">论文</span>。</p><p><strong>③ 损失变成规则（+9h04）。</strong> 把烈焰粉运回主世界花了六个多小时。janesick 带着 12 份烈焰粉被烧死；一颗恶魂火球炸掉了一堆掉落物。auratian 随即发出「关键教训」：永远别在 (41, 101, -8) 结束一次程序，那里是开阔的下界荒地；一律在 (70, 91, 70) 的封闭隧道里集合，再一口气走完整条路线。两分钟后，janesick 补上根因：去程有一段两格落差，回程寻路走不上去，所以总停在那里；他会把那一格挖成台阶<span class="tag tag-ok">论文</span><span class="tag-q">图 6，聊天原文</span>。</p><p><span class="tag tag-guess">评论</span>这是全文最像「好笔记」的一条：有精确坐标、有禁令、有替代路线，第二个人还补了根因和修复。</p><p><strong>④ 三角定位（+10h43 → +10h46）。</strong> janesick 在两个地点各扔一颗眼，每 50 毫秒采样一次眼的飞行位置，算出两条射线的交点 (432, −1376)，距村庄 1.3 km；实际传送门房间在 (463, −30, −1406)，误差 43 m<span class="tag tag-ok">论文</span><span class="tag-q">图 7</span>。程序里的注释是 janesick 自己写的<span class="tag tag-ok">论文</span>。</p><p><strong class="runin">⑤ 一次误报（+12h02）。</strong> auratian 宣布「全部 14 颗末影之眼已存进主世界箱子 (16, 72, -168)」。两分钟后更正：服务器从它死后的存档重启，它其实背包是空的，「上一条聊天是一个没加检查的脚本分支」<span class="tag tag-ok">论文</span><span class="tag-q">图 14</span>。</p><p><strong class="runin">⑥ 抢救（+13h10）。</strong> 就是第 2 节那一幕：auratian 带着 12 颗眼溺亡，janesick 和 auratian 先后报出精确坐标和消失时限，bulicame 回收全部 12 颗<span class="tag tag-ok">论文</span><span class="tag-q">图 8</span>。</p><p><strong class="runin">⑦ 点亮（+13h17）。</strong> bulicame 报告末地传送门已点亮，12 颗眼全部就位<span class="tag tag-ok">论文</span>。</p></div>
+  </article>
+  <article class="item" id="s7-3">
+    <h3 class="item-title">这条链里笔记大概起了什么作用</h3>
+    <div class="item-body"><p><span class="tag tag-guess">推测</span>把论文里的线索拼起来，这 10 个小时的状态分散在三种载体里：</p><ul><li><strong class="runin">共享记忆：</strong>最可能存放坐标（要塞、隧道、箱子）和教训（「别停在 (41,101,-8)」）。论文说过它们会把坐标和危险写进共享记忆。</li><li><strong class="runin">聊天：</strong>承载时效性强的东西，比如「5 分钟内去捡」。这类信息过几分钟就没用了，不适合进笔记。</li><li><strong class="runin">游戏世界本身：</strong>共享箱子里的珍珠、挖好的隧道和台阶、搭好的桥。<span class="tag tag-guess">评论</span>这是常被忽略的一种记忆：把状态存在环境里，任何 Agent 走过去一看就知道，不占上下文。</li></ul><p><span class="tag tag-tip">示意</span>如果把第 9 小时那条教训写成笔记，大致会是这样（<strong>非论文原文</strong>，只是把聊天内容整理成可复用的格式）：</p><pre style="font-family:var(--font-mono);font-size:0.8rem;line-height:1.55;background:color-mix(in srgb, var(--rule) 45%, transparent);padding:0.8rem 1rem;border-radius:6px;overflow-x:auto;white-space:pre-wrap">## 下界 · 运送烈焰粉   （示意，非论文原文）
+- 规则：程序不要在 (41,101,-8) 结束（开阔荒地，有猪灵和恶魂）
+- 路线：(70,91,70) → (70,90,9) → (41,101,-8) → (5,111,-9)，一次走完
+- 根因：(4,105,-18)→(5,103,-18) 有两格落差，回程寻路上不去
+- 修复：在 (4,104,-18) 挖台阶（janesick）
+- 来源：+9h04 恶魂炸毁掉落物；记录人 auratian / janesick</pre></div>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">为什么能撑过一天以上</h2>
+  </header>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">论文给出的直接因素</h3>
+    <div class="item-body"><p><strong class="runin">压缩前存档。</strong> 指令要求把进行中的工作和下一步写进记忆，让它们活过压缩<span class="tag tag-ok">论文</span>。</p><p><strong class="runin">教训进记忆。</strong> 「同一个障碍不遇到两次」是写在通用指令里的<span class="tag tag-ok">论文</span>。末地阶段的规则（别在出生平台上发呆、只在龙栖息时靠近、龙卡住就全员离开末地让它重置）就是这样一条条积累的<span class="tag tag-ok">论文</span><span class="tag-q">图 10</span>。</p><p><strong class="runin">工具跨程序保留。</strong> 程序存到全局对象上的值会保留到下一个程序；Agent 留下 146 项状态和代码、42 个辅助函数，比如水里保持浮起的后台循环、计时行走、数物品<span class="tag tag-ok">论文</span>。<span class="tag tag-guess">推测</span>这等于把「怎么做」从上下文里搬到了运行环境里，每次只需调用，不必重新写。</p><p><strong class="runin">每一步都有地面真相。</strong> 每个程序都返回位置、血量、背包、报错这样的确定文本<span class="tag tag-ok">论文</span>。<span class="tag tag-guess">评论</span>Agent 不需要「记得」自己背包里有什么，问一下游戏就知道，这大大减轻了记忆负担。</p><p><strong class="runin">环境本身能恢复。</strong> 世界每 5 分钟存一次档，故障后从最近存档重启，6 次重启共约 20 分钟<span class="tag tag-ok">论文</span>。</p></div>
+  </article>
+  <article class="item" id="s8-2">
+    <h3 class="item-title">本页的推断</h3>
+    <div class="item-body"><p><span class="tag tag-guess">推测</span><strong>状态被拆到多个地方，没有一处需要装下全部。</strong> 坐标在笔记里，物品在箱子里，工具在全局对象里，当前情况由游戏实时告诉你。上下文只需装「我现在在干什么」。</p><p><span class="tag tag-guess">推测</span><strong class="runin">四个人互相是备份。</strong> 一个 Agent 死了、上下文压缩丢了细节，另外三个还记得；第 13 小时的抢救就是例子。</p><p><span class="tag tag-guess">推测</span><strong class="runin">消息写得极具体。</strong> 229 条里 173 条带精确坐标<span class="tag tag-ok">论文</span>。具体的消息不怕被压缩成摘要后再误读，也方便别人直接用。</p><p><span class="tag tag-guess">评论</span><strong class="runin">真正的瓶颈其实不在记忆。</strong> 末地阶段花了近 14 小时、死了 69 次<span class="tag tag-ok">论文</span>，卡住的原因是不知道水晶在给龙回血，直到第 21 小时前后 auratian 读出龙的内部血量才想通<span class="tag tag-ok">论文</span><span class="tag-q">图 11</span>。记忆让团队不忘事，但不能替它想到没想到的东西。</p></div>
+  </article>
+</section>
+<section class="section" id="s9">
+  <header class="sec-head">
+    <span class="sec-num">第 09 节</span>
+    <h2 class="sec-title">局限与批评</h2>
+  </header>
+
+  <article class="item" id="s9-1">
+    <h3 class="item-title">论文自己承认的</h3>
+    <div class="item-body"><ul><li><strong class="runin">靠代码感知和导航。</strong>Mineflayer 直接告诉 Agent 周围有哪些方块和生物，包括岩石后面的方块和末影龙的内部状态；寻路插件替它绕障碍。从像素和键鼠玩要难得多<span class="tag tag-ok">论文</span><span class="tag-q">§8</span>。</li><li><strong class="runin">Easy 难度。</strong>怪物伤害低，饥饿不会致死<span class="tag tag-ok">论文</span>。</li><li><strong class="runin">先验知识。</strong>模型本来就懂 Minecraft 和 Mineflayer<span class="tag tag-ok">论文</span>。</li><li><strong class="runin">失败很多。</strong>605 次死亡，22% 的程序报错，末地之战近 14 小时<span class="tag tag-ok">论文</span>。</li><li><strong class="runin">基础设施。</strong>服务器重启 6 次<span class="tag tag-ok">论文</span>。</li><li><strong class="runin">只有一次运行。</strong>而且是第一次尝试，无法说明成功率<span class="tag tag-ok">论文</span>。</li></ul></div>
+  </article>
+  <article class="item" id="s9-2">
+    <h3 class="item-title">编者的批评</h3>
+    <div class="item-body"><p><span class="tag tag-guess">评论</span><strong>没有消融，说不清是什么起的作用。</strong> 没有单 Agent 对照、没有关掉共享记忆的对照、没有关掉压缩前存档指令的对照。「共享笔记撑起长任务」是很自然的解读（包括 DeepMind 官方帖强调了 shared notes<span class="tag tag-ok">官方</span>），但论文的证据只能说明这套组合跑通了一次。</p><p><span class="tag tag-guess">评论</span><strong class="runin">记忆机制写得太少。</strong> 对一篇卖点是「长程协作」的报告来说，共享记忆只给了一个文件路径。格式、读写时机、冲突、过时全都缺。外人没法照着复现。</p><p><span class="tag tag-guess">评论</span><strong class="runin">「没用网络」的证据有缺口。</strong> 论文说 2,839 个程序都没发网络请求，聊天和 Observer 报告也没提到网络来源<span class="tag tag-ok">论文</span>。但 Agent 自己的工具里有 web search<span class="tag tag-ok">论文</span>，论文没有直接说明 Agent 层面的 web search 调用日志里有没有记录。</p><p><span class="tag tag-guess">评论</span><strong class="runin">监督者和被监督者是同一个模型。</strong> Observer 也是 Gemini 4 Argon，可能和玩家有相同的盲区。论文 §2.3 写「我们的人工审查」，§9 写的是「人工审查了一部分日志」，覆盖率不明。</p><p><span class="tag tag-guess">评论</span><strong class="runin">「第一个」要加限定。</strong> 论文自己引了两个此前的社区项目也打败了末影龙：一个是单个 Claude Opus 5 Agent 调用 37 个高层游戏工具（Normal 难度），一个是规划器加动作模型（固定速通种子、Peaceful 难度）<span class="tag tag-ok">论文</span><span class="tag-q">§7</span>。这次的区别在于没有任何人写的游戏工具、用的是随机种子。「第一个」只在这个限定下成立。</p><p><span class="tag tag-guess">评论</span><strong class="runin">聊天统计很粗。</strong> 图 13 是「简单模式匹配」，一条消息可以算进多类<span class="tag tag-ok">论文</span>，只能看个大概。</p><p><span class="tag tag-guess">评论</span><strong class="runin">没有公开任何东西。</strong> 没有代码、提示词全文、记忆文件或日志。评测完全依赖作者的叙述。</p></div>
+  </article>
+</section>
+<section class="section" id="s10">
+  <header class="sec-head">
+    <span class="sec-num">第 10 节</span>
+    <h2 class="sec-title">Dong 能拿走什么</h2>
+  </header>
+
+  <article class="item" id="s10-1">
+    <h3 class="item-title">直接可用的做法</h3>
+    <div class="item-body"><ul><li><strong class="runin">记忆分两层。</strong>私有记忆放「我手上的活」，共享记忆放「谁都可能用到的事实和教训」。个人只有一个 Agent 时，也可以把「共享」理解为「给明天的自己和其他定时任务看」<span class="tag tag-tip">建议</span>。</li><li><strong class="runin">压缩前存档写进系统提示。</strong>原话可以几乎照抄：上下文变长时，先把进行中的工作、下一步、关键标识写进记忆文件<span class="tag tag-tip">建议</span><span class="tag-q">依据论文 §2.1</span>。</li><li><strong>教训写成「规则 + 根因 + 修复」。</strong>像第 9 小时那条：一句禁令、一条替代路线、一个根因。只记「出过错」没用<span class="tag tag-tip">建议</span>。</li><li><strong class="runin">信息写到可直接执行的精度。</strong>游戏里是坐标，Dong 的场景里是文件路径、URL、ID、截止时间。「那个文件」压缩之后就找不回来了<span class="tag tag-tip">建议</span>。</li><li><strong class="runin">验证过的工具留着复用。</strong>先在小任务上验证，再放进固定目录，让每次运行都能调用，而不是每次重写<span class="tag tag-tip">建议</span><span class="tag-q">依据论文 §2.2、§4</span>。</li><li><strong class="runin">让脚本不能自己宣布成功。</strong>auratian 的误报来自「没加检查的脚本分支」。凡是会向外汇报的结论，都先查一遍真实状态<span class="tag tag-tip">建议</span>。</li><li><strong class="runin">设一个只对账、不干活的检查者。</strong>哪怕只是一个定时脚本，把 Agent 的汇报和日志对一遍<span class="tag tag-tip">建议</span>。</li><li><strong class="runin">保持上下文前缀稳定。</strong>91% 的缓存命中是成本可控的关键；把不变的指令放前面，变化的内容放后面<span class="tag tag-tip">建议</span><span class="tag-q">依据论文 §6</span>。</li></ul></div>
+  </article>
+  <article class="item" id="s10-2">
+    <h3 class="item-title">论文没解决、需要自己补的</h3>
+    <div class="item-body"><p>以下几条是论文没覆盖、本页补的<span class="tag tag-tip">建议</span>：</p><ul><li><strong class="runin">每条笔记带时间和「最后核实」。</strong>坐标会变、箱子会空。可以借同一期简报里 TEM 的思路：旧事实不删，标成「已过时」，读的时候按时间排序。</li><li><strong class="runin">写入规则要明确。</strong>谁能改哪个文件；多人同时写时只追加不改写，或者每个 Agent 一个文件、另设一个汇总。</li><li><strong class="runin">时效信息别进长期笔记。</strong>「5 分钟内去捡」这类放消息或任务队列，过期即弃。</li><li><strong class="runin">定期整理。</strong>教训越积越多会反过来占满上下文。定期把相似的合并、把过时的归档。</li></ul><p><span class="tag tag-guess">评论</span>这四条恰好是论文缺的「过时」和「冲突」两块。一个只追加的日志、一个定期整理的汇总页、每条带来源和日期，大部分个人 Agent 的记忆需求就够用了；论文提醒的是另外两件容易漏的事：压缩前存档，和把验证过的工具留下来复用。</p></div>
+  </article>
+</section>
+<section class="section" id="s11">
+  <header class="sec-head">
+    <span class="sec-num">第 11 节</span>
+    <h2 class="sec-title">仍不清楚的</h2>
+  </header>
+
+  <article class="item" id="s11-1">
+    <h3 class="item-title">本页无法核实的地方</h3>
+    <div class="item-body"><ul><li><strong class="runin">共享记忆的格式和读写协议。</strong>只有一个路径 <code>~/memory/team/world.md</code>；其余全部未知。</li><li><strong>压缩发生了多少次、压缩时丢了什么。</strong>论文没给任何数字。</li><li><strong>655 次复用的辅助函数是怎么传播的。</strong>笔记、聊天还是各自重写，不清楚。</li><li><strong>Agent 的 web search 工具有没有被调用过。</strong>论文只覆盖了程序、聊天和 Observer 报告。</li><li><strong class="runin">分工撞车时谁的方案胜出。</strong>论文只说「很快定了下来」。</li><li><strong class="runin">「第一个到达」的归属。</strong>第 5 节表格最后一列是按论文图 4 颜色读出的，不是正文文字。</li><li><strong class="runin">官方博客与代码。</strong>截至 10 月 19 日，未找到 DeepMind 关于本工作的独立博客文章，也未找到代码或日志的公开仓库；一作的 X 帖是一篇 X 长文，本页未能读取其全文，无法确认它是否有论文之外的信息。</li><li><strong class="runin">价格。</strong>「introductory」与「standard」价格的具体数值论文没给；有媒体称标准价 2027 年生效<span class="tag tag-guess">未证实</span>。</li></ul></div>
+  </article>
+</section>
+<section class="section" id="s12">
+  <header class="sec-head">
+    <span class="sec-num">第 12 节</span>
+    <h2 class="sec-title">是否值得读原文</h2>
+  </header>
+
+  <article class="item" id="s12-1">
+    <h3 class="item-title">结论</h3>
+    <div class="item-body"><p>值得，但要带着正确的预期去读。正文约 14 页，大半是图和聊天截图，20 分钟能读完<span class="tag tag-guess">评论</span>。</p><p><strong class="runin">最值得读的。</strong> §2.2 的通用指令（可以几乎照抄进自己的系统提示），§3.2–3.4 的聊天截图（看「好的团队消息」长什么样），§4 的涌现行为<span class="tag tag-guess">评论</span>。</p><p><strong class="runin">别指望的。</strong> 如果想学共享记忆怎么设计，论文给不了答案；它更像一份带数据的实验记录，而不是方法论文<span class="tag tag-guess">评论</span>。</p></div>
+  </article>
+</section>
+<section class="section" id="s13">
+  <header class="sec-head">
+    <span class="sec-num">第 13 节</span>
+    <h2 class="sec-title">术语表</h2>
+  </header>
+
+  <article class="item" id="s13-1">
+    <h3 class="item-title">本页用到的词</h3>
+    <div class="item-body"><div class="grid-wrap"><table class="grid"><thead><tr><th>术语</th><th>白话解释</th></tr></thead><tbody><tr><td>Agent</td><td>能自己调用工具、连续多步完成任务的模型程序</td></tr><tr><td>通用编码 Agent</td><td>平时用来写软件的 Agent；这次没为游戏做任何定制</td></tr><tr><td>Gemini 4 Argon</td><td>本次使用的 Google 模型</td></tr><tr><td>Mineflayer</td><td>开源的 JavaScript 库，用代码控制 Minecraft 里的一个玩家</td></tr><tr><td>寻路插件</td><td>Mineflayer 的插件，自动规划绕开障碍的路线</td></tr><tr><td>上下文 / 上下文窗口</td><td>模型一次能看到的全部文本</td></tr><tr><td>上下文压缩（compaction）</td><td>上下文太长时，把旧内容压成摘要以腾出空间</td></tr><tr><td>上下文缓存</td><td>和上次调用相同的前缀不用重新计算；本次 91% 的输入来自缓存</td></tr><tr><td>私有记忆 / 共享记忆</td><td>写在上下文之外的持久文件；前者只有自己用，后者团队可读</td></tr><tr><td>全局对象（global）</td><td>JavaScript 里跨程序保留的变量空间；Agent 在这里存辅助函数</td></tr><tr><td>Observer</td><td>第五个 Agent，只核对记录、写报告，不进游戏</td></tr><tr><td>规格博弈（specification gaming）</td><td>钻评测规则的漏洞来「达标」，而不是真正完成目标</td></tr><tr><td>下界 / 末地</td><td>Minecraft 的另外两个维度；末地是最终 Boss 末影龙所在</td></tr><tr><td>末影之眼</td><td>烈焰粉 + 末影珍珠合成；扔出去会飞向最近的要塞，12 颗可点亮末地传送门</td></tr><tr><td>末地水晶</td><td>末地柱子顶上 10 个给末影龙回血的水晶</td></tr><tr><td>恶魂（Ghast）</td><td>下界会喷火球的怪物</td></tr><tr><td>消融实验</td><td>拿掉某个组件再跑，看效果差多少，用来判断该组件的贡献</td></tr></tbody></table></div></div>
+  </article>
+</section>
+</main>
+
+<footer class="site">扩展阅读 · 2026-10-19 · 核读 arXiv:2610.22319v1 全文 PDF 与 TeX 源文件、论文图 1–14，及 DeepMind 与一作的 X 帖；<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span><span class="tag tag-tip">示意</span><span class="tag tag-tip">建议</span>处非论文或 DeepMind 声明</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
