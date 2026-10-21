@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-10-21</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="10 月 20–21 日要点：Hippo 用对比尝试做免训练记忆自进化；Cache2LoRA 把文档压进 LoRA、吞吐达全上下文 5.9 倍；Selm 把技能库当长期资产管；Anthropic Claude 64 小时设计蝎毒蛋白结合体、211 个中 17 个过关；Mirror 无奖励无专家动作数据靠视频规划自改进拿到铁镐；TorchTPU 开源；Meta Muse 分享链接被被动 DNS 扫出 6800+ 条后暂停功能。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-10-21</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-10-12">截至 2026 年 10 月 12 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>周三版，覆盖 <strong>10 月 20 日上午至 10 月 21 日上午（CST）</strong>；arXiv 条目以 10 月 21 日（CST）cs.AI 新论文列表中首次出现、提交日约 10 月 15–17 日的论文为主；部分产品与安全报道文中注明发布日。</span></div><div class="meta-row"><span class="k">信息来源</span><span>arXiv 原文，Anthropic、Google、PyTorch、Claroc、The Verge 等官方或一手材料；X 用于选题和发帖人观点，均附原帖。</span></div><div class="meta-row"><span class="k">原则</span><span>摘要按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或报道，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">个人 Agent 与记忆/上下文管理</a></div><ol class="toc-items"><li><a href="#s1-1">Hippo：同一任务多试几次再写记忆，比"成功就存、失败就丢"更靠谱</a></li><li><a href="#s1-2">Cache2LoRA：文档先缓存，再按问题写成 LoRA，接近全上下文、吞吐高近 6 倍</a></li><li><a href="#s1-3">Google：车上的 Gemini 也能接你的邮件和日历（需显式授权）</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI（自我迭代 / 人参与的迭代）</a></div><ol class="toc-items"><li><a href="#s2-1">Selm：技能别写成一篇总文档，要当会增删改查的库来管</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">各领域模型能力进展</a></div><ol class="toc-items"><li><a href="#s3-1">Anthropic：Claude 用 64 小时设计蝎毒结合蛋白，211 个实验中 17 个过关</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界模型 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">Mirror：视频规划器指路，动作模型靠自玩自改进，无奖励也能挖到铁镐</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">AIGC 视频生成</a></div></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">高效使用 AI / Agent</a></div><ol class="toc-items"><li><a href="#s6-1">分享链接 ≠ 私密：Muse 把对话标题写进域名，被动 DNS 就能点名翻出</a></li><li><a href="#s6-2">Simon Willison：用 Claude 做浏览器 RTS，顺带让两个 LLM 互打</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">模型发布与评测、AI 产品与落地</a></div><ol class="toc-items"><li><a href="#s7-1">TorchTPU 开源：PyTorch 原生跑 TPU，与 Meta 共建</a></li><li><a href="#s7-2">其他短讯</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今日值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.24453" target="_blank" rel="noopener">Hippo：同一任务多试几次再写记忆，比"成功就存、失败就丢"更靠谱</a></h3>
+    <p class="item-meta">arXiv:2610.24453 · 2026-10-17 提交 · 原文 约 20 分钟；本摘要约 2 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 不想改模型权重、只靠外部记忆让 Agent 越用越好时，有两个坑：一次成功里可能混着错误推理，一次失败里可能藏着正确策略；如果只把经验往库里堆、不做合并，起初会涨、后来反而比"没有记忆"更差。</p><p><strong class="runin">方法。</strong> 一句话：同一任务多试几次，对比哪些决策可复用、在什么条件下成立，再和已有记忆合并或加适用范围。<span class="tag tag-ok">论文</span>Hippo 受海马编码与重放启发：在诊断到不足时才从对比中学习；新经验与旧条目比，重叠的合并，冲突的用显式适用条件化解，避免每条教训各占一条。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>在 SWE-bench Verified、WebArena、Mind2Web 上都有提升，保留的经验条数远少于"只累积不合并"的基线；不同能力的基座模型都受益，说明就算模型很强，记忆侧适配仍有用。</p><p><strong class="runin">局限。</strong> 摘要层面未给出各榜绝对分数与对照表的完整数字；依赖"能对同一任务反复尝试"的设定，一次性任务不好套。</p><p><strong class="runin">短评。</strong> 和上期个性化记忆门控、Harness-Delta 同一条线：记忆/harness 要有<strong>合并、冲突消解和适用条件</strong>，不能只追加。对个人 Agent 可直接拿走的做法：失败和成功都记，但用"同任务多轨迹对比"再写入。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做 Agent 记忆系统的值得读方法节；其他人看本段即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.24453" target="_blank" rel="noopener">Hippo: Training-Free Agent Self-Evolution via Hippocampal Replay <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.24107" target="_blank" rel="noopener">Cache2LoRA：文档先缓存，再按问题写成 LoRA，接近全上下文、吞吐高近 6 倍</a></h3>
+    <p class="item-meta">arXiv:2610.24107 · Virginia Tech 等 · 2026-10-17 提交（cs.AI 新列表） · 原文 很长，方法与实验约 30 分钟；本摘要约 2 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 把长文档塞进上下文又贵又慢。一类做法是"文档 → LoRA"：前向一次生成低秩权重更新，回答时解码上下文里不再带原文。现有 Doc-to-LoRA 写记忆时看不到问题，容易串事实、加干扰后记不住目标、能复述内容却跟不上回答格式指令。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>文档用冻结骨干预填一次，缓存 KV；每个问题只在"问题 + 记忆 token"后缀上编码，从缓存里聚合相关证据，再生成回答用的 LoRA。多风格教师蒸馏同时教"事实保留"和"按指令表达"。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">论文</span>17 项任务宏平均 F1：Cache2LoRA 0.663，全上下文 ICL 0.671，已发布 D2L 仅 0.173。32K 文档、256 token 输出、batch 16 时，解码吞吐约为全上下文 ICL 的 5.9 倍。相对同体量的 learned-KV，生成的 LoRA 在中间插入很长无关文本后更稳，也更容易和 SnapKV/DropKV 选出的文档 KV 混用。</p><p><strong class="runin">局限。</strong> 每个问题仍要构造一次 LoRA；完整文档缓存在构造阶段仍需要；多轮对话里何时刷新记忆未评估。</p><p><strong class="runin">短评。</strong> 诊断部分比方法本身更值钱：写记忆时<strong>必须看到查询</strong>，且要单独监督"怎么答"。个人知识库/RAG 想压成本时，这是比单纯压缩 KV 更完整的一条路。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做长上下文/参数记忆的读第 3 节诊断和第 4 节方法；其他人看表 1 即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.24107" target="_blank" rel="noopener">Cache2LoRA: Understanding and Improving Context Internalization <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-3">
+    <h3 class="item-title"><a href="https://blog.google/products-and-platforms/platforms/android/android-auto-cars-with-google-built-in-gemini-personal-intelligence/" target="_blank" rel="noopener">Google：车上的 Gemini 也能接你的邮件和日历（需显式授权）</a></h3>
+    <p class="item-meta">Google · 2026-10-20 · 原文 约 4 分钟</p>
+    <div class="item-body"><p><span class="tag tag-ok">官方</span>Personal Intelligence 开始在 Android Auto 上车（Google built-in 车机随后数月），在用户同意后连接 Workspace（含 Gmail、Calendar）、Photos、Maps、YouTube、Search，支持"我的航班登机口几点""按平常口味沿路找室内餐厅"这类跨应用问题。默认不连；可随时关。限个人账号、18+，不含 EEA、瑞士、英国、尼日利亚；Workspace 企业/教育账号暂不支持。built-in 车机仅在手机已连接时给出个性化回答。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 产品兴趣可扫一眼；和记忆论文对照看即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/products-and-platforms/platforms/android/android-auto-cars-with-google-built-in-gemini-personal-intelligence/" target="_blank" rel="noopener">Personal Intelligence brings Gemini to cars globally <span style="opacity:.65">(blog.google)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.24630" target="_blank" rel="noopener">Selm：技能别写成一篇总文档，要当会增删改查的库来管</a></h3>
+    <p class="item-meta">arXiv:2610.24630 · 人大等 · cs.AI 新列表 · 原文 约 25 分钟；本摘要约 2 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> Agent 技能（skill）能从轨迹里进化，但多数方法只管"这一轮怎么改"，不管库：有用技能被覆盖、失败技能还在被检索、不同任务经验互相打架。<span class="tag tag-ok">论文</span>图 1 的典型失败：本地最优编辑提交后，后面任务再也找不回被删掉的流程。</p><p><strong class="runin">方法。</strong> 一句话：冻结模型，只进化技能库——检索、更新、生命周期一起管。<span class="tag tag-ok">论文</span>每条技能带置信度与效用；检索按类别 + 相关性 + 历史效用；轨迹按任务类别 Map 分析、再 Reduce 成 ADD/EDIT/UPVOTE/DOWNVOTE/DELETE；候选库必须在验证集上变好才入库；低效用进"坟场"，同名禁止回流。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>四套基准（SkillsBench、SpreadsheetBench、OfficeQA、LiveMath），Claude Opus 4.6 无 harness 时 SkillsBench 软准确率 69.8（Memento-Skills 66.1、SkillOpt 62.7）；多数设定下优于单文档优化和近期多技能基线。消融：去掉验证门控掉分最大。</p><p><strong class="runin">局限。</strong> 坟场按名字精确匹配，语义重复技能仍可能并存；依赖较强的优化模型写 CRUD。</p><p><strong class="runin">短评。</strong> 和 Hippo、上期 HDA 同属"自进化的治理"：涨分不够，还要管<strong>什么能留下、什么要退役</strong>。做 skill 文件夹 / Cursor skills 的人，可直接借鉴验证门控和坟场。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做技能库的值得读第 4 节；其他人看表 1。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.24630" target="_blank" rel="noopener">Selm: Self-Evolving Library Management for Multi-Skill Agent Optimization <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://www.anthropic.com/research/claude-scorpion-toxin-binder-design" target="_blank" rel="noopener">Anthropic：Claude 用 64 小时设计蝎毒结合蛋白，211 个实验中 17 个过关</a></h3>
+    <p class="item-meta">Anthropic · 2026-10-20 · 原文 博文约 12 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 全球每年约 120 万人被蝎子蜇伤，死亡超 3,250 人，抗血清贵且短缺。传统做法用蝎毒免疫马再提抗体，周期长、覆盖窄。<span class="tag tag-ok">官方</span>与投资研究机构 Citrini 合作，问：非专家能否借助 Claude 推进真实健康问题？</p><p><strong class="runin">过程。</strong> <span class="tag tag-ok">官方</span>内部研究模型在 Claude Science 里主要自主运行约 64 小时，人工只给 4 次跟进（重点推多毒素结合体）。生成约 318,484 个设计，筛选后送出 180 个，团队又补 31 个，共 211 个由 Adaptyv Bio 与 Twist Bioscience 做 SPR 结合实验。过关标准：两家实验室都要在所有重复里结合，KD ≤ 1 µM，且对无关人蛋白 CLEC12A 无信号。</p><p><strong class="runin">数字。</strong> <span class="tag tag-ok">官方</span>17/211 达到结合体标准，分别针对墨西哥、北非、中东的毒素（巴西种未过）；单毒素设计里 11/60（18%）过关，与典型蛋白设计活动率接近。最强 Cn2-B1/B2 达个位数 nM 级亲和力，竞争实验提示与已知中和抗体 LR 位点重叠。约 1 万 GPU 小时；官方另称简化单 Agent、单 GPU、24 小时可达到可比的 in silico 分数。</p><p><strong class="runin">明确不做的声称。</strong> <span class="tag tag-ok">官方</span>未在细胞或动物里验证中和，<strong>不宣称做出了抗血清</strong>；多毒素设计无一同时过关。</p><p><strong class="runin">点评。</strong> <span class="tag tag-guess">评论</span>和上期 Busy Beaver、NIST 种子一样：有湿实验可检验的终点，Agent 才能真正"做发现"。可带走的流程是：自主设计 → 严格实验门槛 → 全量公开 211 个设计与数据。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心 AI for science 的读"Designing de novo binders"与实验标准两节；其他人看本段即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.anthropic.com/research/claude-scorpion-toxin-binder-design" target="_blank" rel="noopener">How Claude designed protein binders against scorpion neurotoxins <span style="opacity:.65">(anthropic.com)</span></a>
+      <a class="src" href="https://x.com/AnthropicAI/status/2112579251555721573" target="_blank" rel="noopener">X <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.24177" target="_blank" rel="noopener">Mirror：视频规划器指路，动作模型靠自玩自改进，无奖励也能挖到铁镐</a></h3>
+    <p class="item-meta">arXiv:2610.24177 · MIT Sitzmann 组 · 2026-10-17 提交 · 原文 很长，核心方法 + Minecraft 节约 25 分钟；本摘要约 2 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 视频生成模型能当"视觉规划器"：生成怎么完成任务的视频。但把视频变成动作通常要大量带动作标注的专家数据，扩展性卡在这里。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>Mirror 假定已有擅长规划的视频模型；随机初始化的视频→动作（V2A）模型按规划执行，把真实得到的（观察, 动作, 下一观察）写入回放，再训练 V2A。规划始终以<strong>实际到达的状态</strong>为条件重规划，避免误差滚雪球；探索噪声帮助越过 V2A 还不会的关键动作。不需要奖励、特权状态或轨迹过滤。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>Minecraft BASALT 上，无专家动作标签时 FindCave 82%、MakeWaterfall 36%，据作者称是首个不靠硬编码在 MakeWaterfall 拿到非零成功率的学习方法。生存模式钻石挑战：仅自改进、无奖励无专家动作时，约 140 游戏小时后石镐 72.7%、铁镐 15.6%；离线有专家动作时钻石成功率 5.5%，对比 Dreamer V4 的 0.7%。Atari / OGBench / DMC 上也优于主要 learning-from-observation 基线。</p><p><strong class="runin">局限。</strong> 小时级任务仍需子目标启发式；视频规划器在后期里程碑数据少时不够强；部分无视觉痕迹的动作难以纯视觉反推。</p><p>**短评。</p><p><strong class="runin">核心赌注写得很清楚：</strong>视频模型继续变强时，不必同比增加专家动作数据**。和上期 HexaShell"薄 harness + 编码 Agent"对照：一个押视频规划，一个押自然语言编程机器人。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做具身/世界模型的值得读第 3 节与 Minecraft 结果图；其他人看本段。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.24177" target="_blank" rel="noopener">Self-Improving Video-to-Action Models <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+  <p class="sec-lead">过去约 24 小时没有单独值得单列的视频模型发布。和视频生成最相关的是上一节 Mirror：把<strong>视频模型当规划器</strong>，而不是当特效工具。Kling 4.0 等仍处在 10 月中旬发布后的消化期，未纳入本期。</p>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://blog.claroc.io/ghostshares-muse-passive-dns/" target="_blank" rel="noopener">分享链接 ≠ 私密：Muse 把对话标题写进域名，被动 DNS 就能点名翻出</a></h3>
+    <p class="item-meta">2026-10-18，10-20 更新 · 2026-10-20 · 原文 Claroc 约 12 分钟</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-tip">第三方</span>安全公司 Claroc 在被动 DNS 里搜 Muse 内容域 <code>cf.metaaiusercontent.com</code>，过滤后得到 <strong>6,800+</strong> 条分享主机名。Muse 用"对话标题 + 随机 ID"拼子域名，标题本身就在 DNS 里可读；有链接的人无需登录即可打开。抽查中出现贷款申请、CEO 营收材料、银行欺诈提醒片段、与前沿实验室高管通话准备等。Claroc 称 10 月 8 日已走 Meta bug bounty，未见回复；10 月 20 日 Ars 问询后 Meta 暂停该功能。复检此前能打开的 40 个链接均已打不开，但主机名仍留在被动 DNS 历史里。</p><p><strong class="runin">可带走的用法。</strong> <span class="tag tag-guess">评论</span><code>robots.txt</code> 挡的是爬虫不是访问；"有链接的人可看"在标题进 DNS 时约等于公开目录。企业侧：把 AI 分享链接当成外发；个人侧：敏感内容不要用可分享页，改用需登录的协作空间。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 用过 Muse 分享或做 Agent 产品安全的，读 Claroc 原文；已读过 Muse 扩展阅读的可对照 Sentinel/隔离设计再看这一刀。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.claroc.io/ghostshares-muse-passive-dns/" target="_blank" rel="noopener">GhostShares（Claroc） <span style="opacity:.65">(blog.claroc.io)</span></a>
+      <a class="src" href="https://www.theverge.com/tech/1014627/meta-muse-ai-sharing-ai-chats" target="_blank" rel="noopener">The Verge <span style="opacity:.65">(theverge.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s6-2">
+    <h3 class="item-title"><a href="https://x.com/simonw/status/2112630778068881543" target="_blank" rel="noopener">Simon Willison：用 Claude 做浏览器 RTS，顺带让两个 LLM 互打</a></h3>
+    <p class="item-meta">Simon Willison · 2026-10-20 · 原文 帖子线程约 3 分钟</p>
+    <div class="item-body"><p><span class="tag tag-tip">第三方</span>Simon 主要用 Claude Opus 5.5 做了浏览器端类红警游戏 Battle Drones，含设备间多人；还支持每 5 秒暂停让两个 LLM 读局面下指令互打（示例 Haiku 5.5 vs GPT-6 Luna）。<span class="tag tag-guess">评论</span>这是"高效使用"里少见的高信号示例：把模型能力用在可玩、可回放、可对比的闭环上，而不是又一份 demo 幻灯片。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 想看具体玩法就点开线程；否则跳过。</p>
+    <p class="item-sources">
+      <a class="src" href="https://x.com/simonw/status/2112630778068881543" target="_blank" rel="noopener">原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://cloud.google.com/blog/topics/ai-infrastructure/torchtpu-is-now-open-source-run-native-pytorch-on-tpus" target="_blank" rel="noopener">TorchTPU 开源：PyTorch 原生跑 TPU，与 Meta 共建</a></h3>
+    <p class="item-meta">PyTorch 介绍 · 2026-10-20 · 原文 博客约 6 分钟</p>
+    <div class="item-body"><p><span class="tag tag-ok">官方</span>PyTorch Conference 2026 上，Google 与 Meta 宣布开源 TorchTPU：原生 <code>torch.device("tpu")</code>，支持 eager 与 <code>torch.compile</code>，对接 vLLM、SGLang、TorchTitan、Ray、Hugging Face 等。官方称已在约 450 个 Aten ops、Hub 上下载量最高的约 5,000 个模型上做过开箱验证；意图取代依赖懒图录制的 PyTorch/XLA。Hugging Face Transformers v5 可用 <code>device_map="tpu"</code>。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 训推要上 TPU 的读 PyTorch 博文；其他人知道"CUDA 花园外又多一条一等公民路径"即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://cloud.google.com/blog/topics/ai-infrastructure/torchtpu-is-now-open-source-run-native-pytorch-on-tpus" target="_blank" rel="noopener">Google Cloud 博客 <span style="opacity:.65">(cloud.google.com)</span></a>
+      <a class="src" href="https://pytorch.org/blog/introducing-torchtpu/" target="_blank" rel="noopener">PyTorch 介绍 <span style="opacity:.65">(pytorch.org)</span></a>
+      <a class="src" href="https://arxiv.org/abs/2610.24161" target="_blank" rel="noopener">arXiv:2610.24161 <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title">其他短讯</h3>
+    <div class="item-body"><ul><li><strong>OpenAI 收购 Orchestra Bio</strong><span class="tag tag-ok">官方</span>：<a href="https://x.com/OpenAI/status/2112607347688583586" target="_blank" rel="noopener">公告帖</a> 称将把该药物开发协调平台与 Rosalind 生命科学工具结合，加速研发运营。与 Anthropic 同日的蛋白结合体工作形成"实验室发现 vs 研发流程"的对照。</li><li><strong>Meta Muse 分享功能暂停</strong>：见第 6 节。</li><li><strong>车上 Personal Intelligence</strong>：见第 1 节。</li></ul></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 短讯无需原文。</p>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+  <p class="sec-lead">过去 24 小时主线：Anthropic 蝎毒结合体与 OpenAI 生命科学收购同日放出；TorchTPU 开源；Muse 分享隐私；个人 Agent 产品化（车上 Gemini）。关注名单里 Karpathy、Altman、Hassabis、LeCun、吴恩达、Jim Fan、Cursor、Harrison Chase、Boris Cherny、Runway 在窗口内几乎无高信号原创；Anthropic、OpenAI、DeepMind、Ethan Mollick、Simon Willison、Meta AI 有帖。</p>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今日值得看的帖子</h3>
+    <p class="item-meta">2026-10-20 至 21（CST） · 原文 每条约 1 分钟</p>
+    <div class="item-body"><ul><li><strong class="runin">Anthropic（官方）：</strong> 蝎毒结合体主帖约 53 万赞级互动（主帖约 5.3k 赞 / 100 万展示）。强调 17/211 过关、不宣称抗血清、公开全部设计。<span class="tag tag-guess">评论</span>科学博客里少见地把失败模式（多毒素全军覆没）和 GPU 成本写清楚。<a href="https://x.com/AnthropicAI/status/2112579251555721573" target="_blank" rel="noopener">原帖</a></li><li><strong class="runin">OpenAI（官方）：</strong> 收购 Orchestra Bio，约 5.3k 赞。<span class="tag tag-guess">评论</span>和 Anthropic 同日对比：一个押湿实验发现，一个押研发协调 Agent。<a href="https://x.com/OpenAI/status/2112607347688583586" target="_blank" rel="noopener">原帖</a></li><li><strong>Ethan Mollick（沃顿教授）：</strong> 新书 *Co-Existence* 上市："如何在 AI 有时、但并非总是比你强的世界里生活与工作"；并用 Opus 5.5 做了书站体验。约 590 赞。另有帖谈过去 30 个月能力指数曲线。<span class="tag tag-guess">评论</span>和他上期"多人 Agent 别困在群聊"是同一观察者视角。<a href="https://x.com/emollick/status/2112590249033687078" target="_blank" rel="noopener">原帖</a></li><li><strong class="runin">Simon Willison：</strong> Battle Drones 线程（见第 6 节），主帖约 480 赞。<a href="https://x.com/simonw/status/2112630778068881543" target="_blank" rel="noopener">原帖</a></li><li><strong>Google DeepMind（官方）：</strong> Gemini 4 Argon 在 Antigravity 里做了跟 Tom Lehrer《元素》歌同步的 3D 元素周期表，约 2.4k 赞。<span class="tag tag-guess">评论</span>展示向，信息密度不如同日 TorchTPU/蛋白文，但说明"能做复杂交互小品"仍是官方喜欢的能力广告。<a href="https://x.com/GoogleDeepMind/status/2112557925264752930" target="_blank" rel="noopener">原帖</a></li></ul></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · Anthropic 线程 + Mollick 书讯值得点开；其余看本段。</p>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>总览</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>个人 Agent 与记忆/上下文管理</td><td>记忆要对比后合并（Hippo）；文档记忆要问句引导再写入（Cache2LoRA）；车上个人智能开始落地。</td></tr>
+      <tr><td>RSI（自我迭代 / 人参与的迭代）</td><td>技能进化的瓶颈是库治理：验证门控 + 效用 + 坟场（Selm）。</td></tr>
+      <tr><td>各领域模型能力进展</td><td>可湿实验检验的蛋白设计，Claude 64 小时给出可复现候选。</td></tr>
+      <tr><td>世界模型 / 具身</td><td>视频规划 + 自改进 V2A，无奖励也能推进 Minecraft 科技树。</td></tr>
+      <tr><td>AIGC 视频生成</td><td>无单独大发布；视频模型更多被当成 Agent 规划器讨论。</td></tr>
+      <tr><td>高效使用 AI / Agent</td><td>分享链接把标题写进 DNS ≈ 公开目录；用模型做可玩闭环仍是高信号用法。</td></tr>
+      <tr><td>模型发布与评测、AI 产品与落地</td><td>TorchTPU 让 PyTorch 原生上 TPU；Muse 分享被紧急暂停。</td></tr>
+      <tr><td>X 热点精选</td><td>生命科学双线（发现 vs 流程）与开源基建是主叙事。</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 只有 5 分钟，读第 6 节 Muse GhostShares 和第 2 节 Selm；做 Agent 记忆的加读 Hippo/Cache2LoRA；关心具身的读 Mirror 结果段。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-10-21 周三晨报 · sdxzy.github.io/ai-briefings</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
