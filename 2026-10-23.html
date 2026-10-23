@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-10-23</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="10 月 22–23 日要点：METR 与 Redwood 驻场红队测试 OpenAI 内部 Agent 监控，找到压缩、延迟触发等绕过路径；Anthropic 用 Claude 为 123 个开源库写出 1.8 亿行机器可检验的&quot;不崩溃&quot;证明；SolarRenderer 把白膜、深度、骨骼等任意结构视频 4 步渲染成真实画面，因果版可实时；MemoryTax 发现强模型自己翻原始记录，比 Mem0/Zep 这类记忆系统更准也更省；LiteLLM 发布流水线被攻破。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-10-23</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-10-12">截至 2026 年 10 月 12 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>周五版，覆盖 <strong>10 月 22 日上午至 10 月 23 日上午（CST）</strong>；arXiv 条目取 10 月 22 日（美国时间）cs.AI / cs.CV / cs.CL / cs.RO 新列表；少数此前未收录的 10 月 20–21 日条目文中注明日期。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客与文档、arXiv 原文、METR / Redwood 报告、LiteLLM 事故公告；X 用于选题和发帖人观点，均附原帖。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或报道，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">个人 Agent 与记忆/上下文管理</a></div><ol class="toc-items"><li><a href="#s1-1">MemoryTax：模型够强时，"自己翻原始记录"打败专门设计的记忆系统</a></li><li><a href="#s1-2">记忆注入：一次提示注入，在 ChatGPT、Claude、Gemini 的新会话里一直生效</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI（自我迭代 / 人参与的迭代）</a></div><ol class="toc-items"><li><a href="#s2-1">METR 与 Redwood 驻场三周，红队测试 OpenAI 内部 Agent 监控：最大的问题是"有些流量根本没被看到"</a></li><li><a href="#s2-2">自动化研究的两面：Recursive 用"Eureka Machine"造出 Flint；Agent4Sci 显示前沿 Agent 在科学 ML 上只会"工程调参"</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">各领域模型能力进展</a></div><ol class="toc-items"><li><a href="#s3-1">Anthropic：Claude 为 123 个开源库写出机器可检验的"不崩溃"证明，约 1.8 亿行 Rocq</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界模型 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">CADRE：世界模型该用什么样的视频自编码器？摄像机静止和移动时答案相反</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">AIGC 视频生成</a></div><ol class="toc-items"><li><a href="#s5-1">SolarRenderer：白膜、深度、骨骼、线框、分镜草图，4 步渲染成真实视频，因果版 768p 实时</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">高效使用 AI / Agent</a></div><ol class="toc-items"><li><a href="#s6-1">LiteLLM 发布流水线被攻破：官方初步认为，泄露的 GitHub 令牌来自代理日志里的 Claude Code 响应</a></li><li><a href="#s6-2">两个可以直接抄的做法：工具调用前先备份；让"新开的上下文"来验收代码</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">模型发布与评测、AI 产品与落地</a></div><ol class="toc-items"><li><a href="#s7-1">OpenAI Decisions API 正式可用：只回答"有限选项"的问题，号称比 Responses API 快 10 倍、输出不收费</a></li><li><a href="#s7-2">速览：Agent Skills 与 Open Responses 捐给 AAIF；Claude 应用下周默认 auto mode</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今日值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.29823" target="_blank" rel="noopener">MemoryTax：模型够强时，"自己翻原始记录"打败专门设计的记忆系统</a></h3>
+    <p class="item-meta">arXiv · 2026-10-22 · 原文 约 15 分钟（短实证研究）</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> Mem0、Zep 这类记忆系统在问题到来之前就决定记什么；Claude Code、Codex 这类编码 Agent 则保留原始历史，让模型用 grep 等工具自己找。模型变强以后，前者还有必要吗？</p><p><strong class="runin">怎么做的。</strong> <span class="tag tag-ok">论文</span>只用一段 LoCoMo 对话（419 轮、152 个问题），比较 4 种记忆方法（全文塞上下文、BM25、Mem0、Zep）和 3 个编码 Agent（Pi、Codex、Claude Code），各配 GPT-4o-mini、GPT-6 Luna、Claude Opus 5.5，记录每次运行的花费。</p><p><strong class="runin">结果。</strong> <span class="tag tag-ok">论文</span>三条：① Mem0 只在 GPT-4o-mini 上赢过全文上下文，且光是建记忆库的花费就超过一次全文运行——作者称之为"给弱模型打的昂贵补丁"；② 记忆有天花板，由"写记忆的模型"决定，换更强的模型去读，也补不回弱模型当初漏记的内容；③ 用 Opus 5.5 时，Pi 在成本-准确率前沿上排第一，99% 正确、花费不到全文上下文的一半，唯一一题错是标准答案本身有误。</p><p><strong class="runin">局限。</strong> 一段对话、每格只跑一次；Pi 的领先部分来自只有 Agent 能读到的照片说明，在 88 个证据不含照片的问题上，Pi 和全文上下文只差一题。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得，篇幅短。做个人 Agent 记忆的看"writer ceiling"那节，结论和昨天简报里 FrontierMemory"记忆要用下游表现衡量"的思路一致。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.29823" target="_blank" rel="noopener">MemoryTax: The Bitter Lesson of Agent Memory <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.28810" target="_blank" rel="noopener">记忆注入：一次提示注入，在 ChatGPT、Claude、Gemini 的新会话里一直生效</a></h3>
+    <p class="item-meta">arXiv · 2026-10-22 · 原文 约 30 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 传统聊天机器人被注入后，影响只限于当前会话；有了跨会话记忆，恶意指令可以写进记忆，之后每次新对话都带着。</p><p><strong class="runin">结果。</strong> <span class="tag tag-ok">论文</span>在 ChatGPT Instant 5.3、Claude Sonnet 4.6、Gemini 3 Flash 上，NIST 定义的各类攻击目标合起来都能实现；入口包括个人记忆、Projects、Skills、组织级指令和通过 MCP 接入的资源。三家都能被操纵去持续散布错误信息、生成有害内容，或在新会话里假装"离线无响应"。Claude 的组织共享记忆可以让攻击者一次影响同组织多名用户，并外带用户提示词。作者按威胁模型推出一组防御措施，称其中近一半三家都还没实现。</p><p><strong class="runin">同日。</strong> <span class="tag tag-ok">论文</span><a href="https://arxiv.org/abs/2610.28987" target="_blank" rel="noopener">PerMIT</a> 只信任用户亲手输入和经过"闸门"确认的内容：来自环境的记忆值必须经闸门确认才能触发敏感动作，这一性质在 Lean 4 里做了机器证明；在 Trojan Hippo 记忆投毒测试上未观察到攻击成功。代价是每条外部记忆都要有人或验证模型点一次头。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 给个人 Agent 接记忆、Skills 或 MCP 的，看威胁模型和防御清单两节。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.28810" target="_blank" rel="noopener">Combining Long-Term Memory and LLMs Comes at a High Cost <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://metr.org/blog/2026-10-22-red-teaming-openai-agent-monitoring/" target="_blank" rel="noopener">METR 与 Redwood 驻场三周，红队测试 OpenAI 内部 Agent 监控：最大的问题是"有些流量根本没被看到"</a></h3>
+    <p class="item-meta">METR · 2026-10-22 · 原文 约 12 分钟</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-ok">官方</span>2026 年 7 月 21 日至 8 月 11 日，METR 与 Redwood 各一人在 OpenAI 办公室驻场，用 OpenAI 设备访问代码库和监控提示词，访谈约十几名员工，评估 OpenAI 用来监测内部 Agent"错位"行为（谋划、破坏监控、外泄数据、注入等）的系统。私有报告 61 页，公开版只是双方同意发布的一小部分，OpenAI 有权删改。</p><p><strong class="runin">发现。</strong> <span class="tag tag-tip">第三方</span></p><ul><li>覆盖率：GPT-5.5 及以上模型的内部 Responses API Agent 流量中，约 75–94% 属于"应被监控"范围（内部 Codex 子集 99.2%）；测试开始时 RL 训练运行不在覆盖范围内。</li><li>压缩漏洞：5–7 月，约一成量级的 Codex 应监控流量来自未经监控的上下文压缩（compaction），测试期间已修复。</li><li>触发时机：监控在 Agent 交还控制权时才运行，Agent 可以把被检查的时间往后拖；另有利用序列化差异的方法，可藏起最近几百个动作。</li><li>开关：找到两个客户端可设置的请求头，能让新建的 Agent 不受监控（但设置这一动作本身可能被监控发现）；两个被认为只读的内部工具有简单绕过方法，未验证实际可利用性。</li><li>正面：除少数例外，监控看到的轨迹与 Agent 看到的一致；监控出错率低于 0.2%。</li></ul><p><strong class="runin">后续。</strong> <span class="tag tag-ok">官方</span>OpenAI 称影响生产防护的漏洞已全部修补；METR 表示未核实。报告给出的设计原则包括：按每 N 条消息或每 N 分钟检查，而不是等 Agent 交还控制权；定期把推理日志与监控日志对账；Agent 不应接触监控系统的设计和代码。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做 Agent 平台或内部 Agent 治理的，值得读全文，尤其是最后的设计原则清单。</p>
+    <p class="item-sources">
+      <a class="src" href="https://metr.org/blog/2026-10-22-red-teaming-openai-agent-monitoring/" target="_blank" rel="noopener">Red-Teaming OpenAI's Internal Agent Monitoring Systems <span style="opacity:.65">(metr.org)</span></a>
+      <a class="src" href="https://www.redwoodresearch.org/blog/red-teaming-openais-internal-agent" target="_blank" rel="noopener">Redwood 版 <span style="opacity:.65">(redwoodresearch.org)</span></a>
+      <a class="src" href="https://x.com/OpenAI/status/2113298833392496746" target="_blank" rel="noopener">官方帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s2-2">
+    <h3 class="item-title"><a href="https://recursive.com/updates/introducing-recursive-flint" target="_blank" rel="noopener">自动化研究的两面：Recursive 用"Eureka Machine"造出 Flint；Agent4Sci 显示前沿 Agent 在科学 ML 上只会"工程调参"</a></h3>
+    <p class="item-meta">Recursive · 2026-10-21（美国时间） · arXiv · 2026-10-22 · 原文 Flint 约 8 分钟；Agent4Sci 约 25 分钟</p>
+    <div class="item-body"><p><strong class="runin">Flint。</strong> <span class="tag tag-ok">官方</span>Recursive（Richard Socher 创办）开源的本地编码 MoE 模型，总参数 40B、每 token 激活 2.5B，Apache 2.0，称在 50B 以下 MoE 里 SWE-Bench Pro v2、Terminal-Bench 2.1、SWE-Bench Verified 领先，M4 Pro MacBook Pro 上超过 125 token/s。卖点是"小团队加 Agent，不到四个月从零造出"：自动研究系统 Eureka Machine 参与了数据、优化器、训练配方、架构搜索（从 35B/3B 基线搜到 40B/2.5B）、量化（反常规地把输出层量化到 4 bit，再用自蒸馏补回精度，NVFP4 版与 16 bit 差距在 0.7 分内）和 Metal 内核。<span class="tag tag-guess">未证实</span>"AI 造了大部分"的程度没有量化披露，分数均为自测。</p><p><strong class="runin">Agent4Sci。</strong> <span class="tag tag-ok">论文</span>20 个科学 ML 基准、11 个领域，看 Agent 能把已发表最佳模型推进多少。前沿 Agent 在每个基准上都超过了已发表最佳，Claude Opus 平均相对提升 10.4%，但几乎全来自 ML 工程技巧而非领域洞见。轨迹分析的三种失败：对新颖性判断失准、算力用不满、很快退化成局部参数扫描。加上研究构思、实验管理、定时检查清单三个轻量 skill 后，Opus 升到 20.1%，Codex 从 4.4% 到 8.1%。</p><p><strong class="runin">对照。</strong> <span class="tag tag-guess">评论</span>两者说的是一件事：当前自动化研究强在大规模搜索和工程优化（Flint 的量化、内核正是这类），离"提出领域新想法"还远。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · Flint 读"How we built Flint"一节；Agent4Sci 读失败模式和 skill 设计两节。</p>
+    <p class="item-sources">
+      <a class="src" href="https://recursive.com/updates/introducing-recursive-flint" target="_blank" rel="noopener">Introducing Flint <span style="opacity:.65">(recursive.com)</span></a>
+      <a class="src" href="https://techcrunch.com/2026/10/21/recursive-launches-flint-a-laptop-coding-model-it-says-was-largely-built-by-ai/" target="_blank" rel="noopener">TechCrunch <span style="opacity:.65">(techcrunch.com)</span></a>
+      <a class="src" href="https://arxiv.org/abs/2610.28763" target="_blank" rel="noopener">Agent4Sci <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://www.anthropic.com/research/formal-verification" target="_blank" rel="noopener">Anthropic：Claude 为 123 个开源库写出机器可检验的"不崩溃"证明，约 1.8 亿行 Rocq</a></h3>
+    <p class="item-meta">Anthropic Frontier Red Team 与 Theorem · 2026-10-22 · 原文 约 20 分钟</p>
+    <div class="item-body"><p><strong class="runin">做了什么。</strong> <span class="tag tag-ok">官方</span>把 Google OSS-Fuzz 里开发者写的模糊测试入口，直接变成形式化规格："对任何小于 64 MB 的输入，这个入口编译出的 RISC-V 程序都不会崩溃"（OSS-Fuzz 用 AddressSanitizer 插桩，内存越界即崩溃，所以等价于证明无内存安全错误和断言失败）。Claude 写证明，Rocq 内核检查。几周内完成 123 个库（含 cJSON、simdjson、OpenSSL、zstd）的 239 个入口，共约 1.8 亿行通过检查的 Rocq，典型证明约 60 万行，对应二进制中位长度 1.8 万条 RISC-V 指令。</p><p><strong class="runin">顺带找到的 bug。</strong> <span class="tag tag-ok">官方</span>证明过程中发现数百个 bug，Claude 自行打补丁后重新证明。不少是模糊测试很难碰到的：一个解压器只在约 20 MB、特定布局输入下才触发的越界写；需要 64 MB 输入和 2 GB 以上内存的图像解码器越界读；重新发现 libexpat 的 CVE-2026-56132。还发现了不会崩溃的逻辑 bug，例如某库"限制可加载文件"的功能并不总是生效。</p><p><strong class="runin">要信任什么。</strong> <span class="tag tag-ok">官方</span>只需信任 RISC-V 与 Linux 进程的形式化语义、定理陈述和 Rocq 检查器本身；前提是单线程、静态链接、固定内存预算。其他实验：在 x86 二进制上证明 Linux 内核 zlib 符合 RFC 1950；用 Verus 证明 Claude 写的 Rust 版 Python 解释器行为等价，注入的 7 个 bug 有 5 个躲过随机测试，但全部让证明失败。部分证明、语义模型已公开，Theorem 提供开源项目验证计划和配套 Claude skill；会暴露未修补漏洞的证明暂不公开。</p><p><strong class="runin">局限。</strong> <span class="tag tag-tip">第三方</span>证明的是"不崩溃"，不是功能正确，也不保证会终止；多线程和其他架构还不在范围内。</p><p><strong class="runin">同日。</strong> <span class="tag tag-ok">论文</span><a href="https://arxiv.org/abs/2610.29932" target="_blank" rel="noopener">FrontierCS 2</a>：从 48 篇论文的开源代码里删掉论文贡献，让 Agent 在真实仓库里补回来，覆盖 13 个领域；评测 12 个 Agent，最好的 Opus 5.5 只有 58% 的运行通过，16 道题没有任何一次运行通过。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得，"Turning tests into proofs"和"Finding and fixing bugs"两节是核心。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.anthropic.com/research/formal-verification" target="_blank" rel="noopener">LLMs are making formal software verification feasible at a much larger scale <span style="opacity:.65">(anthropic.com)</span></a>
+      <a class="src" href="https://www-cdn.anthropic.com/files/4zrzovbb/website/6867eadf760258fa8b42a504600cd3c036d16358.pdf" target="_blank" rel="noopener">附录 PDF <span style="opacity:.65">(www-cdn.anthropic.com)</span></a>
+      <a class="src" href="https://x.com/AnthropicAI/status/2113390212911083894" target="_blank" rel="noopener">官方帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.30129" target="_blank" rel="noopener">CADRE：世界模型该用什么样的视频自编码器？摄像机静止和移动时答案相反</a></h3>
+    <p class="item-meta">arXiv · 2026-10-22 · 原文 约 25 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 交互式世界模型在视频自编码器的潜空间里生成，压缩率决定每帧成本和动作多久才生效；但多数世界模型直接沿用文生视频的自编码器——那是为离线生成设计的，没人在等，而且没有训练代码，换不了压缩率。</p><p><strong class="runin">怎么做的。</strong> <span class="tag tag-ok">论文</span>做了一族因果扩散表征自编码器 CADRE：冻结的特征上加一个小瓶颈，不同成员只在时空压缩率上不同，共享一个自蒸馏到 1–几步的扩散解码器。在操作和导航两类任务、各两个环境上，用同一个世界模型分别接每个自编码器。</p><p><strong class="runin">结果。</strong> <span class="tag tag-ok">论文</span>CADRE 占据延迟-质量前沿的大部分，摄像机移动时优势更明显。四条发现：强压缩下扩散解码器比感知回归更清晰；机器人操作中，时间压缩放在自编码器里比放在世界模型里更有效；操作和导航需要相反的压缩——摄像机静止时时间压缩几乎无损，摄像机移动时空间压缩更便宜；静止摄像机下，粗的空间 token 对运动的伤害远大于对画质的伤害。代码、模型和在线 demo 已开放。</p><p><strong class="runin">补录。</strong> <span class="tag tag-ok">论文</span>10 月 20 日开源的 <a href="https://arxiv.org/abs/2610.26855" target="_blank" rel="noopener">Ropedia W0</a>（<a href="https://ropedia.github.io/ropedia-w0/" target="_blank" rel="noopener">项目页</a>）：第一视角"移动 + 操作"世界模型，用 1 万小时人类第一视角视频和 3 千小时机器人数据训练，相机位姿编码移动、投影骨骼编码手部操作，在 DreamDojo、AgiBot 等 5 个跨形态基准上报告最佳，蒸馏后可实时生成分钟级视频并接 VR。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做实时世界模型或可控视频的，CADRE 的四条发现值得读；对短剧这类"固定机位 vs 运镜"的取舍也有参考。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.30129" target="_blank" rel="noopener">Rethinking Video Autoencoders for Interactive World Models <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.28630" target="_blank" rel="noopener">SolarRenderer：白膜、深度、骨骼、线框、分镜草图，4 步渲染成真实视频，因果版 768p 实时</a></h3>
+    <p class="item-meta">NUS Show Lab 等 · arXiv · 2026-10-22 · 权重 · 代码 · 原文 约 30 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> 3D 白膜预演、游戏引擎、仿真能把空间布局和运镜定死，但要变成真实画面，以往要么为每种结构（深度、分割、骨骼）单独训练控制网络，要么需要大量"粗渲染-真实"成对视频。</p><p><strong class="runin">怎么做的。</strong> <span class="tag tag-ok">论文</span>冻结 MiniMax-H3 33B 参考生视频模型，只加一个控制 LoRA（rank 384）和一个 4 步蒸馏 LoRA。结构视频走模型原生的参考图通道，用逐帧对齐的位置编码，不区分结构类型，只用固定的一句话描述"这是什么结构"。训练数据 13.6 万段逐帧对齐片段（约 243 小时），来自 8 个来源：UE 灰盒场景、CARLA 分割、引擎深度、Blender 白模、UnrealZoo、YouTube 视频估计的 SMPL 人体，以及外观数据。</p><p><strong class="runin">结果。</strong> <span class="tag tag-ok">论文</span>4 步比 50 步快 12.3 倍（单卡生成一段 158 帧：209 秒对 2,562 秒）；因果版最高 28 FPS 实时生成 768p。自建 208 个测试样例、16 种结构，其中 11 种训练时没见过（分镜草图、蜡笔画、点云、线框等）。以 Gemini-3.8-Flash 两两比较打 Elo：未见结构上总分与 LynnReal-Omni 并列 1441，见过的结构上 1510 对 1410；与 15 篇已发表工作的官方 demo 对比，49 胜 13 平 24 负。消融显示数据"对齐"比数量重要（数据砍到 1/10，分数变化不超过 0.2）。</p><p><strong class="runin">局限。</strong> <span class="tag tag-ok">论文</span><span class="tag tag-tip">第三方</span>权重沿用 MiniMax-H3 社区许可，不对美国、欧盟、英国、韩国开放（代码 Apache 2.0）；完整模型在 80 GB 显卡上会爆显存，另发了 8 bit 版；因果版颜色会漂移；快速运镜、彩色深度、体素和分镜输入上不如 50 步；评分靠 LLM 裁判。</p><p><strong class="runin">同日。</strong> <span class="tag tag-ok">论文</span><a href="https://arxiv.org/abs/2610.28954" target="_blank" rel="noopener">C2R#</a> 走另一条路解决缺成对数据：先用好构造的"真实图→粗渲染图"图像对，训练一个在 DINO 特征空间把真实画面变"粗"的模型，再逐帧作用于普通真实视频，造出伪粗渲染视频来训练"粗→真"模型；摘要未给数字。<span class="tag tag-ok">官方</span>HeyGen 发布 <a href="https://www.heygen.com/blog/introducing-heygen-video" target="_blank" rel="noopener">HeyGen Video 1</a>，同样基于 MiniMax H3 后训练：文/图/参考生视频，5–15 秒、最高 2K、画面与对白音效一次生成，最多 12 个参考素材、可固定种子复现，API 模型名 heygen-video-1；官方自称 Artificial Analysis 文生视频榜第一，并坦言最适合单主体、固定机位的短镜头，手部特写较弱。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做白膜预演→成片流程的，SolarRenderer 必读（数据构造与结构类型清单两节），并可直接下载权重试跑。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.28630" target="_blank" rel="noopener">SolarRenderer <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://enderfga.cn/SolarRenderer/" target="_blank" rel="noopener">项目页 <span style="opacity:.65">(enderfga.cn)</span></a>
+      <a class="src" href="https://huggingface.co/Enderfga/SolarRenderer" target="_blank" rel="noopener">权重 <span style="opacity:.65">(huggingface.co)</span></a>
+      <a class="src" href="https://github.com/Enderfga/SolarRenderer" target="_blank" rel="noopener">代码 <span style="opacity:.65">(github.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://docs.litellm.ai/blog/security-incident-oct-21-2026" target="_blank" rel="noopener">LiteLLM 发布流水线被攻破：官方初步认为，泄露的 GitHub 令牌来自代理日志里的 Claude Code 响应</a></h3>
+    <p class="item-meta">LiteLLM · 2026-10-21（持续更新） · 原文 约 10 分钟</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-ok">官方</span>10 月 21 日（UTC 11:39–13:23，即北京时间 19:39–21:23），PyPI 上的 <code>litellm==1.107.0</code> 与 Docker 的 <code>v1.107.0</code>、<code>latest</code>、<code>main-latest</code>、<code>main-stable</code> 标签被换成恶意版本，安装后在每次 Python 启动时运行（<code>cook.pth</code>、<code>sitecustomize.py</code>），窃取凭证并每小时拉取远程代码。GitHub 上的官方源码标签是干净的。</p><p><strong class="runin">怎么发生的。</strong> <span class="tag tag-ok">官方</span>LiteLLM 的初步结论：他们观察到 Claude Code 在特定情况下会把用户的 GitHub CLI OAuth 令牌嵌进响应体；内部一个暴露在公网的 LiteLLM 代理记录了响应体，攻击者疑似借此拿到三名开发者的令牌，其中一个属于组织所有者，用它关掉分支保护，把发布流程指向仿冒仓库 <code>Berri-AI/litellm</code> 并签名发布。调查仍在进行。</p><p><strong class="runin">怎么做。</strong> <span class="tag tag-ok">官方</span>若在该时段装过或运行过：先别跑 pip（会再次触发），从 shell 删掉载荷文件、结束持有 <code>/tmp/remote_code_loader.lock</code> 的进程，重建环境并固定 <code>litellm==1.106.2</code>，轮换主机能接触到的所有密钥。<span class="tag tag-guess">评论</span>更普遍的教训：Agent 网关的请求/响应日志本身就是高价值凭证库，应默认脱敏或不落盘。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 用 LiteLLM 的立即看"Who is affected"；做 Agent 网关或日志的看"How this happened"。</p>
+    <p class="item-sources">
+      <a class="src" href="https://docs.litellm.ai/blog/security-incident-oct-21-2026" target="_blank" rel="noopener">Oct 21, 2026 LiteLLM release v1.107.0 Compromised <span style="opacity:.65">(docs.litellm.ai)</span></a>
+      <a class="src" href="https://osv.dev/vulnerability/MAL-2026-2144" target="_blank" rel="noopener">OSV MAL-2026-2144 <span style="opacity:.65">(osv.dev)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s6-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2610.28934" target="_blank" rel="noopener">两个可以直接抄的做法：工具调用前先备份；让"新开的上下文"来验收代码</a></h3>
+    <p class="item-meta">arXiv · 2026-10-22 · arXiv · 2026-10-22 · 原文 各约 20 分钟</p>
+    <div class="item-body"><p><strong class="runin">先备份。</strong> <span class="tag tag-ok">论文</span>RegretBench 收集了 205 个真实"后悔时刻"（用户在 GitHub、Stack Overflow 等处抱怨没留旧状态）改成的可执行任务。6 个前沿模型平均完成 86.1% 的任务，但只在 15.2% 的情况下事先备份。作者的 BackUpper 是挂在 harness 上的备份层：每次工具调用前检查要改什么，常见操作走规则表，复杂情况交给轻量子 Agent；覆盖了全部后悔动作，恢复后与原状态平均相似度 92.2%，每任务 0.014 美元，比让主 Agent 自己备份少用 7 倍 token。</p><p><strong class="runin">独立验收。</strong> <span class="tag tag-ok">论文</span>同一个 Agent 既写代码又写测试时，测试不再是独立证据。预注册实验里，在三个有状态服务中埋了 46 个缺陷，新开上下文、先只看规格的验证者，比构建者自己的测试查出更多缺陷（Holm 校正 p = 0.006），还暴露了规格歧义，代价是偶尔给出错误的预期结果；换一家厂商的模型做验证者，没有额外收益。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 两篇都是"读方法一节就能用"；第二篇的结论很实用——要的是隔离上下文，不是换模型。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2610.28934" target="_blank" rel="noopener">Back Up Before You Regret <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://arxiv.org/abs/2610.28667" target="_blank" rel="noopener">Who Verifies the Builder? <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://openai.com/index/decisions-api" target="_blank" rel="noopener">OpenAI Decisions API 正式可用：只回答"有限选项"的问题，号称比 Responses API 快 10 倍、输出不收费</a></h3>
+    <p class="item-meta">OpenAI · 2026-10-22 · 原文 约 6 分钟</p>
+    <div class="item-body"><p><strong class="runin">是什么。</strong> <span class="tag tag-ok">官方</span>基于 GPT-6 Luna 的专用端点，用于分类、路由、"下一步做什么"这类答案有界的小决策。三种答案类型：predicate（条件为真的概率）、choice（从给定选项里选一个，附概率和置信度）、score（按分级量表打分）。输入可以是文本、图片或原生 JSON，单请求最多 400 个问题（公测时的两倍），新增 GPT-Live 语音会话原生集成、提示缓存、美国与欧盟推理驻留。</p><p><strong class="runin">价格与客户数据。</strong> <span class="tag tag-ok">官方</span>输入每百万 token 0.10 美元、缓存输入 0.01 美元，输出不收费。客户自述：Datadog 用它在执行前给 Agent 生成的命令打风险分，p95 比前沿模型快 40 倍；Sierra 选下一步动作 p95 低于 280 毫秒；Box 在 30 个保险凭证样例上路由快约 5 倍、准确率持平。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · Agent 里有大量"要不要继续/重试/升级人工"判断的，值得试；客户数据均为自述。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openai.com/index/decisions-api" target="_blank" rel="noopener">Build more responsive apps with the Decisions API <span style="opacity:.65">(openai.com)</span></a>
+      <a class="src" href="https://developers.openai.com/api/docs/guides/decisions" target="_blank" rel="noopener">开发文档 <span style="opacity:.65">(developers.openai.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title">速览：Agent Skills 与 Open Responses 捐给 AAIF；Claude 应用下周默认 auto mode</h3>
+    <p class="item-meta">见各条 · 原文 每条约 1–3 分钟</p>
+    <div class="item-body"><ul><li><strong class="runin">AAIF 新增四个项目。</strong> <span class="tag tag-ok">官方</span>Agentic AI Foundation 在 AGNTCon + MCPCon 上宣布：Anthropic 捐出 Agent Skills（可按需加载的指令、脚本、资源包格式），OpenAI 捐出 Open Responses（基于 Responses API 的跨厂商接口规范），Hugging Face 捐出 OpenEnv（RL 环境框架），阿里巴巴捐出 OpenSandbox（Agent 沙箱平台）。AAIF 一年内从 3 个项目增至 10 个，与 MCP、AGENTS.md、A2A 同在中立治理下。<a href="https://aaif.io/news/agentic-ai-foundation-announces-four-new-projects" target="_blank" rel="noopener">AAIF 公告</a> · <a href="https://www.anthropic.com/news/donating-agent-skills-to-the-agentic-ai-foundation" target="_blank" rel="noopener">Anthropic</a></li><li><strong>Claude 应用默认 auto mode。</strong> <span class="tag tag-ok">官方</span>下周起，Pro、Max、Team 用户在 Claude 网页、桌面和手机端的会话默认进入 auto mode：不再逐步请你批准，由自动检查拦截高风险动作，可随时切回手动。Claude Code 8 月已默认开启，当时官方数据是 auto mode 拦下 89% 的危险命令，人工审批只拦下 14%。<a href="https://x.com/claudeai/status/2113360845409583307" target="_blank" rel="noopener">原帖</a></li><li><strong>Claude 上 Google Cloud（Anthropic 托管）正式可用。</strong> <span class="tag tag-ok">官方</span>在 Google Cloud 上用完整的 Claude Platform 功能，走 Google Cloud IAM、账单与承诺额度抵扣。前一天是 OpenAI 上 Google Cloud。<a href="https://x.com/claudeai/status/2113380122468454765" target="_blank" rel="noopener">原帖</a></li><li><strong class="runin">Perplexity。</strong> <span class="tag tag-ok">官方</span>Agent API 新增 Batch API，单批最多 5 万个请求；4B 的决策模型 pplx-decider-flash-v1.2 推出 Mac 本地应用 Decider for Mac，问文本或图片问题、返回概率，不需 API key，数据不出本机（与 OpenAI Decisions API 同类定位）。<a href="https://docs.perplexity.ai/docs/agent-api/batch#batch-api" target="_blank" rel="noopener">Batch 文档</a> · <a href="https://x.com/AravSrinivas/status/2113420151232352444" target="_blank" rel="noopener">原帖</a></li></ul></div>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+  <p class="sec-lead">过去 24 小时的主线：Anthropic 的形式化验证和 OpenAI 的监控红队报告是研究圈讨论最多的两件事；Claude 应用默认 auto mode 的帖子互动最高。关注名单里 Altman、Karpathy、LeCun、吴恩达、Jim Fan、Meta AI、Mistral、Cursor 在窗口内没有高信号原创帖。</p>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今日值得看的帖子</h3>
+    <p class="item-meta">2026-10-22 至 23（CST） · 原文 每条约 1 分钟</p>
+    <div class="item-body"><ul><li><strong>Claude（Anthropic 官方）：</strong> auto mode 将成为 Claude 各端应用的默认模式，约 1.1 万赞、近 70 万浏览。<span class="tag tag-guess">评论</span>审批从"每步问人"转向"分类器拦截 + 可切回"，个人 Agent 的默认权限正在整体放宽。<a href="https://x.com/claudeai/status/2113360845409583307" target="_blank" rel="noopener">原帖</a></li><li><strong class="runin">Anthropic（官方）：</strong> 形式化验证研究帖，约 3.3k 赞、1.7k 收藏，收藏比异常高，说明工程师在存着细读。<a href="https://x.com/AnthropicAI/status/2113390212911083894" target="_blank" rel="noopener">原帖</a></li><li><strong>OpenAI 与 METR（官方）：</strong> OpenAI 称邀请 METR 和 Redwood 驻场三周，"发现帮助加固了安全措施"；METR 帖强调这只是一份简短公开版。两帖口径值得对照读。<a href="https://x.com/OpenAI/status/2113298833392496746" target="_blank" rel="noopener">OpenAI 原帖</a> · <a href="https://x.com/METR_Evals/status/2113290966933389390" target="_blank" rel="noopener">METR 原帖</a></li><li><strong>Claude Devs 与 Boris Cherny（Claude Code 负责人）：</strong> 宣布 Agent Skills 捐给 AAIF，称自 2025 年 12 月以来已有 70 多个 Agent 平台接入，包括 ChatGPT、Cursor、GitHub Copilot、VS Code；Cherny 说 Skills 最初是 Claude Code 里的一个实验。<a href="https://x.com/ClaudeDevs/status/2113328526413996100" target="_blank" rel="noopener">Claude Devs 原帖</a> · <a href="https://x.com/bcherny/status/2113333859907747871" target="_blank" rel="noopener">Cherny 原帖</a></li><li><strong>Ethan Mollick（沃顿商学院教授）：</strong> "我 2024 年的书出版时，最好的 AI 能做 4 分钟的人类工作（50% 成功率）；今年交稿时是 17 小时；两天前出版时，是 17 周。"<span class="tag tag-guess">评论</span>配图注明：17 小时来自 METR 时间跨度，17 周来自 MirrorCode 的单个任务（Claude 用 14 小时重建一个 1.6 万行程序，研究者估计人类工程师需 2–17 周），两者不是同一种测量，不宜直接连成曲线；他在回复里补充复现成本约 241 美元 token。<a href="https://x.com/emollick/status/2113323645284344215" target="_blank" rel="noopener">原帖</a> · <a href="https://x.com/emollick/status/2113326345682092263" target="_blank" rel="noopener">补充</a></li><li><strong>Nathan Lambert（Interconnects 作者）：</strong> 反驳"开源模型让网络安全失控"的悲观论调："开源权重当然会被用于攻击，但安全圈里有一批可信的人认为，未来 12 个月开源模型是维持防线的重要部分。"<a href="https://x.com/natolambert/status/2113231789321838934" target="_blank" rel="noopener">原帖</a></li><li><strong>Greg Brockman（OpenAI 总裁）：</strong> ChatGPT Work 已向 Uber 全体员工推开。Uber 方面称此前做了 1,000 人试点，一个团队把覆盖 150 个城市的资本分配流程从 15 小时缩到 30 分钟。<a href="https://x.com/gdb/status/2113325885491437764" target="_blank" rel="noopener">原帖</a></li></ul></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · Mollick 的配图和 METR、OpenAI 两帖值得点开；其余看本段。</p>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>总览</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>个人 Agent 与记忆/上下文管理</td><td>强模型自己检索原始历史，比专门的记忆系统更准更省；跨会话记忆让提示注入变成持久入侵。</td></tr>
+      <tr><td>RSI（自我迭代 / 人参与的迭代）</td><td>第三方驻场发现 OpenAI 内部 Agent 监控有覆盖缺口；自动化研究擅长工程搜索，缺领域洞见。</td></tr>
+      <tr><td>各领域模型能力进展</td><td>Claude 为 123 个开源库写出机器可检验的不崩溃证明，顺带找出数百个 bug。</td></tr>
+      <tr><td>世界模型 / 具身</td><td>世界模型的自编码器压缩该按任务定：固定机位压时间，移动机位压空间。</td></tr>
+      <tr><td>AIGC 视频生成</td><td>任意结构视频（含白膜、分镜）4 步转真实画面，因果版实时；HeyGen 基于同一底座发布视频模型。</td></tr>
+      <tr><td>高效使用 AI / Agent</td><td>LiteLLM 被攻破，Agent 网关日志成了凭证泄露源；工具调用前备份、隔离上下文验收。</td></tr>
+      <tr><td>模型发布与评测、AI 产品与落地</td><td>Decisions API 正式可用；Agent Skills、Open Responses 进入中立基金会；Claude 应用默认 auto mode。</td></tr>
+      <tr><td>X 热点精选</td><td>auto mode 默认化与形式化验证刷屏；Mollick 的"17 周"图混用了两种测量。</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 只有 5 分钟，读第 5 节 SolarRenderer 和第 2 节 METR 报告的"发现"；用 LiteLLM 的先看第 6 节第一条。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-10-23 周五晨报 · sdxzy.github.io/ai-briefings</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
