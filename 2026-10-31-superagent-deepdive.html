@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>DeepSeek Super-agent：Router–Worker 怎样让 Agent 持续在线并行干活</title>
+<meta name="doc-type" content="deepdive">
+<meta name="description" content="依据 DeepSeek 产品部 / Harness 团队 2026-10-31 设计文章与开源原型，白话拆解 Super-agent：Router–Worker 双层、事件 Fast/Slow 路径、Inline&amp;Spill 与 Chain of Recall、异步 ReAct、存算分离与 BYOM、Watchdog；对照 Harness/Cordis 与 Harness²/GEPA，并标明实验表与安全开放问题。">
+<meta name="parent" content="2026-10-31.html#s1-1">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a> <a href="2026-10-31.html#s1-1">↑ 返回所属简报《科技与 AI 每日简报 · 2026-10-31》</a></nav>
+<header>
+  <p class="kicker">扩展阅读</p>
+  <h1>DeepSeek Super-agent：Router–Worker 怎样让 Agent 持续在线并行干活</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-10-31">截至 2026 年 10 月 31 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 10 月 31 日（CST）</strong>；核心来源为当日设计文章与原型 README</span></div><div class="meta-row"><span class="k">信息来源</span><span>DeepSeek《<a href="https://www.chaincatcher.com/article/2300676" target="_blank" rel="noopener">Super-agent 设计探索：迈向更自主的 Agent 系统</a>》（2026-10-31）；原型 <a href="https://github.com/deepseek-ai/dsh-superagent-prototype" target="_blank" rel="noopener">dsh-superagent-prototype</a>；底层 <a href="https://github.com/deepseek-ai/deepseek-harness" target="_blank" rel="noopener">DeepSeek Harness</a>；英文梳理 <a href="https://agentspulse.github.io/tutorials/deepseek-super-agent-architecture/" target="_blank" rel="noopener">AgentsPulse</a>；box 调研稿 <code>/workspace/deepseek-agent-research/DeepSeek-Super-agent调研.md</code></span></div><div class="meta-row"><span class="k">标记</span><span><span class="tag tag-ok">官方</span>DeepSeek 文章或仓库写明 · <span class="tag tag-tip">第三方</span>媒体/二手梳理 · <span class="tag tag-guess">推测</span>本页推断 · <span class="tag tag-guess">评论</span>编者观点 · <span class="tag tag-tip">示意</span>讲解归类 · <span class="tag tag-tip">建议</span>给 Dong 的做法 · <span class="tag tag-tip">讨论</span>Dong 可带走的理解</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本页是 2026-10-31 简报中 Super-agent 条目的扩展阅读。文章写明「并非对现有产品功能的介绍」；开源原型 Research only，≠ 内部版 ≠ 文中全部设计<span class="tag tag-ok">官方</span>。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">一句话读懂</a></div><ol class="toc-items"><li><a href="#s1-1">先把结论放在前面</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">与 DeepSeek Harness / Cordis 的关系</a></div><ol class="toc-items"><li><a href="#s2-1">两层产品叙事</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">要解决的问题与四特征</a></div><ol class="toc-items"><li><a href="#s3-1">瓶颈从「会不会干」转到「人跟得跟不上」</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">Router–Worker 双层架构</a></div><ol class="toc-items"><li><a href="#s4-1">架构图</a></li><li><a href="#s4-2">Router ≠ Team Lead</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">事件路径：Fast / Slow 与 Thread 直通</a></div><ol class="toc-items"><li><a href="#s5-1">流程图</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">上下文、异步、部署、Watchdog</a></div><ol class="toc-items"><li><a href="#s6-1">Inline &amp; Spill + Chain of Recall</a></li><li><a href="#s6-2">异步 ReAct</a></li><li><a href="#s6-3">存算分离 + BYOM</a></li><li><a href="#s6-4">Watchdog</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">实验表（作者标注：合成负载，初步参考）</a></div></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">开源原型与安全开放问题</a></div><ol class="toc-items"><li><a href="#s8-1">原型大致落地了什么〔官方 README〕</a></li><li><a href="#s8-2">官方承认的未解决问题</a></li><li><a href="#s8-3">与 Harness² / GEPA〔评论〕</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">09</span><a href="#s9">术语表</a></div></li>
+  <li><div class="toc-sec"><span class="n">10</span><a href="#s10">Dong 的理解〔讨论〕</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">一句话读懂</h2>
+  </header>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title">先把结论放在前面</h3>
+    <div class="item-body"><div class="takeaway">
+<p class="tk-label">一句话</p>
+<p class="tk-main">Super-agent 不是新模型，而是挂在 DeepSeek Harness 之上的调度/运行时：用 Router–Worker 把「对用户连续」和「对任务并发」拆开，再叠事件驱动、异步 ReAct、存算分离和 Watchdog。</p>
+<ol>
+<li><strong>定位。</strong>Harness（Cordis 插件内核）= 可替换单 Agent 运行时；Super-agent = 多 Session 之上的组织层<span class="tag tag-ok">官方</span>。</li>
+<li><strong>四特征。</strong>连续、高效（可并行）、主动（听事件）、持久（可恢复）——经典单路 ReAct 撑不住<span class="tag tag-ok">官方</span>。</li>
+<li><strong>核心。</strong>Router 只交互与分派；Worker 隔离执行、不直接对用户说话<span class="tag tag-ok">官方</span>。</li>
+<li><strong>实验。</strong>合成负载下完成时间 p50/p95 约 12.4/15.7 分钟，优于单 Session+Subagent；用更多 token 换更稳的调度<span class="tag tag-ok">官方</span>。</li>
+<li><strong>硬问题。</strong>安全与隐私：云端 Loop 被注入后的端侧全控、凭据进上下文<span class="tag tag-ok">官方</span>。</li>
+</ol>
+<p class="tk-sum">和 Harness²/GEPA 互补：<strong>Super-agent 管怎么组织活着的多 Agent 系统；后两者管怎么把单个 harness/提示词变好</strong><span class="tag tag-guess">评论</span>。</p>
+</div><p>阅读顺序：第 2 节与 Harness 关系；第 3 节问题与四特征；第 4–5 节架构与事件路径配图；第 6 节上下文/异步/部署/Watchdog；第 7 节实验；第 8 节原型与开放问题；第 9–10 节术语与 Dong 理解。</p></div>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">与 DeepSeek Harness / Cordis 的关系</h2>
+  </header>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title">两层产品叙事</h3>
+    <div class="item-body"><div class="grid-wrap"><table class="grid"><thead><tr><th>时间</th><th>东西</th><th>定位<span class="tag tag-ok">官方</span></th></tr></thead><tbody><tr><td>2026-08</td><td>DeepSeek Harness（dsh）开发者预览</td><td>底层 harness：Cordis 插件内核，「Everything is a Plugin」</td></tr><tr><td>2026-10-31</td><td>Super-agent 设计文章 + <code>dsh-superagent-prototype</code></td><td>调度/运行时架构探索；非正式产品功能介绍</td></tr></tbody></table></div><p>关系可以记成：</p><ul><li><strong>Harness</strong> = 模型适配、工具、会话日志、agent loop 都是插件的单 Agent 运行时；</li><li><strong>Super-agent</strong> = 在多个 Session 之上：谁对外说话、谁干活、事件怎么进、状态怎么活。</li></ul><p><span class="tag tag-guess">评论</span>读原型时先分清「文章愿景」和「仓库已落地」——README 已声明两者不完全一致。</p></div>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">要解决的问题与四特征</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title">瓶颈从「会不会干」转到「人跟得跟不上」</h3>
+    <div class="item-body"><p>单任务 Agent 已能少人盯着干活；人通常只能跟进约 <strong>3–5</strong> 个活跃 Session<span class="tag tag-ok">官方</span>。单 Session + MCP/连接器仍会撞：同步阻塞、多任务上下文搅在一起、本地离线就停。</p><p>目标形态四特征<span class="tag tag-ok">官方</span>：</p><ol><li><strong class="runin">连续：</strong>IM / GitHub 等多入口像同一个 Agent，用户不必记「Session X 有没有 Y」。</li><li><strong class="runin">高效：</strong>可并行多任务；不必等上一条命令结束才能接新指令。</li><li><strong class="runin">主动：</strong>听环境事件自己推进；不该插嘴时安静。</li><li><strong class="runin">持久：</strong>尽量始终在线，异常可恢复。</li></ol><p>文章强调：单个经典 ReAct Loop <strong>撑不住</strong>这四项，所以要改底层组织，而不是只堆提示词<span class="tag tag-ok">官方</span>。</p></div>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">Router–Worker 双层架构</h2>
+  </header>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title">架构图</h3>
+    <div class="item-body"><figure class="diagram wide" id="arch-diagram">
+<div class="scroll">
+<svg class="dg" viewBox="0 0 880 580" role="img" aria-labelledby="sa-t"><title id="sa-t">DeepSeek Super-agent 双层架构：Router 对外交互与分派，多个 Worker 隔离执行；旁路为事件、记忆与 Watchdog</title><defs><marker id="Sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0L10,5L0,10z"/></marker><marker id="Sb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-acc" d="M0,0L10,5L0,10z"/></marker></defs><rect class="ext" x="14" y="36" width="160" height="200" rx="10"/><text x="28" y="60" class="b">用户入口</text><rect class="box" x="28" y="76" width="132" height="40" rx="7"/><text x="94.0" y="100.0" text-anchor="middle" class="sm">IM / 群聊</text><rect class="box" x="28" y="128" width="132" height="40" rx="7"/><text x="94.0" y="152.0" text-anchor="middle" class="sm">GitHub / PR</text><rect class="box" x="28" y="180" width="132" height="40" rx="7"/><text x="94.0" y="204.0" text-anchor="middle" class="sm">邮件 / 日程</text><rect class="host" x="210" y="36" width="240" height="280" rx="10"/><text x="224" y="60" class="b">Router</text><text x="280" y="60" class="sm">全局序点</text><rect class="key" x="226" y="80" width="208" height="56" rx="7"/><text x="330.0" y="105.0" text-anchor="middle" class="b acc">交互与分派</text><text x="330.0" y="122.0" text-anchor="middle" class="sm">不亲自执行任务</text><rect class="box" x="226" y="152" width="208" height="50" rx="7"/><text x="330.0" y="174.0" text-anchor="middle" class="b">全局记忆 / 协调</text><text x="330.0" y="191.0" text-anchor="middle" class="sm">跨任务关联</text><rect class="box" x="226" y="218" width="208" height="50" rx="7"/><text x="330.0" y="240.0" text-anchor="middle" class="b">可更轻模型</text><text x="330.0" y="257.0" text-anchor="middle" class="sm">甚至可不挂 Bash</text><text x="440" y="100" text-anchor="end" class="xs t-ok">官方文章</text><rect class="cell" x="490" y="36" width="376" height="280" rx="10"/><text x="504" y="60" class="b">Worker × N</text><text x="590" y="60" class="sm">上下文隔离 · 不直接对用户说话</text><rect class="box" x="510" y="80" width="160" height="70" rx="7"/><text x="590.0" y="106.0" text-anchor="middle" class="b">Worker A</text><text x="590.0" y="122.0" text-anchor="middle" class="sm">最强模型+全工具</text><text x="590.0" y="136.0" text-anchor="middle" class="xs">可再开 Subagent</text><rect class="box" x="690" y="80" width="160" height="70" rx="7"/><text x="770.0" y="106.0" text-anchor="middle" class="b">Worker B</text><text x="770.0" y="122.0" text-anchor="middle" class="sm">只干一件事</text><text x="770.0" y="136.0" text-anchor="middle" class="xs">向 Router 汇报</text><rect class="box" x="510" y="170" width="340" height="60" rx="7"/><text x="680.0" y="197.0" text-anchor="middle" class="b">对 Router：Agent Team 内部透明</text><text x="680.0" y="214.0" text-anchor="middle" class="sm">Team Lead 拆单任务 ≠ Router 管任务间</text><rect class="box" x="510" y="250" width="340" height="48" rx="7"/><text x="680.0" y="278.0" text-anchor="middle" class="sm">订阅 Thread：多对多事件共享</text><text x="850" y="100" text-anchor="end" class="xs t-ok">官方</text><path class="ln-acc" d="M174,120 H207" marker-end="url(#Sb)"/><path class="ln-acc" d="M450,150 H487" marker-end="url(#Sb)"/><path class="ln dash" d="M640,320 V350" marker-end="url(#Sa)"/><rect class="ext" x="14" y="340" width="852" height="140" rx="10"/><text x="28" y="364" class="b">五大支撑模块</text><rect class="box" x="28" y="380" width="156" height="70" rx="7"/><text x="106.0" y="412.0" text-anchor="middle" class="b">事件子系统</text><text x="106.0" y="429.0" text-anchor="middle" class="sm">Trigger·Thread·过滤</text><rect class="box" x="196" y="380" width="156" height="70" rx="7"/><text x="274.0" y="412.0" text-anchor="middle" class="b">Inline & Spill</text><text x="274.0" y="429.0" text-anchor="middle" class="sm">窗口当 Cache</text><rect class="box" x="364" y="380" width="156" height="70" rx="7"/><text x="442.0" y="412.0" text-anchor="middle" class="b">Chain of Recall</text><text x="442.0" y="429.0" text-anchor="middle" class="sm">ID 引用多跳找回</text><rect class="box" x="532" y="380" width="156" height="70" rx="7"/><text x="610.0" y="412.0" text-anchor="middle" class="b">异步 ReAct</text><text x="610.0" y="429.0" text-anchor="middle" class="sm">start/stop 不阻塞</text><rect class="box" x="700" y="380" width="156" height="70" rx="7"/><text x="778.0" y="412.0" text-anchor="middle" class="b">存算分离</text><text x="778.0" y="429.0" text-anchor="middle" class="sm">云脑 + 本地手 BYOM</text><text x="850" y="460" text-anchor="end" class="xs t-ok">官方归纳</text><rect class="band" x="14" y="500" width="852" height="66" rx="6"/><text x="440" y="528" text-anchor="middle" class="b">Watchdog：主系统外的独立 Session · 盯基建故障 + Worker 空转/跑偏 · 可用自然语言改规则</text><text x="440" y="550" text-anchor="middle" class="xs t-ok">分区与职责按 DeepSeek 文章重画〔官方〕；「五大模块」为本页归类〔示意〕</text></svg>
+</div>
+<figcaption>图 1 · Router 对外、Worker 对内；下方为事件/上下文/异步/部署等支撑〔官方文章；「五大模块」为本页归类示意〕</figcaption>
+</figure><div class="grid-wrap"><table class="grid"><thead><tr><th>层</th><th>职责<span class="tag tag-ok">官方</span></th><th>模型/工具倾向</th></tr></thead><tbody><tr><td><strong>Router</strong></td><td>全局序点、协调、记忆；接所有人类入口；<strong>只交互与分派</strong>，不亲自执行</td><td>可用更轻模型；甚至可不挂 Bash</td></tr><tr><td><strong>Worker</strong></td><td>上下文隔离；干一件事；可再开 Subagent / 自己就是 Agent Team（对 Router 透明）</td><td>通常最强模型 + 完整工具；<strong>不直接对用户说话</strong>，只向 Router 汇报</td></tr></tbody></table></div></div>
+  </article>
+  <article class="item" id="s4-2">
+    <h3 class="item-title">Router ≠ Team Lead</h3>
+    <div class="item-body"><p>常见 <strong>Agent Team Lead</strong> 拆的是<strong>一个</strong>复杂任务并高频协调；Router 管的是<strong>任务之间</strong>的关联与分派，不介入单任务内部拆解<span class="tag tag-ok">官方</span>。系统设计意图：Session 应是实现细节，不该是用户的认知负担<span class="tag tag-ok">官方</span>。</p><p>能力视角上的新特性还包括：跨信道任务连续、投机执行（如群里报 bug 先静默复现）、信道适配输出（IM 单次约 ≤100 词；GitHub/邮件结构化交付）等<span class="tag tag-ok">官方</span>。</p></div>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">事件路径：Fast / Slow 与 Thread 直通</h2>
+  </header>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title">流程图</h3>
+    <div class="item-body"><figure class="diagram wide" id="flow-diagram">
+<div class="scroll">
+<svg class="dg" viewBox="0 0 880 500" role="img" aria-labelledby="sf-t"><title id="sf-t">事件路径：Trigger 经 Fast Path 确定性过滤，再经 Slow Path LLM 策略；已订阅 Thread 可直通 Worker</title><defs><marker id="Fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0L10,5L0,10z"/></marker><marker id="Fb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah-acc" d="M0,0L10,5L0,10z"/></marker></defs><rect class="key" x="20" y="50" width="160" height="80" rx="7"/><text x="100.0" y="81.0" text-anchor="middle" class="b acc">① Trigger</text><text x="100.0" y="97.0" text-anchor="middle" class="sm">群聊/邮件/CI/评审…</text><text x="100.0" y="111.0" text-anchor="middle" class="xs">半结构化事件</text><rect class="box" x="220" y="50" width="180" height="80" rx="7"/><text x="310.0" y="81.0" text-anchor="middle" class="b">② Fast Path</text><text x="310.0" y="97.0" text-anchor="middle" class="sm">来源/群组/白名单</text><text x="310.0" y="111.0" text-anchor="middle" class="xs">确定性规则先滤</text><rect class="box" x="440" y="50" width="180" height="80" rx="7"/><text x="530.0" y="81.0" text-anchor="middle" class="b">③ Slow Path</text><text x="530.0" y="97.0" text-anchor="middle" class="sm">LLM 策略判断</text><text x="530.0" y="111.0" text-anchor="middle" class="xs">该不该插嘴？派谁？</text><rect class="box" x="660" y="50" width="180" height="80" rx="7"/><text x="750.0" y="81.0" text-anchor="middle" class="b">④ Router 分派</text><text x="750.0" y="97.0" text-anchor="middle" class="sm">冷启动任务</text><text x="750.0" y="111.0" text-anchor="middle" class="xs">创建/选择 Worker</text><path class="ln-acc" d="M180,90 H217" marker-end="url(#Fb)"/><path class="ln-acc" d="M400,90 H437" marker-end="url(#Fb)"/><path class="ln-acc" d="M620,90 H657" marker-end="url(#Fb)"/><rect class="cell" x="220" y="180" width="400" height="100" rx="8"/><text x="236" y="208" class="b">Thread 订阅直通（旁路）</text><text x="236" y="232" class="sm">同 Thread 后续事件：程序直送已订阅 Worker</text><text x="236" y="254" class="sm">消融：完成时间几乎不变；Router 决定数约 +30%；读缓存 token +37%</text><text x="236" y="274" class="xs">23.23M → 31.77M〔官方实验表〕</text><path class="ln-acc dash" d="M100,130 V230 H217" marker-end="url(#Fb)"/><text x="110" y="170" class="xs acc">已订阅？</text><rect class="box" x="660" y="190" width="180" height="80" rx="7"/><text x="750.0" y="221.0" text-anchor="middle" class="b">Worker 执行</text><text x="750.0" y="237.0" text-anchor="middle" class="sm">异步工具 start/stop</text><text x="750.0" y="251.0" text-anchor="middle" class="xs">结果当新事件回灌</text><path class="ln-acc" d="M620,230 H657" marker-end="url(#Fb)"/><path class="ln" d="M750,270 V320 H100 V130" marker-end="url(#Fa)"/><text x="400" y="312" text-anchor="middle" class="xs">结果 / 进展 → 事件总线 → Router 再对外说话</text><rect class="band" x="20" y="350" width="840" height="130" rx="8"/><text x="36" y="378" class="b">投机执行〔官方举例〕</text><text x="36" y="404" class="sm">群里报 bug → 后台 Worker 先复现/找修复；确认且方案简单才出声（「静默复现并修复」）</text><text x="36" y="428" class="sm">信道适配：IM 单次约 ≤100 词；GitHub/邮件走结构化交付</text><text x="36" y="456" class="xs">路径与数字来自 DeepSeek 文章与实验表〔官方〕；流程图布局为本页重画〔示意〕</text></svg>
+</div>
+<figcaption>图 2 · Trigger → Fast Path 规则过滤 → Slow Path LLM 策略 → Router 分派；已订阅 Thread 可直通 Worker〔官方〕</figcaption>
+</figure><ul><li><strong class="runin">Trigger：</strong>环境半结构化事件（群聊/邮件/日程/评审/CI…），不再主要靠人手敲提示词<span class="tag tag-ok">官方</span>。</li><li><strong class="runin">两级过滤：</strong>来源/群组/白名单等确定性规则（Fast）先滤；剩下来再给 LLM 策略（Slow）<span class="tag tag-ok">官方</span>。</li><li><strong class="runin">Thread：</strong>同一 PR / 同一 IM 话题 / 同一邮件串上的连续 Trigger<span class="tag tag-ok">官方</span>。</li><li><strong class="runin">订阅多对多：</strong>Worker 可订多个 Thread；多 Worker 订同一 Thread 时共享事件、自行发现冲突<span class="tag tag-ok">官方</span>。</li><li><strong class="runin">直通意义：</strong>消融去掉直通后完成时间几乎不变，但 Router 决定数约 <strong>+30%</strong>，读缓存 token 约 <strong>+37%</strong>（23.23M → 31.77M）——直通主要省 Router 成本与延迟，不是提质加速本身<span class="tag tag-ok">官方</span>。</li></ul></div>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">上下文、异步、部署、Watchdog</h2>
+  </header>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title">Inline &amp; Spill + Chain of Recall</h3>
+    <div class="item-body"><p>把上下文窗口当 Cache<span class="tag tag-ok">官方</span>：</p><ul><li><strong class="runin">Inline：</strong>近期高概率用到的信息直接进窗口（相邻消息、前 50 字、关联对象 ID…）；</li><li><strong class="runin">Spill：</strong>超预算/低频内容只留指针，按需工具续读；</li><li><strong>Chain of Recall：</strong>Trigger / Thread / Worker Session 带唯一 ID，注入时内联下一跳 ID，模型沿引用图多跳找回跨信道旧任务——缓解 Router 不能塞全历史的问题。</li></ul></div>
+  </article>
+  <article class="item" id="s6-2">
+    <h3 class="item-title">异步 ReAct</h3>
+    <div class="item-body"><p>经典 <code>run()</code> 阻塞整步；异步改为 <code>start()</code> / <code>stop()</code>，立刻回 Started，结果当新事件回灌；前台可继续收消息<span class="tag tag-ok">官方</span>。这是半双工 → 近似全双工的运行时改动，落在 Harness 层；<strong>Harness 已实现，默认未开</strong><span class="tag tag-ok">官方</span>。</p></div>
+  </article>
+  <article class="item" id="s6-3">
+    <h3 class="item-title">存算分离 + BYOM</h3>
+    <div class="item-body"><p>两步解耦<span class="tag tag-ok">官方</span>：</p><ol><li>Agent Loop 计算 → 云端无状态容器；Session 等 → 数据库；</li><li>执行环境留在原地 → 端侧 daemon 只执行命令、不存会话；支持 <strong>BYOM</strong>（Bring Your Own Machine）以及云托管/按需环境。</li></ol><p>对齐 Anthropic「脑手分离」叙事，但优先接<strong>用户本机</strong>（未提交改动、本地凭据、间歇在线），而不只是托管沙箱<span class="tag tag-ok">官方</span>。</p></div>
+  </article>
+  <article class="item" id="s6-4">
+    <h3 class="item-title">Watchdog</h3>
+    <div class="item-body"><p>主系统外的独立 Session + 定时消息：盯基础设施故障 + Worker 是否空转/跑偏；维护者可用自然语言问因、改提示词/触发规则<span class="tag tag-ok">官方</span>。</p></div>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">实验表（作者标注：合成负载，初步参考）</h2>
+  </header>
+  <div class="sec-lead item-body"><p>设定：约 300 条消息 / 约 20 条工作请求；编码用「只耗时」工具代替；间隔与工作时长按 1/4 缩放；模型调用耗时真实；每方案 5 次<span class="tag tag-ok">官方</span>。</p><div class="grid-wrap"><table class="grid"><thead><tr><th>方案</th><th>完成时间 p50 / p95（分钟）</th><th>读缓存 token / 次</th></tr></thead><tbody><tr><td>Super-agent</td><td><strong>12.4 / 15.7</strong></td><td>23.23M</td></tr><tr><td>Super-agent（无直通）</td><td>12.6 / 15.5</td><td>31.77M</td></tr><tr><td>单 Session + Subagent（中性提示）</td><td>20.4 / <strong>29.5</strong></td><td>6.05M</td></tr><tr><td>单 Session + Subagent（优先委派）</td><td>13.8 / 29.0</td><td>10.82M</td></tr></tbody></table></div><p>解读<span class="tag tag-ok">官方</span><span class="tag-q">+ 评论</span>：</p><ul><li>中性提示下模型 5 次从未调用 Subagent，主会话被新消息打断 → 长尾很差；</li><li>「优先委派」提示仍不如架构层强制「Router 不干活」稳定；</li><li>Super-agent <strong>用更多 token 换更短、更稳的完成时间</strong>（调度收益，非单任务质量收益）。</li></ul><p>Router 压力：Trigger 约 1 → 40 条/分钟时，平均 batch 1.0 → 2.8；单次请求 2.5 → 3.9 s；单个决定分摊推理 6.4 → <strong>1.6 s</strong>（积压合并进 Prefill）<span class="tag tag-ok">官方</span>。</p></div>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">开源原型与安全开放问题</h2>
+  </header>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">原型大致落地了什么〔官方 README〕</h3>
+    <div class="item-body"><p>仓库 <a href="https://github.com/deepseek-ai/dsh-superagent-prototype" target="_blank" rel="noopener">deepseek-ai/dsh-superagent-prototype</a>（MIT）：面向<strong>单个 GitHub 仓库</strong>的主动 Coding Agent，打成 Harness bundle；可选飞书。领域模型大致：Trigger → Eval/Decision → Ticket/Mandate → Assignment → Worker Session；Engine 单写者；SQLite；Effects 队列。Router preset 小工具集；Worker preset 完整工具（长命令转后台）。管理面板突出「需要人」的事项。</p><p><strong>Worker 以操作者 OS 用户身份跑命令且无审批</strong>——文档明确要求隔离环境 + 专用 GitHub 账号<span class="tag tag-ok">官方</span>。</p><p>文中未完全落进原型 / 标为未来方向：完整云端存算分离与 BYOM daemon、Watchdog 全套、部分路由/记忆设计<span class="tag tag-ok">官方</span>。</p></div>
+  </article>
+  <article class="item" id="s8-2">
+    <h3 class="item-title">官方承认的未解决问题</h3>
+    <div class="item-body"><ol><li>Router 规模化：何时分片、Worker 何时需要直连；</li><li>跨月级长程记忆；</li><li>Session 对用户隐藏之后，任务可视性与中途介入如何产品化；</li><li>多实例上下文边界与 <strong>A2A</strong>；</li><li><strong class="runin">安全与隐私（最硬）：</strong>云端 Loop 被提示词注入/入侵 → 端侧全控风险；凭据进入模型上下文的泄露；需要「用不接触凭据的方式用凭据」<span class="tag tag-ok">官方</span>。</li></ol></div>
+  </article>
+  <article class="item" id="s8-3">
+    <h3 class="item-title">与 Harness² / GEPA〔评论〕</h3>
+    <div class="item-body"><div class="grid-wrap"><table class="grid"><thead><tr><th>层级</th><th>Super-agent</th><th>Harness²</th><th>GEPA</th></tr></thead><tbody><tr><td>主问题</td><td>多任务调度、在线、跨信道、持久</td><td>无标准答案时改 harness 文件</td><td>用轨迹反思进化提示词</td></tr><tr><td>关键词</td><td>Router/Worker、Trigger/Thread、异步 loop、存算分离</td><td>Propose–Probe–Compose、经验库</td><td>逐例 Pareto、µ_f</td></tr><tr><td>对 Dong</td><td>若要「一个入口并行多任务 / 接 GitHub」，抄调度与事件层</td><td>抄变异算子与经验沉淀</td><td>抄离线门禁与文本槽优化</td></tr></tbody></table></div></div>
+  </article>
+</section>
+<section class="section" id="s9">
+  <header class="sec-head">
+    <span class="sec-num">第 09 节</span>
+    <h2 class="sec-title">术语表</h2>
+  </header>
+  <p class="sec-lead">| 术语 | 白话解释 || --- | --- || DeepSeek Harness / Cordis | 插件化单 Agent 运行时内核 || Super-agent | 多 Session 之上的组织/调度架构探索 || Router / Worker | 对外分派层 / 隔离执行层 || Trigger / Thread | 环境事件 / 同一话题上的连续事件流 || Fast Path / Slow Path | 确定性规则过滤 / LLM 策略判断 || Inline &amp; Spill | 窗口内联热点 vs 指针外置冷数据 || Chain of Recall | 用 ID 引用链多跳找回跨信道上下文 || 异步 ReAct | 工具 start/stop，结果事件回灌 || BYOM | Bring Your Own Machine：云脑 + 本地手 || Watchdog | 主系统外的监控 Session || Ticket / Mandate / Assignment | 原型里从决策到派工的领域对象 |</p>
+</section>
+<section class="section" id="s10">
+  <header class="sec-head">
+    <span class="sec-num">第 10 节</span>
+    <h2 class="sec-title">Dong 的理解〔讨论〕</h2>
+  </header>
+  <div class="sec-lead item-body"><ol><li><strong class="runin">先分清三层：</strong>模型能力 ≠ Harness 插件运行时 ≠ Super-agent 调度组织层。</li><li><strong>Router 不干活</strong>是架构约束，不是提示词建议——实验里「请优先委派」仍抖长尾。</li><li><strong>事件两级过滤 + Thread 直通</strong>省的是 Router 注意力与 token，不是魔法加速单任务。</li><li><strong>上下文当 Cache（Inline/Spill）+ 引用链（Chain of Recall）</strong>，比「把全历史塞进 Router」现实。</li><li><strong>异步工具与 BYOM</strong>解决的是「人还在打字 / 电脑在自己桌上」的产品现实。</li><li><strong class="runin">安全是一等公民：</strong>无审批的本机执行 + 云端 Loop，没有隔离就不要在真实凭据环境试原型。</li><li><strong class="runin">和 RSI 工具链：</strong>Super-agent 解决「怎么同时活着跑多个任务」；Harness²/GEPA 解决「怎么把单个配置变好」——可一起用，不要互相替代。</li></ol></div>
+</section>
+</main>
+
+<footer class="site">扩展阅读 · 2026-10-31 · 依据 DeepSeek 设计文章与公开原型 README 整理；<span class="tag tag-guess">评论</span><span class="tag tag-tip">建议</span><span class="tag tag-tip">讨论</span><span class="tag tag-tip">示意</span>处非 DeepSeek 产品承诺</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
