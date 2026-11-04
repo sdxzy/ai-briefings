@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-11-04</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="Anthropic Messages API 公开 message threads，500k–1M token 请求中位 TTFT 约降 35%；Frontier Red Team 开源 FlashProve（Llama 4 Maverick 上约 110 tok/s 证明）；OpenAI 展示 Astra 端到端机械/电气设计并与 Mazda、Chip Ganassi Racing 合作；DeepMind 为 Antigravity 发布化学信息学 Skills；Adobe/UT Austin AgiWorld 与 GSExplorer 推进持久视频世界模型；AA Capability Indexes v2.0 与 PersonalityBench 更新。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-11-04</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-10-12">截至 2026 年 10 月 12 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span><strong>11 月 3 日全天至 11 月 4 日上午（CST）</strong>。少数 11 月 2 日夜间发酵、昨日简报未覆盖的官方稿一并补上。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客、产品与文档页、arXiv 预印本、独立评测；X 用于选题和发帖人观点，均附原帖。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或报道，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">Agent / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">Anthropic Message Threads：长会话只传增量，中位 TTFT 约降 35%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI</a></div><ol class="toc-items"><li><a href="#s2-1">FlashProve：用 zkSNARK 证明「这串 token 来自已承诺的那份权重」</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">模型能力</a></div><ol class="toc-items"><li><a href="#s3-1">OpenAI：Astra / Codex 进物理工程——CAD、PCB、仿真与行业试点</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">AgiWorld：Agent 规划 + 视频世界模型闭环，从一句话建可重访世界</a></li><li><a href="#s4-2">（交叉）GSExplorer：持久 3DGS 世界状态 + 生成–重建环</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">AIGC 视频</a></div><ol class="toc-items"><li><a href="#s5-1">（交叉）持久视频世界 = 视频生成的下一战场</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">用法</a></div><ol class="toc-items"><li><a href="#s6-1">Message Threads：长 Claude Code 会话的「少传、同算」</a></li><li><a href="#s6-2">Addy Osmani：当 Agent 做完活，人要学会「挑剔地验收」</a></li><li><a href="#s6-3">Hugging Face MICs：用缩小 fixture 在 PR 上抓住集成回归</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">产品落地</a></div><ol class="toc-items"><li><a href="#s7-1">DeepMind：Antigravity + Cheminformatics Skills，一小时级药物化学迭代演示</a></li><li><a href="#s7-2">Artificial Analysis：Capability Indexes v2.0 + PersonalityBench 开闭源性格差</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今日值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://claude.com/resources/articles/message-threads" target="_blank" rel="noopener">Anthropic Message Threads：长会话只传增量，中位 TTFT 约降 35%</a></h3>
+    <p class="item-meta">Anthropic · 约 2026-11-03 · Nov 2 · 原文 约 5–8 分钟</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-ok">官方</span>Messages API 公开 beta <strong>message threads</strong>：首次请求带完整对话并 <code>"thread": {"type":"create"}</code>，之后只传新增消息 + 上一轮 response <code>id</code>（<code>"type":"continue"</code>）。服务端把对话、system、tools 暂存在<strong>加密内存</strong>（不落盘），多数 Claude Code 用户默认开启。官方称：对 <strong>500k–1M token</strong> 的 Claude Code 请求，<strong>中位 time-to-first-token（TTFT）约降 35%</strong>。Beta header：<code>message-threads-2026-08-12</code>；可用面含 Claude API、AWS、Google Cloud（Anthropic managed）、Microsoft Foundry。</p><p><strong class="runin">不是什么。</strong> <span class="tag tag-ok">官方</span>token 用量与计费不变——模型每轮仍读完整上下文；与 Prompt Caching 正交，可叠加。线程 <strong>空闲约 5 分钟过期</strong>，最迟约 1 小时删除；过期后需整段重放（SDK helper 可自动）。append-only；不支持在活跃线程里改早期消息或某些 on-demand compaction。<strong>不适用于 Zero Data Retention / HIPAA</strong>。</p><p><span class="tag tag-guess">评论</span>这是「上下文传输与预处理」层的优化，不是新记忆算法：价值在长 coding / computer-use / 多模态 Agent 循环里砍掉重复上传。5 分钟 TTL 对「泡杯咖啡再回来」不友好，本地仍要自己存一份可重放历史。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 用 Claude Code / 自建长 Agent 则值得，约 5 分钟扫产品文 + 文档限制即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://claude.com/resources/articles/message-threads" target="_blank" rel="noopener">Make long-running agents faster with message threads <span style="opacity:.65">(claude.com)</span></a>
+      <a class="src" href="https://platform.claude.com/docs/en/build-with-claude/message-threads" target="_blank" rel="noopener">文档 <span style="opacity:.65">(platform.claude.com)</span></a>
+      <a class="src" href="https://platform.claude.com/docs/en/release-notes/overview" target="_blank" rel="noopener">平台 Release Notes · Nov 2 <span style="opacity:.65">(platform.claude.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://www.anthropic.com/research/provable-inference" target="_blank" rel="noopener">FlashProve：用 zkSNARK 证明「这串 token 来自已承诺的那份权重」</a></h3>
+    <p class="item-meta">Anthropic Frontier Red Team · 2026-11-02（X 官宣约 11-03） · 原文 约 25–40 分钟（博文 + 技术报告）</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">官方</span>用户、评测方、监管方今天几乎无法确认：返回的 token 是否真的来自声称的那套权重——路由可偷换成便宜模型，攻击者可篡改流；更进一步，<span class="tag tag-ok">官方</span>自述场景里「更强模型冒充较弱模型以躲开监控」也会出现同类问题。Anthropic 将其挂在 Frontier Safety Roadmap 的 <strong>inference verification / provable inference</strong> 目标下（另有一套基于签名 + 可信侧重算的原型已另线交付）。</p><p><strong class="runin">怎么做的 / 证据。</strong> <span class="tag tag-ok">官方</span>开源原型 <strong>FlashProve</strong>（Apache 2.0：证明器、C++/Lean 验证器、顶层 Lean 安全陈述、协议说明）。在 <strong>Llama 4 Maverick（约 400B MoE，公开 4-bit 权重）</strong>、单卡 <strong>H100</strong> 上：约 <strong>110 tokens/s</strong> 出证明，每 <strong>1,024-token</strong> 窗口证明约 <strong>19 MB</strong>；相对同模型 vLLM 推理约 <strong>70–95×</strong> GPU 时间。离线承诺约 39 分钟；验证端 CPU 约十几秒级。证明隐藏权重与专家选择，<strong>不隐藏架构</strong>；当前证明的是整数化 + greedy 解码、上下文上限约 <strong>1,024 tokens</strong>。作者强调 Claude 协助优化 zk 结构，并用 Lean 钉住 completeness / soundness / zero-knowledge 陈述以对抗「大系统难审」。</p><p><span class="tag tag-guess">评论</span>对 RSI 叙事的意义不在「模型自我改权重」，而在<strong>谁在跑、跑的是不是承诺过的那份</strong>：自改进闭环一旦能替换服务端权重，没有可验证推理收据就只剩信任。代价仍约两个数量级、上下文短、后验证明——是路线图里程碑，不是上线产品开关。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心安全 / 监管 / 多租户路由诚信则值得；先读 Executive summary + Limitations，约 15 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.anthropic.com/research/provable-inference" target="_blank" rel="noopener">Progress on provable inference for large language models <span style="opacity:.65">(anthropic.com)</span></a>
+      <a class="src" href="https://x.com/AnthropicAI/status/2117710942826123294" target="_blank" rel="noopener">原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://openai.com/index/accelerating-engineering-for-the-physical-world" target="_blank" rel="noopener">OpenAI：Astra / Codex 进物理工程——CAD、PCB、仿真与行业试点</a></h3>
+    <p class="item-meta">OpenAI · 2026-11-03 · 原文 约 8–12 分钟</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-ok">官方</span>展示 frontier 模型在机械 / 电气 / 端到端系统设计上的进展：内部硬件与基础设施团队用 Codex / ChatGPT 做 CAD、出图、仿真与设计评审；自 2 月起硬件侧 token 用量约 <strong>增长 23 倍</strong>。侧项目：两名成员用 <strong>GPT-6 Astra</strong> 在约一周内无人工直接改稿地设计了一台对接 Codex 的对话设备（外观、外壳、PCB、固件/UI），代工厂约一个月出小批量样机——但量产仍需多轮人工审：Astra <strong>经常未吃透公差、装配与产线约束</strong>。</p><p><strong class="runin">评测与合作。</strong> <span class="tag tag-ok">官方</span>内部 <strong>BenchCAD 2.0</strong>（重建 3D 零件/装配、识别电路板连接）上，一款更新内部模型均分 <strong>0.875</strong>，对照 <strong>GPT-6 Astra 最高推理档 0.594</strong>。对外：扩大与 <strong>Chip Ganassi Racing</strong> 的合作（3D 扫描 → 可编辑 CAD / 2D 出图）；新建与 <strong>Mazda</strong> 气动 / 碰撞安全侧的研究合作（鼻锥等形状探索 + 仿真）。公开征集工程公司与软件厂商协作。</p><p><span class="tag tag-guess">评论</span>「会写代码」延伸到「会碰 CAD/ECAD」是能力面扩张；官方自己把制造闭环的缺口写得很清楚。BenchCAD 数字是内部榜，跨厂商对比尚缺第三方复现。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做硬件 Agent / 物理世界落地则值得，约 10 分钟；只关心数字扫 BenchCAD 与合作两段即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openai.com/index/accelerating-engineering-for-the-physical-world" target="_blank" rel="noopener">Accelerating engineering for the physical world <span style="opacity:.65">(openai.com)</span></a>
+      <a class="src" href="https://x.com/OpenAI/status/2117692475775258785" target="_blank" rel="noopener">原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.02341" target="_blank" rel="noopener">AgiWorld：Agent 规划 + 视频世界模型闭环，从一句话建可重访世界</a></h3>
+    <p class="item-meta">UT Austin / Adobe Research · arXiv 2026-11-02 · 原文 约 30–45 分钟（论文）</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>现有交互式视频世界模型多半要用户逐步给相机轨迹与局部提示；高层意图难落地，长程探索时世界也难保持<strong>持久</strong>（重访不一致、语义漂移）。</p><p><strong class="runin">怎么做的 / 证据。</strong> <span class="tag tag-ok">论文</span><strong>AgiWorld-Agent</strong>（实验用 GPT-6 Astra）维护含「已确认 / 仅想象」元素的世界状态，把下一程写成<strong>度量相机轨迹 + 结构化 caption</strong>；<strong>AgiWorld-WM</strong>（基于 Wan2.2，自 LingBot-World 初始化）按约 <strong>5 秒</strong>一块自回归生成，并把帧与深度写入点云空间记忆。针对遮挡与几何误差提出 <strong>occlusion-aware history selection</strong> 与 <strong>reliability-based memory maintenance</strong>。在自建 <strong>World Explore</strong> 与 <strong>DL3DV-Evaluation</strong> 上，作者报告整体领先：如 DL3DV FID <strong>21.74</strong>（对照 Lyra 2.0 <strong>25.54</strong>），World Explore FID <strong>35.37</strong>（对照 <strong>42.73</strong>），World Explore 平移误差约 <strong>1.05 m</strong>（对照最强基线约 <strong>1.32 m</strong>）。定性展示分钟级、自由指令旅程；项目页有视频，<strong>未见公开权重 / 可运行代码</strong>。</p><p><span class="tag tag-guess">评论</span>和 Dong 关心的白膜 / 镜头预演同构：<strong>贵的是真渲染试次，便宜的是「状态里筛路线」</strong>。持久性被明确写成「不单靠视频模型，而靠 Agent 闭环」——比堆更长上下文更接近可工程化叙事。数字为作者自测且含自建榜，宜<span class="tag tag-ok">论文</span><span class="tag-q">自述</span>读。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 世界模型 / 短剧空间一致性读者值得，先读 §1–2 与 Table 1，约 20 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.02341" target="_blank" rel="noopener">AgiWorld: An Agentic Video World Model for Building Persistent Worlds <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://bshfang.github.io/agiworld/" target="_blank" rel="noopener">项目页 <span style="opacity:.65">(bshfang.github.io)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s4-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.01543" target="_blank" rel="noopener">（交叉）GSExplorer：持久 3DGS 世界状态 + 生成–重建环</a></h3>
+    <p class="item-meta">HKUST(GZ) 等 · arXiv 约 2026-11-01 · 原文 约 25–35 分钟</p>
+    <div class="item-body"><p><span class="tag tag-ok">论文</span>用持久 <strong>3D Gaussian</strong> 状态给视频生成器提供多模态条件，再用 SLAM 后端做不一致过滤与跨 chunk 光束法平差。WorldScore 单步均分作者报 <strong>82.85</strong>（Camera Control <strong>99.07</strong>）；481 帧 leave-and-return 上 PSNR <strong>19.85</strong> 等领先对照。与 AgiWorld 同属「显式空间状态扛持久性」路线，一个偏 Agent 高层规划，一个偏 3DGS–视频耦合。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 已读 AgiWorld 可扫 Abstract + Tables 1–3 作对照，约 10 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.01543" target="_blank" rel="noopener">GSExplorer <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title">（交叉）持久视频世界 = 视频生成的下一战场</h3>
+    <div class="item-body"><p>今日主条见第 4 节 AgiWorld / GSExplorer：评测与叙事都从「单段好看」转向<strong>重访一致、分钟级探索、相机可控</strong>。产品侧未见与昨日 Kling 融资 / Runway Dev 插件同量级的新发布；创作者短期仍看各家原生时长、参考素材与 Agent 插件生态。</p></div>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title">Message Threads：长 Claude Code 会话的「少传、同算」</h3>
+    <div class="item-body"><p>见第 1 节。实操要点<span class="tag tag-ok">官方</span>：多数 Claude Code 已默认；自建 Agent 加 beta header 与 <code>thread</code> 字段；本地保留全历史以防 5 分钟过期；别指望账单变便宜。</p></div>
+  </article>
+  <article class="item" id="s6-2">
+    <h3 class="item-title"><a href="https://x.com/addyosmani/status/2117512471930167377" target="_blank" rel="noopener">Addy Osmani：当 Agent 做完活，人要学会「挑剔地验收」</a></h3>
+    <p class="item-meta">Addy Osmani（Claude Code） · 2026-11-03 · 原文 X Article，约 5–10 分钟；互动极高（浏览约 117 万、赞约 7.8k）</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-tip">第三方</span>Chrome / Claude Code 侧高频作者发长文，主题是 Agent 承担执行后，人类工作从「亲手写」转向<strong>批判性验收、设定约束与判停</strong>。具体条目以原帖 Article 为准（本简报未全文抓取正文）。</p><p><span class="tag tag-guess">评论</span>与昨日 <code>ultrathink</code> 抬 effort 同一作者线：一个调推理预算，一个调人机分工。热度高，适合当「用法文化」信号，不宜当论文证据。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 写 Agent 工作流 / 带人的团队值得扫，约 5 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://x.com/addyosmani/status/2117512471930167377" target="_blank" rel="noopener">Critical thinking when agents do the work <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s6-3">
+    <h3 class="item-title"><a href="https://huggingface.co/blog/transformers-mic" target="_blank" rel="noopener">Hugging Face MICs：用缩小 fixture 在 PR 上抓住集成回归</a></h3>
+    <p class="item-meta">Hugging Face · 2026-11-03 · 原文 约 12–15 分钟</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-ok">官方</span>提出 <strong>MIC</strong>：缩小版权重 fixture + 可跑 usage 路径 + 人工审过的 baseline。复盘 2026-07-30 给 T5 开 SDPA 导致 <strong>UMT5 解码器可看未来 token</strong>、近两月才修的事故——小 UMT5 fixture 在 CPU 上能逐 commit 打出差异。<code>tmic</code> CLI 可用 Agent 起草合同，但 baseline 变更需人审。截至 <strong>2026-11-01</strong>，Transformers CI <strong>报告失败但不阻断 PR</strong>。</p><p><span class="tag tag-guess">评论</span>对「Agent 改大仓」是互补基建：模型侧集成回归需要<strong>可复现的小契约</strong>，否则 Agent 提的 PR 靠夜间 GPU 才爆雷。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 维护 Transformers / 大模型库则值得；使用者扫 UMT5 故事即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://huggingface.co/blog/transformers-mic" target="_blank" rel="noopener">Transformers Model Integration Contracts <span style="opacity:.65">(huggingface.co)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/" target="_blank" rel="noopener">DeepMind：Antigravity + Cheminformatics Skills，一小时级药物化学迭代演示</a></h3>
+    <p class="item-meta">Google DeepMind · 2026-11-03 · 原文 约 10–15 分钟</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-ok">官方</span>为 <strong>Google Antigravity</strong> 发布化学信息学 Skills（RDKit、ChEMBL / PubChem 等）：演示以肺癌药 <strong>crizotinib → lorlatinib</strong> 刚性化为例，Agent 检索数千化合物、做 matched molecular pair、建效力模型并提出带合成路线的新大环——作者称同类工作过去常要<strong>数天</strong>，演示压缩到约<strong>一小时</strong>量级。强调假设仍须实验验证；开放 Antigravity Science 插件，并宣称向最多 <strong>1 万名</strong>科学家提供 6 个月最高用量档（滚动筛选，有资格与名额限制）。</p><p><span class="tag tag-guess">评论</span>科学 Agent 的正确姿势仍是「LLM 编排 + 确定性化学工具」；与昨日 Hydrogen-1.0「领域轨迹」形成产品 vs 开源权重两条线。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做科学 Agent / 医药 AI 则值得，约 10 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/" target="_blank" rel="noopener">Agentic cheminformatics with Google Antigravity <span style="opacity:.65">(deepmind.google)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title"><a href="https://x.com/ArtificialAnlys/status/2117780641618207006" target="_blank" rel="noopener">Artificial Analysis：Capability Indexes v2.0 + PersonalityBench 开闭源性格差</a></h3>
+    <p class="item-meta">Artificial Analysis · 2026-11-04 · 原文 约 3–5 分钟（线程）</p>
+    <div class="item-body"><p><strong class="runin">发生了什么。</strong> <span class="tag tag-tip">第三方</span><span class="tag-q">评测</span>六大职业能力指数升至 <strong>v2.0</strong>，对齐 Intelligence Index v5.0，加重 <strong>Non-Hallucination</strong> 与 <strong>Agentic Tool Use</strong>；工程指数新增 Science（CritPt v2 Hard、Terminal-Bench-Science 0.1）与 FrontierCode 2.0。<span class="tag tag-ok">官方</span><span class="tag-q">自述结果</span><strong>Claude Opus 5.5 (max)</strong> 六项均领先；开源侧 <strong>Kimi K3.1 Pro</strong>（权重尚未发布）居开源前列。PersonalityBench：同批 Intelligence Index 头部模型中，开源在 Truthful 等特质平均分位显著低于闭源（如 Truthful <strong>47 vs 79</strong>），在 Slop 上反而更高（<strong>49 vs 30</strong>）。另有机器人臂「做完还不停」案例：Opus 5.5 约 23 分钟完成任务后仍搅动约 <strong>22 分钟</strong>。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 跟榜读者扫线程即可；细节以 AA 站点方法页为准。</p>
+    <p class="item-sources">
+      <a class="src" href="https://x.com/ArtificialAnlys/status/2117780641618207006" target="_blank" rel="noopener">AA Capability Indexes 更新帖 <span style="opacity:.65">(x.com)</span></a>
+      <a class="src" href="https://x.com/ArtificialAnlys/status/2117787337836868058" target="_blank" rel="noopener">PersonalityBench 帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今日值得看的帖子</h3>
+    <div class="item-body"><p>**OpenAI（官方）· <a href="https://x.com/OpenAI/status/2117692475775258785" target="_blank" rel="noopener">物理世界工程进展</a>**</p><p>Astra 一周侧项目做设备 + Mazda / CGR 合作。点评：和第 3 节同源；浏览约 50 万级，先读官网再转发「AI 会做 PCB」标题。</p><p>**Anthropic（官方）· <a href="https://x.com/AnthropicAI/status/2117710942826123294" target="_blank" rel="noopener">FlashProve / provable inference</a>**</p><p>zkSNARK 证明响应来自承诺模型。点评：和第 2 节同源；赞约 3k+，安全向主条。</p><p>**Addy Osmani（Claude Code）· <a href="https://x.com/addyosmani/status/2117512471930167377" target="_blank" rel="noopener">Critical thinking when agents do the work</a>**</p><p>Agent 干活后人如何验收。点评：和第 6 节同源；今日互动最高的用法帖之一。</p><p>**Artificial Analysis · <a href="https://x.com/ArtificialAnlys/status/2117780641618207006" target="_blank" rel="noopener">Capability Indexes v2.0</a>**</p><p>职业能力指数重加权 + 开源性格差距。点评：和第 7 节同源；独立评测信号。</p><p>**Steve Weis 等转引 · <a href="https://x.com/sweis/status/2117485473497309299" target="_blank" rel="noopener">FlashProve 开源</a>**</p><p>安全圈早期扩散帖。点评：可作 FlashProve 二手入口，数字以 Anthropic 博文为准。</p></div>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>今日收束</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>Agent / 记忆</td><td>Message threads：长上下文少传、TTFT↓，账单不变</td></tr>
+      <tr><td>RSI</td><td>FlashProve：可验证「谁在推理」，服务自改进时代的诚信层</td></tr>
+      <tr><td>模型能力</td><td>OpenAI 把 Astra/Codex 推进 CAD/PCB/行业仿真试点</td></tr>
+      <tr><td>世界 / 具身</td><td>AgiWorld / GSExplorer：持久性靠显式空间状态 + 闭环</td></tr>
+      <tr><td>AIGC 视频</td><td>叙事转向重访一致与分钟级探索（论文侧）</td></tr>
+      <tr><td>用法</td><td>Threads 默认加速 Claude Code；验收技能成热点；HF MICs 防集成回归</td></tr>
+      <tr><td>产品落地</td><td>Antigravity 化学 Skills；AA 职业指数 v2.0</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 今天优先 Message Threads 产品文（立刻可感）+ FlashProve Executive summary（RSI/安全基础设施）+ OpenAI 物理工程页（能力边界写得很清楚）；做短剧 / 白膜的精读 AgiWorld §1–2 与 Table 1；跟评测看 AA 线程。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-11-04 · Asia/Shanghai</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
