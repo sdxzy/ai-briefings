@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-11-11</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="Google 发布 Gemini 4 Carbon（$2/$10 入门价，CursorBench 第一）与 Antigravity /swarm；DeepMind 用 AlphaProof Code 把 Signal 协议形式化验证到编译后机器码；Gemini Robotics 2.5 与开源世界模型 PAN 2；Cursor Projects 多人协作；自进化 agent 的技能投毒（BadEvolve）与 RSI 统计门控（TRUST）；pi-H3 两步出视频、SwitchX 3.0。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-11-11</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-11-11">截至 2026 年 11 月 11 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 11 月 11 日上午（CST）</strong>，覆盖 11 月 10 日上午起约 24 小时。论文取 arXiv 11 月 10 日新列表（提交于 11 月 6–9 日）。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客、技术报告与论文、arXiv、独立评测（Artificial Analysis）；X 用于选题与发帖人观点（关注名单优先 + 名单外热帖），均附原帖。链接已逐一打开核对（openai.com、ifm.ai、globenewswire 对脚本返回 403，已用搜索结果与官方 X 帖交叉确认页面存在）。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或报道，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。</span></div><div class="meta-row"><span class="k">今天共 12 条、8 个板块。主线是 Google 一天连发</span><span>Gemini 4 Carbon 前一天刚被 Fable 5.2 挤下 AA 指数第一，Google 用「便宜很多 + 多 agent 编排」回应；同日 DeepMind 公布用 Carbon 驱动的 agent 把 Signal 协议实现验证到机器码，和 Gemini Robotics 2.5 的工厂试点。agent 方向则是「多人共享上下文」和「主动给人派活」两条新线。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">Agent / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">Cursor Projects 变多人：每人保留私有上下文，团队共用一层上下文，agent 之间可以直接对话</a></li><li><a href="#s1-2">主动型 agent：从「你给 agent 派活」到「agent 给你派活」，难点先在发现任务</a></li><li><a href="#s1-3">SoMem：让 agent 用普通链接文档自己整理记忆，每条摘要都挂着原始证据</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI</a></div><ol class="toc-items"><li><a href="#s2-1">BadEvolve：只投毒「进化用的任务」，就能让 agent 自己把后门写进技能库</a></li><li><a href="#s2-2">TRUST：用在线多重假设检验决定「这次自我改进要不要保留」，误收劣化更新从 45.6% 降到 2.8%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">模型能力</a></div><ol class="toc-items"><li><a href="#s3-1">AlphaProof Code：Gemini 4 Carbon 驱动的 agent 把 Signal 协议的安全性质证明到编译后的机器码，用时四周</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">Gemini Robotics 2.5：200 多项任务成功率高 30%–100%，奔驰产线试点 96%，附开源机器人越狱基准</a></li><li><a href="#s4-2">PAN 2：LLM 先写「会发生什么」，29B 扩散模型再画出来，权重和训练代码全部开源</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">AIGC 视频</a></div><ol class="toc-items"><li><a href="#s5-1">视频生成提速与可控：pi-H3 两步出片快过实时，SwitchX 3.0 用平面图 + 多参考图拍「一镜到底」</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">用法</a></div><ol class="toc-items"><li><a href="#s6-1">多 agent 怎么配模型、judge 怎么保鲜：Antigravity /swarm 的角色分工与 Meta AutoRefine</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">评测落地</a></div><ol class="toc-items"><li><a href="#s7-1">Gemini 4 Carbon 全面开放：$2/$10 入门价，CursorBench 第一；新基准 MKA 上落后 Fable 5.2 三分但成本约五分之一</a></li><li><a href="#s7-2">OpenAI 推 Businesses in ChatGPT，商家可发布自己的 Business Agent；Anthropic 启动 IPO 路演</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今天值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+  <p class="sec-lead">今天三条：团队共享上下文怎么做、主动型 agent 卡在哪一步、让 agent 自己用普通文档整理记忆。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://cursor.com/blog/projects-multiplayer" target="_blank" rel="noopener">Cursor Projects 变多人：每人保留私有上下文，团队共用一层上下文，agent 之间可以直接对话</a></h3>
+    <p class="item-meta">Cursor · 2026-11-10 · 原文 博客约 4 分钟；文档「Multiplayer Projects」一节约 5 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">官方</span>agent 的上下文一直按人隔离：新同事加入要从头喂需求、设计和约定；两个人各自的 agent 改同一处代码，往往到合并时才发现冲突。</p><p><strong class="runin">做法。</strong> <span class="tag tag-ok">官方</span>上下文分两层。每个成员在 Project 里有自己的一对一聊天，配自己的协调者（coordinator）和执行 agent，局部上下文归个人；另有一层共享上下文（需求文档、图、技术规格、设计稿等），全体成员的 agent 都能读写，「一个聊天里做的决定，Project 里所有 agent 都能拿到」。共享任务看板显示谁在做什么、每个任务对应哪个 PR。成员的协调者之间可以直接发消息，例如一人改数据库 schema、另一人的功能要读这张表，两边 agent 先商定先后顺序。</p><p><strong class="runin">安全边界。</strong> <span class="tag tag-ok">官方</span>文档写明：别人的 agent 发来的消息标注为「agent 输入」，接收方当作不可信输入来权衡，而不是主人的指令；回复在一个分叉出来的侧聊天里进行，侧聊天只能回答，不分享密钥和凭据，不能改看板，也不能向主人提问或申请权限；分享个人文件或连接器数据前要先问主人。</p><p><strong class="runin">局限。</strong> <span class="tag tag-tip">第三方</span>AlphaSignal 指出 Cursor 没给出依赖检测的准确率或误报率，也没说明哪些聊天决定会进入共享层、过期决定如何清理。<span class="tag tag-guess">评论</span>「共享层只写一次、随工作增长」意味着它也会积累过时结论，这和个人记忆的老化问题是同一个问题，只是放大到了团队。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读文档的「How coordinators message each other」，跨 agent 消息的信任规则写得很具体，可直接借鉴。</p>
+    <p class="item-sources">
+      <a class="src" href="https://cursor.com/blog/projects-multiplayer" target="_blank" rel="noopener">Cursor Projects is now multiplayer <span style="opacity:.65">(cursor.com)</span></a>
+      <a class="src" href="https://cursor.com/docs/agent/projects" target="_blank" rel="noopener">Projects 文档 <span style="opacity:.65">(cursor.com)</span></a>
+      <a class="src" href="https://x.com/cursor_ai/status/2120295553309565139" target="_blank" rel="noopener">Cursor 官方原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.12393" target="_blank" rel="noopener">主动型 agent：从「你给 agent 派活」到「agent 给你派活」，难点先在发现任务</a></h3>
+    <p class="item-meta">arXiv · 2026-11-09 · 原文 论文约 20 分钟；幻灯片约 10 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>常驻助手要自己从邮件、聊天、文档和业务系统里看出「主人欠着哪些事」，再去对应系统里办完。现有基准几乎都直接把任务交给 agent，测不到「发现」这一步。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>AutoBuddy-Bench 把一个组织的员工、项目、业务系统和事件历史建成时间图，渲染成逼真的工作区材料，从「产生义务的事件」推出标准答案任务，并按 agent 对工作区的实际改动判分。参考 agent 先列出任务并指向来源记录，再为每个任务开独立会话、带写权限去执行。</p><p><strong class="runin">发现。</strong> <span class="tag tag-ok">论文</span>只换底座模型时，任务丢失的位置系统性移动：弱模型主要丢在发现阶段，中等模型能找出任务但常常做到一半就停，最强模型主要失败在执行，尤其是业务系统操作；发现的精确率与执行质量只弱相关，作者认为这是两种不同能力。论文摘要未给出具体分数。</p><p><strong class="runin">行业观点。</strong> <span class="tag tag-tip">第三方</span>LangChain 的 Sydney Runkle 在 AI Engineer 大会上讲同一主题，论点是 agent 将从「接任务」转向「给人派任务」，这需要记忆和交互界面都上一个台阶。</p><p><strong class="runin">局限。</strong> 模拟组织再逼真也是合成数据；「判断哪些事该主动做、哪些该先问」的边界问题论文没有展开。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做常驻助手的读论文 §1 和结果部分的失败分布即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.12393" target="_blank" rel="noopener">AutoBuddy: Evaluating Proactive, Always-On Agents on Task Discovery and Execution in a Simulated Workplace <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://docs.google.com/presentation/d/1VbC01MaG_YjALvag9v1NX00GjU7LaXMq54I1JdlFcPE/edit?usp=sharing" target="_blank" rel="noopener">Sydney Runkle「proactive agent engineering」演讲幻灯片 <span style="opacity:.65">(docs.google.com)</span></a>
+      <a class="src" href="https://x.com/sydneyrunkle/status/2120268734925529120" target="_blank" rel="noopener">原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-3">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.11929" target="_blank" rel="noopener">SoMem：让 agent 用普通链接文档自己整理记忆，每条摘要都挂着原始证据</a></h3>
+    <p class="item-meta">香港城市大学 / 腾讯 · arXiv · 2026-11-09 · 原文 约 20 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>比如会议地点改了：固定 schema 的记忆系统要么新增一条矛盾记录，要么覆盖旧值丢掉历史。作者问：能不能让 agent 自己决定怎么归档和修订。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>记忆就是一组相互链接的文档：agent 决定把什么写成摘要、怎么分主题、何时修订已有主题，每条摘要都链接回原始对话作为证据；运行时校验每次更新，并自动从整理好的内容派生时间线、关系图和「最近」三种视图。查询时 agent 自己搜索、顺着链接读，必要时翻原始证据。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>在 LoCoMo、BEAM-100K、LongMemEval-S 上分别比最强基线高 2.66、3.10、2.00 个百分点；建好的记忆能换模型复用，加大推理力度还能继续提升。</p><p><strong class="runin">局限与短评。</strong> 提升幅度不大，方法也不复杂；价值在于证明「普通文档 + 链接 + 证据回溯」这种接近人类笔记的结构就够用，和 Anthropic 记忆四层、知识库式记忆是同一方向，不做深挖。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 看图 1 和 §2 即可，约 5 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.11929" target="_blank" rel="noopener">Can LLM Agents Organize Their Own Memory? <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://github.com/Qi202/SoMem" target="_blank" rel="noopener">代码 <span style="opacity:.65">(github.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+  <p class="sec-lead">两篇都在回答「agent 改自己时，哪些改动该留下」：一篇从攻击面看，一篇从统计门控看。</p>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.10542" target="_blank" rel="noopener">BadEvolve：只投毒「进化用的任务」，就能让 agent 自己把后门写进技能库</a></h3>
+    <p class="item-meta">宾夕法尼亚州立大学 / 微软 · arXiv · 2026-11-07 · 原文 约 30 分钟（可只读 §3.2 威胁模型与 §5.2）</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>自进化 agent 有两个角色：执行者做一批「进化任务」，进化者从执行轨迹里提炼出可复用的技能（skills）。以往的技能后门攻击假设能直接改技能文件；但如果技能由可信的进化者在内部生成，攻击者只能往任务池里混几道题。问题是：只靠混题，能不能让 agent 自己把恶意规则写进技能，之后遇到触发词就执行攻击者指定的行为。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>把攻击拆成四个阶段诊断失败：诱导（规则有没有被写进技能）、激活（触发时有没有取到）、遵循（执行者有没有照做）、效果（行为是否达成），每轮只针对失败的阶段改投毒任务；再加回滚（新版本更差就退回）和失败记忆（不重复无效改法）。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>在 Trace2Skill、SkillGrad、SkillOpt、A-Evolve 四个技能进化框架和 SpreadsheetBench、WikiTQ、OfficeQA 上，以 Kimi-K2.5 为受害模型，平均攻击成功率 79.6%（59.3%–100%），两个基线只有 37.6% 和 27.8%；干净任务准确率平均只降 1.1 个百分点，所以从效果上很难察觉。答案篡改场景下，Claude Sonnet 4.6 作为受害模型时条件攻击成功率 54.1%。</p><p><strong class="runin">局限。</strong> 只测了技能这一种 harness 组件，记忆和提示词留作后续；论文没有给出防御方法。</p><p><strong class="runin">坦率短评。</strong> 这是「自进化 = 新攻击面」最直接的证据：进化者从任务经验里学规则，任务来源不可信，技能就不可信。凡是让 agent 从外部任务或用户输入自动沉淀技能的系统，都该对进化任务的来源做隔离，并对新技能做差异审计。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做技能自进化的值得读威胁模型和表 2、表 3。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.10542" target="_blank" rel="noopener">When Experience Becomes a Backdoor: Poisoning Self-Evolving LLM Agents via Failure-Aware Task Optimization <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://github.com/ventr1c/BadEvolve" target="_blank" rel="noopener">代码 <span style="opacity:.65">(github.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s2-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.10787" target="_blank" rel="noopener">TRUST：用在线多重假设检验决定「这次自我改进要不要保留」，误收劣化更新从 45.6% 降到 2.8%</a></h3>
+    <p class="item-meta">arXiv · 2026-11-07 · arXiv · 2026-11-08 · 原文 TRUST 约 30 分钟（理论较多，可只读 §1 与实验）；InfraRSI 读摘要即可</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>agent 改 harness 后，常见做法是「验证分更高就收下」。但验证集有噪声，一次看起来的提升可能只是运气，连续收下几次就会慢慢劣化；反过来，太保守的统计门槛又会拒掉真正有用的改动。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>把每轮「是否接受新版本」看成一次假设检验，用在线多重检验控制「错误进化率」（被接受的更新里造成不可接受性能损失的比例），并让 LLM 读历史上下文来决定这一轮需要多强的证据。作者证明了该比例的上界和最终性能提升的下界。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>在 HotpotQA、DROP、APPS 上（DeepSeek-V4-Flash 与 Qwen-3.8-Flash），贪心门控接受的更新中平均 45.59% 实际更差，TRUST 降到 2.78%，最终分数也高于其他统计门控基线。</p><p><strong class="runin">相关。</strong> <span class="tag tag-ok">论文</span>InfraRSI 把同一思路用到训练基础设施：先锁定可改范围和任务契约（负载、loss、计时不变量）防止钻空子，再联合调启动参数和代码补丁；在四个单机/多机稠密与 MoE 训练负载上最高提速 2.75 倍，平均 MFU 从 17.4% 提到 30.0%。</p><p><strong class="runin">局限。</strong> TRUST 只在三个较老的基准上验证；「错误进化」的阈值要人设定。</p><p><strong class="runin">坦率短评。</strong> 和前天 Flex-RSI「只有留出集更好才保留」、上周自进化审计「得新丢旧」放在一起看，「接受门」正在成为 harness 自改进里独立的一环。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做自改进系统的值得看 TRUST 的实验表和门控算法框图。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.10787" target="_blank" rel="noopener">Trustworthy Recursive Self-Improvement with Statistical Guarantees <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://arxiv.org/abs/2611.11558" target="_blank" rel="noopener">InfraRSI <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://deepmind.google/blog/introducing-alphaproof-code/" target="_blank" rel="noopener">AlphaProof Code：Gemini 4 Carbon 驱动的 agent 把 Signal 协议的安全性质证明到编译后的机器码，用时四周</a></h3>
+    <p class="item-meta">Google DeepMind · 2026-11-10 · 原文 博客约 6 分钟；技术报告很长</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">官方</span>Signal 协议保护着 Signal、Google Messages 等应用里的数十亿对话。以往的协议形式化验证大多停在设计层面，而真实漏洞常藏在「设计」和「实现」之间。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">官方</span>人和 agent 分工：研究员与多个模型合作，把 Signal 的安全目标翻译成形式化规格，每一条都由人审核；然后 Carbon 驱动的 agent 自主完成证明，生成超过 600 万行 Lean；agent 再审计证明，标出约 1% 需要人复核的部分，其余由 Lean 自动检查。<span class="tag tag-tip">第三方</span>据技术页与报道，验证覆盖 libsignal 中 PQXDH 和 Triple Ratchet 的前向保密、认证、入侵后恢复等性质，直到 AArch64 编译代码。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">官方</span>全程四周，官方称以往需要专家团队数年；为确认系统能分辨对错，团队把两个已修复的真实漏洞放回隔离版代码，系统都给出了「该版本不安全」的机器检查证明。Signal CTO 公开背书。</p><p><strong class="runin">局限。</strong> <span class="tag tag-tip">第三方</span>保证是符号层面的，不覆盖 Signal 移动应用整体，也不涉及密码字节的计算安全性；规格由人定，证明「代码满足规格」不等于规格本身完备。</p><p><strong class="runin">坦率短评。</strong> 这是继 Fable 5.2 形式化费马大定理之后，又一个「千行级以上 Lean + 人只看 1%」的长程 agent 案例，而且落在真实软件上，比数学更接近工程价值。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读博客，并看技术页上「what is and isn't covered」的边界说明。</p>
+    <p class="item-sources">
+      <a class="src" href="https://deepmind.google/blog/introducing-alphaproof-code/" target="_blank" rel="noopener">Introducing AlphaProof Code <span style="opacity:.65">(deepmind.google)</span></a>
+      <a class="src" href="https://google-deepmind.github.io/code-verification/" target="_blank" rel="noopener">技术页 <span style="opacity:.65">(google-deepmind.github.io)</span></a>
+      <a class="src" href="https://github.com/google-deepmind/code-verification" target="_blank" rel="noopener">开源证明产物 <span style="opacity:.65">(github.com)</span></a>
+      <a class="src" href="https://x.com/sundarpichai/status/2120207062655549933" target="_blank" rel="noopener">Sundar Pichai 原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://deepmind.google/blog/gemini-robotics-2-5-accelerates-real-world-physical-intelligence/" target="_blank" rel="noopener">Gemini Robotics 2.5：200 多项任务成功率高 30%–100%，奔驰产线试点 96%，附开源机器人越狱基准</a></h3>
+    <p class="item-meta">Google DeepMind · 2026-11-10 · 原文 约 10 分钟（视频多）</p>
+    <div class="item-body"><p><strong class="runin">能力。</strong> <span class="tag tag-ok">官方</span>新一代视觉-语言-动作（VLA）模型，官方称很大程度上得益于 Gemini 4 Argon 加速机器人研究。在 200 多项任务上评测（用夹子端菜、给礼盒系蝴蝶结、移液等），按任务类型成功率比上一代高 30%–100%，完成速度快 20%–30%。同一模型可控制 Apptronik Apollo 2 人形机器人（22 自由度五指手）和 Franka 双臂夹爪平台。</p><p><strong class="runin">工厂试点。</strong> <span class="tag tag-ok">官方</span>在奔驰匈牙利凯奇凯梅特和德国辛德尔芬根的产线上，Apollo 2 做汽车零件配料（从散料箱按车辆所需顺序分拣到托盘），成功率 96%。分工是 Gemini Robotics ER 负责跟踪流程，2.5 动作模型控制手臂。</p><p><strong class="runin">安全。</strong> <span class="tag tag-tip">第三方</span>据 Ars Technica，推理时安全推理让有障碍物时安全完成任务的比例提高 33%，有人挡路时提高 43%；新开源的 ASIMOV-Jailbreak 基准含 1,500 条诱导不安全行为的指令，把 Argon 放进回路后安全率 98.8%，只用 Robotics ER 2 时 73.5%。</p><p><strong class="runin">局限。</strong> 只向合作伙伴开放，没有公开 API 或权重；所有数字为 DeepMind 自测，「30%–100%」是区间，不同任务不可直接比较。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 看官方博客的工厂视频和安全一节即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://deepmind.google/blog/gemini-robotics-2-5-accelerates-real-world-physical-intelligence/" target="_blank" rel="noopener">Gemini Robotics 2.5 accelerates real-world general dexterity <span style="opacity:.65">(deepmind.google)</span></a>
+      <a class="src" href="https://arstechnica.com/google/2026/11/deepmind-reveals-gemini-robotics-2-5-and-open-safety-benchmark-asimov-jailbreak/" target="_blank" rel="noopener">Ars Technica 报道 <span style="opacity:.65">(arstechnica.com)</span></a>
+      <a class="src" href="https://x.com/GoogleDeepMind/status/2120169787896525104" target="_blank" rel="noopener">DeepMind 原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s4-2">
+    <h3 class="item-title"><a href="https://ifm.ai/blog/pan2/" target="_blank" rel="noopener">PAN 2：LLM 先写「会发生什么」，29B 扩散模型再画出来，权重和训练代码全部开源</a></h3>
+    <p class="item-meta">MBZUAI IFM · 2026-11-10 · 原文 技术博客约 30 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">官方</span>给一个起始画面和一句动作描述，模拟接下来会发生什么，让 agent 先「想象」候选动作的后果再选择，避免昂贵或不可逆的真实试错。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">官方</span>两层：概念推理层是一个预训练 LLM，输出带时间戳的结构化描述（谁在何时做什么、镜头怎么动）；感知推理层是从零训练的 29B 双流扩散 Transformer，把描述补成接触、形变、运动等细节的视频。训练视频按物理动态而非画面好看来挑选。<span class="tag tag-tip">第三方</span>Diffusers 实现使用 Qwen3.5 文本编码器和 Wan2.2 VAE，默认开启提示词与视频安全检查。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">官方</span>自建的多步计划测试中单步完成率 75.1%、完整计划完成率 34.0%，后者是所测模型中最高；Physics-IQ Verified 公开榜上总第三、开放模型第一；六维物理智能测试里仅次于 MiniMax-H3。<span class="tag tag-tip">第三方</span>有报道称去掉 LLM 层后单步正确率跌到 8.7%。</p><p><strong class="runin">局限。</strong> <span class="tag tag-ok">官方</span>长时间的世界一致性仍是未解决问题；人工盲评在四个开放模型中排第二。</p><p><strong class="runin">坦率短评。</strong> 「先用文字写清时间线与镜头运动，再交给视频模型」这种分层，和短剧管线里「分镜/镜头表 → 生成」的思路一致，开源训练代码也方便研究这层文本中间表示怎么设计。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读技术博客的架构与评测两节。</p>
+    <p class="item-sources">
+      <a class="src" href="https://ifm.ai/blog/pan2/" target="_blank" rel="noopener">PAN 2 技术博客 <span style="opacity:.65">(ifm.ai)</span></a>
+      <a class="src" href="https://ifm.ai/pan2/press-release/" target="_blank" rel="noopener">新闻稿 <span style="opacity:.65">(ifm.ai)</span></a>
+      <a class="src" href="https://github.com/huggingface/diffusers/pull/15202" target="_blank" rel="noopener">Diffusers 合入 PR <span style="opacity:.65">(github.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://hanshengchen.com/blog/pi-h3/" target="_blank" rel="noopener">视频生成提速与可控：pi-H3 两步出片快过实时，SwitchX 3.0 用平面图 + 多参考图拍「一镜到底」</a></h3>
+    <p class="item-meta">斯坦福 · 2026-11-10 · Beeble · 2026-11-10 · 原文 pi-H3 约 10 分钟；SwitchX 页面以视频为主，约 5 分钟</p>
+    <div class="item-body"><p><strong class="runin">pi-H3。</strong> <span class="tag tag-ok">官方</span>基于开源的 MiniMax H3，只用 2 或 4 步采样，最后一步直接输出像素、跳过视频 VAE 解码器（称为 DWD）。单张 B200 上 5 秒 768p 带立体声视频 3.8 秒生成，10 秒视频 9.2 秒，都比播放时长短；在 5–15 秒视频上比 Sol-H3 快 2.4–2.7 倍（2 步）。Hugging Face 演示已上线，权重和推理代码定于 11 月 16 日那一周发布，训练代码在 11 月晚些时候。</p><p><strong class="runin">SwitchX 3.0。</strong> <span class="tag tag-ok">官方</span>在 MiniMax H3 基础上重做的视频到视频模型：用 alpha 遮罩把演员表演逐帧锁住，只换背景和光照。新版最多接收 4 张参考图，例如一张平面图加每个空间各一张图，就能把绿幕走廊里的一段行走变成穿过多个房间的连续镜头；背景可以动（车流、人群、雪），手持、环绕、奔跑镜头无需标记点即可跟踪；输出 4K、10-bit，帧数与源素材一致。</p><p><strong class="runin">物理一致性。</strong> <span class="tag tag-tip">第三方</span>Hedra 发布 Model Factory 后训练平台，演示把 H3 重训以提升物理一致性，Physics-IQ 从 30.3 升到 34.9，蒸馏版在 AMD MI355X 上不到 3 秒出 5 秒视频（Hedra 自报）。<span class="tag tag-tip">第三方</span>Artificial Analysis 评测 Google 11 月 5 日发布的 Gemini Omni Flash 1.2：视频编辑榜第 2，文生视频从第 12 升到第 6。</p><p><strong class="runin">局限。</strong> pi-H3 的 DWD 作者自称仍在实验阶段；SwitchX 和 Hedra 都没有可比较的第三方质量数据。</p><p><strong class="runin">坦率短评。</strong> <span class="tag tag-guess">评论</span>SwitchX「平面图 + 每个房间一张参考图」本质上是给模型一份空间布局，和用白模或 Blender 布局约束多镜头空间一致性是同一类思路，只是输入更轻。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · pi-H3 值得看延迟拆解表；SwitchX 看「One Connected Location」那段演示即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://hanshengchen.com/blog/pi-h3/" target="_blank" rel="noopener">pi-H3: Video Generation in 2–4 Steps Without a VAE Decoder <span style="opacity:.65">(hanshengchen.com)</span></a>
+      <a class="src" href="https://beeble.ai/research/switchx-3-0" target="_blank" rel="noopener">Introducing SwitchX 3.0 <span style="opacity:.65">(beeble.ai)</span></a>
+      <a class="src" href="https://siliconangle.com/2026/11/10/hedras-new-model-factory-cranks-up-the-production-volume-for-physical-ai-model-training/" target="_blank" rel="noopener">Hedra Model Factory 报道 <span style="opacity:.65">(siliconangle.com)</span></a>
+      <a class="src" href="https://x.com/ArtificialAnlys/status/2120283459805749688" target="_blank" rel="noopener">Artificial Analysis 视频榜原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://antigravity.google/blog/gemini-4-carbon-in-google-antigravity/" target="_blank" rel="noopener">多 agent 怎么配模型、judge 怎么保鲜：Antigravity /swarm 的角色分工与 Meta AutoRefine</a></h3>
+    <p class="item-meta">Google Antigravity · 2026-11-10 · Meta · arXiv · 2026-11-06 · 原文 Antigravity 博客约 3 分钟；AutoRefine 约 20 分钟</p>
+    <div class="item-body"><p><strong class="runin">按角色配模型。</strong> <span class="tag tag-ok">官方</span>/swarm 把一个提示交给一组 agent：协调者在隔离的 git worktree 里启动并行执行者，另设专门跑测试、挑战改动的「对抗式验证者」；所有 agent 在一块只追加的共享留言板上协作，空闲时不消耗 token。Google 建议把 Carbon 放在协调、架构设计、安全审计和对抗验证这类高杠杆角色上，并行改文件和常规实现交给更轻更快的模型。这与前天 Anthropic「Fable 做顾问/编排、小模型干重复活」的建议一致。</p><p><strong class="runin">judge 会过期。</strong> <span class="tag tag-ok">论文</span>很多 coding agent 用 LLM judge 判断改动好不好，但 agent 一变，judge 的提示词就过时，人工标注又贵又会过期。AutoRefine 改用工作流自带的结果当标签（测试过没过、改动被合并还是被放弃）：一个能看到结果的「老师」解释每个标签并据此改写 judge 提示，解释不了的就弃权。在有执行判据的留出集上，一致性（Scott's π）从 0.36 升到 0.60；在一个已部署 agent 上，按当前工作流重新校准后，与合并/放弃结果的一致性从 0.16 升到 0.51，但在旧工作流的 16 个改动上旧 judge 反而更好。</p><p><strong class="runin">局限。</strong> AutoRefine 的部署实验只有 17 + 16 个改动，样本很小；/swarm 是预览版，没有公开效果数据。</p><p><strong class="runin">可直接用的做法。</strong> <span class="tag tag-guess">评论</span>两条可以马上用：多 agent 编排时把最强模型只放在「规划、审计、验证」节点；自建 judge 时用合并/放弃、测试结果这类免费信号定期重新校准，并把「老师解释不了」的样本当作 judge 输入不够的信号。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · AutoRefine 的方法图和「弃权即诊断」一段值得看。</p>
+    <p class="item-sources">
+      <a class="src" href="https://antigravity.google/blog/gemini-4-carbon-in-google-antigravity/" target="_blank" rel="noopener">Gemini 4 Carbon and /swarm <span style="opacity:.65">(antigravity.google)</span></a>
+      <a class="src" href="https://arxiv.org/abs/2611.09291" target="_blank" rel="noopener">AutoRefine: Auto-Calibrating Code Judges from Workflow Outcomes <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://x.com/omarsar0/status/2120253922933956644" target="_blank" rel="noopener">elvis 解读帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/" target="_blank" rel="noopener">Gemini 4 Carbon 全面开放：$2/$10 入门价，CursorBench 第一；新基准 MKA 上落后 Fable 5.2 三分但成本约五分之一</a></h3>
+    <p class="item-meta">Google · 2026-11-10 · 原文 官方博客约 5 分钟；AA 两篇各约 5 分钟</p>
+    <div class="item-body"><p><strong class="runin">发布要点。</strong> <span class="tag tag-ok">官方</span>两周前先通过 Fairwind 计划给网络安全防御方，现在向付费开发者、企业和 Google AI Ultra 订阅者开放（API、AI Studio、Gemini 应用、搜索 AI 模式、Antigravity）。定位是比 Argon 更「花 token 去深挖和反复验证」的模型；Google 仍建议多数软件工程和知识工作用 Argon。入门价 $2/$10 每百万 token，11 月 30 日后恢复 $4/$20。<span class="tag tag-tip">第三方</span>The Verge 估算入门价约为 GPT-6 Astra 的五分之一、Fable 5.2 的四分之一。</p><p><strong class="runin">评测。</strong> <span class="tag tag-ok">官方</span>Google 称在 CursorBench 4.0、Perplexity WANDR、Zapier AutomationBench 上第一，且每任务成本比第二名外部模型低一半以上。<span class="tag tag-tip">第三方</span>Cursor 称高档位 CursorBench 60.4% 居首（前天 Fable 5.2 最高档为 60%）。Artificial Analysis 10 月 28 日首测时智能指数 v5 得 59，当时第一，模型页现为 60，已被 Fable 5.2 的 65 超过；AA-Omniscience 54 分领先，幻觉率 11%，仍属最低一档。</p><p><strong class="runin">MKA 新基准。</strong> <span class="tag tag-tip">第三方</span>DeepMind 与 AA 合作推出的多模态知识工作基准：200 个私有任务、10 个行业，要读建筑图纸、工程原理图、临床影像等复杂视觉文件，产出幻灯片、表格、报告或标注图，每题约 70 条加权专家评分细则。Fable 5.2（max）57%，Carbon（high）54%，Opus 5.5（max）53%；但 Fable 每任务 $31.97，是 Carbon（$6.29）的 5 倍多。同一个做幻灯片的任务，Carbon 76 轮、约 1 小时、约 $8，Fable 224 轮、约 3 小时、约 $68，Fable 的成品得分更高（87% vs 72%）。</p><p><strong class="runin">局限。</strong> <span class="tag tag-guess">评论</span>MKA 由 Google 出题，虽由 AA 独立运行，选题偏好仍值得留意；入门价只到月底，按标准价比较成本时差距会缩小一半。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读 AA 的 MKA 文章，「同分数段成本差近 30 倍」的图对选型很有用。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-carbon-now-available/" target="_blank" rel="noopener">Gemini 4 Carbon is now available <span style="opacity:.65">(blog.google)</span></a>
+      <a class="src" href="https://artificialanalysis.ai/models/gemini-4-carbon" target="_blank" rel="noopener">Artificial Analysis 模型页 <span style="opacity:.65">(artificialanalysis.ai)</span></a>
+      <a class="src" href="https://artificialanalysis.ai/articles/gemini-4-carbon-new-number-1" target="_blank" rel="noopener">AA 10 月 28 日首测文章 <span style="opacity:.65">(artificialanalysis.ai)</span></a>
+      <a class="src" href="https://artificialanalysis.ai/articles/google-deepmind-multimodal-knowledge-agent" target="_blank" rel="noopener">MKA 基准 <span style="opacity:.65">(artificialanalysis.ai)</span></a>
+      <a class="src" href="https://www.theverge.com/ai-artificial-intelligence/1030787/google-gemini-4-carbon-public-rollout" target="_blank" rel="noopener">The Verge 报道 <span style="opacity:.65">(theverge.com)</span></a>
+      <a class="src" href="https://x.com/cursor_ai/status/2120193584670580857" target="_blank" rel="noopener">Cursor 原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title"><a href="https://openai.com/index/introducing-businesses-chatgpt" target="_blank" rel="noopener">OpenAI 推 Businesses in ChatGPT，商家可发布自己的 Business Agent；Anthropic 启动 IPO 路演</a></h3>
+    <p class="item-meta">OpenAI · 2026-11-10 · Anthropic · 2026-11-10 · 原文 各约 3 分钟</p>
+    <div class="item-body"><p><strong class="runin">ChatGPT 商家页。</strong> <span class="tag tag-ok">官方</span>测试版：商家可以认领自己在 ChatGPT 里的资料、更新信息和商品数据，查看用户互动的汇总洞察；符合条件的商家（据帮助中心为有网站的美国电商与在线服务商家）还能搭建、测试并发布一个 Business Agent，在 ChatGPT 里回答顾客关于商品和政策的问题。官方帖浏览约 234 万。<span class="tag tag-guess">评论</span>这相当于 ChatGPT 版的「商家主页 + 客服 agent」，用户与商家的 agent 在同一入口里对话。</p><p><strong class="runin">Anthropic IPO。</strong> <span class="tag tag-ok">官方</span>发行 8.25 亿股 A 类普通股（其中约 8.01 亿股由公司发行），预计每股 $70–$78，申请在纳斯达克上市，代码 ANT。<span class="tag tag-tip">第三方</span>路演视频里 Dario Amodei 称十年内癌症、阿尔茨海默病等主要疾病将成为过去，引发 Gary Marcus 等人质疑时间表。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 不必，看要点即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openai.com/index/introducing-businesses-chatgpt" target="_blank" rel="noopener">Introducing Businesses in ChatGPT <span style="opacity:.65">(openai.com)</span></a>
+      <a class="src" href="https://x.com/OpenAI/status/2120216592395174382" target="_blank" rel="noopener">OpenAI 官方原帖 <span style="opacity:.65">(x.com)</span></a>
+      <a class="src" href="https://www.anthropic.com/news/roadshow-launch" target="_blank" rel="noopener">Anthropic launches roadshow <span style="opacity:.65">(anthropic.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今天值得看的帖子</h3>
+    <div class="item-body"><p><strong>Sundar Pichai（Google CEO）</strong> · <a href="https://x.com/sundarpichai/status/2120185896469496180" target="_blank" rel="noopener">Gemini 4 Carbon 上线</a>；<a href="https://x.com/sundarpichai/status/2120207062655549933" target="_blank" rel="noopener">用 Carbon 证明 Signal 协议代码</a></p><p>浏览约 51 万 / 15 万。点评：同第 3、7 节。</p><p><strong>Demis Hassabis（DeepMind CEO）</strong> · <a href="https://x.com/demishassabis/status/2120210297948696997" target="_blank" rel="noopener">Carbon 一次性逆向他当年的《主题公园》二进制并移植到网页</a></p><p>点评：演示性质，但「逆向老二进制 + 加新内容 + 移植」这一串很能体现长程编程能力。</p><p><strong>Ethan Mollick（Wharton 教授）</strong> · <a href="https://x.com/emollick/status/2120233659793854926" target="_blank" rel="noopener">Google 重回前沿竞赛</a></p><p>点评：他认为 Carbon 最重要的意义是 Google 重新进入「快速发布、快速提升」的节奏；同天另发了一个<a href="https://x.com/emollick/status/2120248525254742318" target="_blank" rel="noopener">让 Fable 5.2 多 agent 争论美术与剧情做出的交通模拟游戏</a>。</p><p><strong>Arena（模型竞技场）</strong> · <a href="https://x.com/arena/status/2120236149503672762" target="_blank" rel="noopener">Agent Arena：任务越贵，Carbon 越省</a></p><p>点评：与 AA 的成本结论方向一致，Carbon 相对 GPT-6 Astra 和 Opus 5.5 的节省在最贵的会话上最大。</p><p><strong>Cursor（官方）</strong> · <a href="https://x.com/cursor_ai/status/2120295553309565139" target="_blank" rel="noopener">Projects 改为多人协作</a></p><p>点评：同第 1 节。</p><p><strong>Thariq（前 Claude Code 团队）</strong> · <a href="https://x.com/trq212/status/2120223476279869875" target="_blank" rel="noopener">少做一次性演示，多做「和模型一起实现想法」的工具</a></p><p>点赞 1,200+。点评：对近期 Fable 5.2「一句话做游戏」演示潮的直接回应，与 elvis 前天的批评同调。</p><p><strong>swyx（Latent Space）</strong> · <a href="https://x.com/swyx/status/2120241063193706960" target="_blank" rel="noopener">「还在本地写代码就停下，改用云端 agent」</a></p><p>点评：引述 Adam Wathan 与 Scott Wu 的讨论；属观点，适用范围因人而异。</p><p><strong>Jim Fan（NVIDIA）</strong> · <a href="https://x.com/DrJimFan/status/2120186651741655428" target="_blank" rel="noopener">GR00T 2：完全在机器人本机算力上运行、权重归用户所有</a></p><p>点评：前天 GR00T 2 条目的补充，强调离线运行和开放权重。</p><p><strong>Nathan Lambert（Interconnects）</strong> · <a href="https://x.com/natolambert/status/2120308727173493160" target="_blank" rel="noopener">「Jensen 若不再任 CEO，对美国开放模型非常不利」</a></p><p>点评：观点帖，未提供依据；可与前天他对美国开放模型政策的讨论连起来看。<span class="tag tag-guess">评论</span></p><p><strong>Luma AI（官方）</strong> · <a href="https://x.com/LumaLabsAI/status/2120213587620921545" target="_blank" rel="noopener">Luma MCP 接入 ChatGPT 和 Claude</a></p><p>点评：在聊天里直接驱动视频生成做整套广告素材；继 Higgsfield MCP 之后，视频工具接入通用 agent 成为常见做法。</p></div>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>今日收束</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>Agent / 记忆</td><td>Cursor Projects 个人/共享两层上下文、跨人 agent 消息按不可信输入处理；AutoBuddy：弱模型丢在发现、强模型丢在执行；SoMem 用链接文档自组织记忆</td></tr>
+      <tr><td>RSI</td><td>BadEvolve 只投毒进化任务即植入技能后门（平均 79.6%）；TRUST 把误收劣化更新从 45.6% 压到 2.8%</td></tr>
+      <tr><td>模型能力</td><td>AlphaProof Code：600 万行 Lean、四周、人只复核约 1%，验证 Signal 到机器码</td></tr>
+      <tr><td>世界 / 具身</td><td>Gemini Robotics 2.5 奔驰产线 96%；PAN 2 开源 LLM + 29B 扩散世界模型，完整计划完成率 34%</td></tr>
+      <tr><td>AIGC 视频</td><td>pi-H3 两步、去 VAE，5 秒视频 3.8 秒；SwitchX 3.0 平面图 + 参考图做连续镜头</td></tr>
+      <tr><td>用法</td><td>最强模型只放规划/审计/验证节点；用合并/放弃结果定期校准 judge</td></tr>
+      <tr><td>评测落地</td><td>Carbon 入门价 $2/$10、CursorBench 60.4%；MKA 上 Fable 57% 但成本是 Carbon 5 倍；ChatGPT 商家 agent；Anthropic IPO 定价区间 $70–$78</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 优先读 AlphaProof Code 博客（约 6 分钟）和 AA 的 MKA 文章；做技能自进化的读 BadEvolve 威胁模型和结果表；做 agent 协作的看 Cursor Projects 文档里跨 agent 消息规则；视频方向看 SwitchX 的「One Connected Location」演示。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-11-11 · Asia/Shanghai</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
