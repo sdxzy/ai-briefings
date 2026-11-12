@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-11-12</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="Continual-ARC 发现现成 agent harness 几乎不从经验里学习、训练权重才有泛化；FGSE 把记忆更新当成待证伪的假设；OpenAI 公开 CoT 可监控性随训练下降的四个来源；AlphaGenome 2 细到细胞类型；Runway 开源 27B 世界动作模型 Praxis-1；Intangible 2.0 在每次生成底下垫真实 3D 场景；Google 推 Gemini Decision 1 决策模型。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-11-12</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-11-12">截至 2026 年 11 月 12 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 11 月 12 日上午（CST）</strong>，覆盖 11 月 11 日上午起约 24 小时。论文取 arXiv 本周新列表。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客、技术报告与论文、arXiv、独立评测（Artificial Analysis）与媒体报道；X 用于选题与发帖人观点（关注名单优先 + 名单外热帖），均附原帖。链接已逐一打开核对（VentureBeat 对脚本返回 429、Boston Business Journal 返回 403，已用搜索结果确认页面存在）。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或报道，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。</span></div><div class="meta-row"><span class="k">今天共 10 条、8 个板块。主线是「agent 到底有没有在学」</span><span>Continual-ARC 用会反复出现的 ARC 题测出三个流行 harness 基本没记住东西，FGSE 则给「哪条经验该写进记忆」加了证伪门槛；OpenAI 同时承认更强的模型更难通过思维链监控。产品侧，Google 把「决策模型」做成独立 API，Runway 把机器人世界动作模型开源。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">Agent / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">Continual-ARC：同一类题隔一阵再出现，三个流行 harness 基本没记住；训练 9B 模型的权重反而能泛化到新题</a></li><li><a href="#s1-2">n8n 开源个人 agent Nod：本地沙箱电脑 + 浏览器，动手前先问，模型自选</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI</a></div><ol class="toc-items"><li><a href="#s2-1">FGSE：把每条「经验教训」写成带前提条件的假设，先在临时状态里证伪，通过了才写进长期记忆</a></li><li><a href="#s2-2">OpenAI：更强的模型「不写思维链也能想」，思维链监控在变弱；四个来源分别出在预训练、架构、RL 和上一代生成的数据</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">模型能力</a></div><ol class="toc-items"><li><a href="#s3-1">AlphaGenome 2：同一段 DNA 在不同细胞里怎么被读，细到细胞类型和状态；致病变异召回近翻倍</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">Runway 开源 Praxis-1：27B 世界动作模型同时预测下一段视频和动作，Apache 2.0，可商用</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">AIGC 视频</a></div><ol class="toc-items"><li><a href="#s5-1">Intangible 2.0：每次生成底下都有一个真实 3D 场景，agent 从简报搭场景、摆相机、批量出镜头</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">用法</a></div><ol class="toc-items"><li><a href="#s6-1">两条实用结论：同预算下换更大模型比把推理力度拉满更划算；红队测试别只给「夺旗」任务</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">评测落地</a></div><ol class="toc-items"><li><a href="#s7-1">Gemini Decision 1：不生成文字、只给选项打分，一次最多 1,000 个问题，$0.10 / 百万输入 token，输出免费</a></li><li><a href="#s7-2">产品与行业：Claude 上线 Sheets / Whiteboards / Data；Qwen4-Max 预览；Anthropic 定 11 月 19 日上市</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今天值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+  <p class="sec-lead">两条：一条测「harness 记忆到底有没有用」，一条是新开源的本地个人 agent。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.14505" target="_blank" rel="noopener">Continual-ARC：同一类题隔一阵再出现，三个流行 harness 基本没记住；训练 9B 模型的权重反而能泛化到新题</a></h3>
+    <p class="item-meta">Unify · arXiv · 2026-11 · 原文 论文约 40 分钟（正文 §2–§4 约 15 分钟）</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>常驻 agent 的卖点是「越用越懂你」。但现有基准多半每道题只出一次，分不清 agent 是记住了答案还是学会了方法。作者想测两件事：上个月做过的同类题，这次能不能更省力（记忆）；没见过的新题，会不会因为经验而做得更好（泛化）。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>从 ARC-AGI 题库做一条 200 题实例的「工作流」：25 个任务交替出现，每次都换新输入（不能缓存答案），中间有长短不一的空档，新任务不断加入。每个实例可以花钱要示范或提交答案，答错扣分，没解出扣满预算。流结束后冻结系统，用已见任务的新实例测记忆，用 100 道没见过的评测题测泛化。记忆型（笔记、技能文件）和权重型（训练 LoRA）用同一把尺子比。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span></p><ul><li>prime-agent 搭 Qwen3.5-9B，开着持久化与清空状态几乎没差别（已见题节省 −0.01）；多数 harness 方法甚至不如一个只缓存示范的简单基线。</li><li>用 GPT-6 Luna 跑 prime-agent、hermes-agent、openclaw：照出厂设置都没测出可度量的节省；每次判分后提示「多存点」，只有 prime-agent 有效（0.42），hermes-agent 0.18、openclaw 0.07 都在噪声内。</li><li>给「专家指导」（为每个任务写 Python 程序、用示范验证、存下来复用）后，已见题节省升到 0.62–0.74，说明 harness 本身做得到，缺的是「该存什么」的判断。</li><li>一个具体原因：GLM 其实为每个任务都存了文字规则，但 prime-agent 每个实例只展示 6 条记忆，且在知道是哪道题之前就选好，154 次重遇里只有 40 次拿到了对应规则。</li><li>所有 harness 方法在新题上都没有收益；用 DAgger 训练 Qwen3.5-9B 的 LoRA 后，新题节省 0.29、已见题 0.57，多用户（2 人）时新题升到 0.40。</li></ul><p><strong class="runin">局限。</strong> 只在最简单的 ARC-AGI-1 轨道上做了主实验，模型偏小；ARC 是抽象谜题，结论能否迁移到办公、编码等有大量先验知识的领域，作者自己也说未知。作者所在公司做 agent 系统，论文已披露。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>「记忆检索在任务识别之前就选好」这个失败点很具体，值得自查：记忆若不按当前任务检索，存得再多也用不上。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。读 §4「Harnesses as shipped」和附录 E（逐个 harness 存了什么），约 20 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.14505" target="_blank" rel="noopener">Continual-ARC: Measuring Skill Acquisition over a Working Lifetime <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://unify.ai/blog/why-we-built-continual-arc" target="_blank" rel="noopener">Why we built Continual-ARC <span style="opacity:.65">(unify.ai)</span></a>
+      <a class="src" href="https://x.com/DanielLenton1/status/2120535187587268777" target="_blank" rel="noopener">作者 Daniel Lenton 原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-2">
+    <h3 class="item-title"><a href="https://blog.n8n.io/meet-nod/" target="_blank" rel="noopener">n8n 开源个人 agent Nod：本地沙箱电脑 + 浏览器，动手前先问，模型自选</a></h3>
+    <p class="item-meta">n8n Labs · 2026-11-10 · 原文 约 5 分钟</p>
+    <div class="item-body"><p><strong class="runin">是什么。</strong> <span class="tag tag-ok">官方</span>n8n Labs 发布的研究预览版，独立于 n8n 本体，Mac / Windows 桌面应用，开源。它在本机跑一个沙箱「电脑」和浏览器，可以在已连接的 Gmail、日历、Drive、Slack 里办事，也能操作没有集成的网站；例子包括取消订阅并拒掉挽留优惠、每月登录供应商门户下载发票、从无法导出的看板里抄数据进周报。有后果的动作前先征求同意。</p><p><strong class="runin">记忆与主动性。</strong> <span class="tag tag-ok">官方</span>官方称它记得数月对话，会读已连接的应用并主动提出可以代办的事；可在 App、Telegram 或 WhatsApp 里对话，后台并行跑多个任务，重复任务可定时。</p><p><strong class="runin">局限。</strong> 研究预览，长期记忆效果只有官方自报；「主动提出代办」与权限边界如何把握，需要实际用过才知道。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做个人 agent 的可以看博客「What Nod does」一节，并对照 Continual-ARC 的结论看它的「记得数月对话」具体怎么实现。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.n8n.io/meet-nod/" target="_blank" rel="noopener">Meet Nod <span style="opacity:.65">(blog.n8n.io)</span></a>
+      <a class="src" href="https://github.com/n8n-io/nod" target="_blank" rel="noopener">GitHub <span style="opacity:.65">(github.com)</span></a>
+      <a class="src" href="https://x.com/n8n_io/status/2120431328458076315" target="_blank" rel="noopener">n8n 官方原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+  <p class="sec-lead">一篇讲「agent 自改时哪条经验能留下」，一篇讲「模型一代代训练下去，思维链还能不能监控」。</p>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.14326" target="_blank" rel="noopener">FGSE：把每条「经验教训」写成带前提条件的假设，先在临时状态里证伪，通过了才写进长期记忆</a></h3>
+    <p class="item-meta">南洋理工 / 佐治亚理工 / 新国立等 · arXiv · 2026-11 · 原文 约 30 分钟（§3 诊断实验和 §6.3 消融最有用）</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>例如 agent 在某个订票网站学到「先点搜索再填日期」，直接写进记忆；下次在一个长得像、流程却不同的网站上照做就出错，还可能把原来会做的题做坏。作者的诊断实验显示：越宽泛、越没有适用条件的教训，造成的「边界伤害」和「旧题回退」越大，而且连续写入会累积错误。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>每条候选更新写成结构化假设：前提条件、行为改变、预期效果、验证器。先只在临时状态里启用，跑三组探针：目标迁移（该帮上忙的新题）、证伪（看起来像但不该触发的题、诱饵题）、回归（以前做对的题）。增益够、证伪失败率低、回归损伤小才提交；增益够但失败集中在可分离的子范围时，收窄一次前提条件再测；否则拒绝。提交后若频繁违背预期效果，会被移出检索。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>DeepSeek-V3.1 底座下 WebArena 39.8、AppWorld 平均 78.8、τ-Retail / τ-Airline Pass@1 0.724 / 0.487；证伪失败率 5.0%、回归损伤 1.3%、有害提交 3.6%。一轮里 380 个候选只提交 104 个；被拒的 101 个「增益达标」候选，证伪失败率 22.82%。去掉证伪探针后有害更新从 3.6% 升到 10.6%；把门控换成 LLM 评审，WebArena 掉 3.1 分。</p><p><strong class="runin">局限。</strong> 只适用于有可执行验证器的环境，验证器本身要学或近似时会怎样没有展开；主表里不少基线是 GPT-4 / GPT-4o 时代、取自不同论文的数字，横向比较要打折扣。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>方法不复杂，核心就是「给记忆写入加回归测试和反例测试」。和上周 TRUST 的统计门控、本周 Continual-ARC 的结论放在一起看：问题不只是存什么，还有凭什么留下。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 读 §3 图 2（宽泛教训的伤害）和表 2 消融即可，约 10 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.14326" target="_blank" rel="noopener">When Should Agents Remember? Falsification-Gated Self-Evolution for LLM Agents <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s2-2">
+    <h3 class="item-title"><a href="https://alignment.openai.com/cot-monitorability-model-lifecycle/" target="_blank" rel="noopener">OpenAI：更强的模型「不写思维链也能想」，思维链监控在变弱；四个来源分别出在预训练、架构、RL 和上一代生成的数据</a></h3>
+    <p class="item-meta">OpenAI Alignment · 2026-11-10 · 原文 博客约 25 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">官方</span>OpenAI 把「看思维链（CoT）发现模型不良意图」当作安全论证的一根支柱。GPT-6 Astra 上他们观察到：非对抗场景下 CoT 可监控性下降、对抗测试中更会规避监控、不用 CoT 也能完成的任务明显变多。</p><p><strong class="runin">做法。</strong> <span class="tag tag-ok">官方</span>用两个代理指标：无 CoT 能力（一次前向、不写推理也能解题）和 CoT 可控性（被要求增删、改写推理内容时能否照做），沿训练流程逐段测。</p><p><strong class="runin">四个发现。</strong> <span class="tag tag-ok">官方</span></p><ul><li>预训练：无 CoT 能力随基座困惑度下降平滑上升，模型越强越不需要把想法写出来。</li><li>架构：多数评测里只由困惑度决定，但在多跳计算类评测上，有些架构在同等困惑度下涨得更陡。</li><li>RL：即使只有长度约束和最终答案判分、没有过程监督，CoT 可控性也会在 RL 中上升；加工具监督后略再升。</li><li>跨代：用模型生成的数据做 SFT，可控性会像「潜意识学习」一样传给下一代模型。</li></ul><p><strong class="runin">系统卡补充。</strong> <span class="tag tag-ok">官方</span>Astra 系统卡称，英国 AISI 的评估提示其无 CoT 时间跨度可能提升约一个数量级；OpenAI 目前没有开放 reasoning=None 的计划，并在研究激活监控等替代手段，但承认「不确定这些努力能否保住信心」。</p><p><strong class="runin">局限。</strong> 两个指标都是「最坏情况规避能力」的代理，作者在附录里讨论了效度；没有给出能逆转趋势的训练方案。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>第四点和 RSI 直接相关：用本代模型数据训练下一代，会把「更会控制推理文本」这类性质一并传下去，这是模型参与自身迭代时一个不显眼的副作用。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得，做 agent 监控或安全评估的读四个发现和附录 A 的效度讨论。</p>
+    <p class="item-sources">
+      <a class="src" href="https://alignment.openai.com/cot-monitorability-model-lifecycle/" target="_blank" rel="noopener">What affects chain-of-thought monitorability across the model lifecycle? <span style="opacity:.65">(alignment.openai.com)</span></a>
+      <a class="src" href="https://deploymentsafety.openai.com/gpt-6-astra/model-data-and-training" target="_blank" rel="noopener">GPT-6 Astra 系统卡相关章节 <span style="opacity:.65">(deploymentsafety.openai.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/" target="_blank" rel="noopener">AlphaGenome 2：同一段 DNA 在不同细胞里怎么被读，细到细胞类型和状态；致病变异召回近翻倍</a></h3>
+    <p class="item-meta">Google DeepMind · 2026-11-11 · 原文 博客约 8 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">官方</span>心脏、大脑、免疫细胞的 DNA 序列相同，一个碱基的变异却可能只在某类细胞里致病。上一代 AlphaGenome 用「组织平均」数据训练，说不清变异在哪种细胞里起作用；Nature 报道中有研究者直言这让它「对我们没那么有用」。</p><p><strong class="runin">做法。</strong> <span class="tag tag-ok">官方</span>改成条件模型：输入百万碱基的 DNA 序列，加上目标条件（组织、细胞类型或状态），条件信息贯穿每一层；一次只预测一个条件。训练数据来自 68 种组织的 1 亿多个单细胞图谱。用户还可以上传几十个细胞的单细胞 RNA-seq 数据，压缩成细胞状态表示，让模型预测没见过的状态，无需重训。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">官方</span>在 28 种免疫细胞的 TenK10K 数据集上，因果变异识别 30% 对 16%，方向性基因效应 43% 对 23%（对比在单细胞数据上微调的初代 AlphaGenome 等工具）；复现了「远端调控开关变异只在肠道巨噬细胞里过度激活 ETS2、导致炎症性肠病」的已发表结论；在新冠 mRNA 疫苗数据上，区分出激活与静息 T 细胞，并发现一个重症相关变异只在激活状态下影响更大。<span class="tag tag-tip">第三方</span>Nature 报道称训练覆盖 637 种人类和 311 种小鼠细胞类型。</p><p><strong class="runin">局限。</strong> 非商业研究可通过 API 使用，商业研究为私有预览；预测仍需湿实验验证。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 非生物方向看博客前半即可；「条件输入贯穿全网络 + 少量样本即时适配新状态」的做法有通用参考价值。</p>
+    <p class="item-sources">
+      <a class="src" href="https://deepmind.google/blog/alphagenome-2-deciphering-how-cells-read-dna-to-better-understand-disease/" target="_blank" rel="noopener">AlphaGenome 2 <span style="opacity:.65">(deepmind.google)</span></a>
+      <a class="src" href="https://www.nature.com/articles/d41586-026-03673-0" target="_blank" rel="noopener">Nature 新闻 <span style="opacity:.65">(nature.com)</span></a>
+      <a class="src" href="https://x.com/GoogleDeepMind/status/2120532824465805749" target="_blank" rel="noopener">DeepMind 原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://runway.com/news/company-news/praxis-1-is-now-available" target="_blank" rel="noopener">Runway 开源 Praxis-1：27B 世界动作模型同时预测下一段视频和动作，Apache 2.0，可商用</a></h3>
+    <p class="item-meta">Runway · 2026-11-11 · 原文 博客约 4 分钟；README 约 10 分钟</p>
+    <div class="item-body"><p><strong class="runin">是什么。</strong> <span class="tag tag-ok">官方</span>Praxis-1 是 Runway 9 月发布的首个世界动作模型，建立在其通用世界模型同一套大规模视频预训练之上：27B 参数的混合专家扩散 Transformer，每次调用同时预测下一段视频和下一段动作，机器人执行这段动作后再进入下一轮。今天连权重、推理与微调代码（含全量微调和 LoRA）一起以 Apache 2.0 开放，包括商用。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">官方</span>在 NVIDIA RoboLab-120 榜上 1,200 个回合成功率 46.2%，FLUX 3 Action 42.9%、Cosmos3 Nano 36.8%、π0.5 28.0%。发布伙伴已在双足人形、六轴工业臂和双臂仓储机器人上运行。提供单臂 DROID、双臂 YAM 两个检查点和一个不带动作头的基座检查点（用于新机型），以及 NVFP4 量化版；已进 LeRobot 与 vLLM-Omni。<span class="tag tag-tip">第三方</span>Robotheca 依模型卡记录：动作专家约 0.3B，以 15 Hz 输出 24 步动作块。</p><p><strong class="runin">局限。</strong> 榜单成绩为官方自报；NVFP4 路径的闭环精度官方 README 注明尚未确认；单检查点约 54 GB，门槛不低。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>「视频生成预训练 → 机器人控制」这条路线今年 Cosmos、GR00T 都在走，Runway 选择完全开放权重，加上同日 Jim Fan 发 GR00T 2 <a href="https://x.com/DrJimFan/status/2120540201994846253" target="_blank" rel="noopener">1 倍速无剪辑完成化学实验</a>，具身方向的开放基座正在变多。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做具身的读 README 的检查点与输入输出说明；其他读者看博客即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://runway.com/news/company-news/praxis-1-is-now-available" target="_blank" rel="noopener">Praxis-1 is now available <span style="opacity:.65">(runway.com)</span></a>
+      <a class="src" href="https://github.com/runwayml/praxis-1-oss" target="_blank" rel="noopener">GitHub 代码 <span style="opacity:.65">(github.com)</span></a>
+      <a class="src" href="https://x.com/runwayml/status/2120533081182577116" target="_blank" rel="noopener">Runway 原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://help.intangible.ai/get-started/whats-new" target="_blank" rel="noopener">Intangible 2.0：每次生成底下都有一个真实 3D 场景，agent 从简报搭场景、摆相机、批量出镜头</a></h3>
+    <p class="item-meta">Intangible · 原文 帮助文档首页约 5 分钟；Cooper 的幕后视频约 2 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-tip">第三方</span>纯生成式视频改一个镜头往往要整段重新抽卡，换机位后场景、道具、人物也对不上。</p><p><strong class="runin">做法。</strong> <span class="tag tag-ok">官方</span>Intangible 的 Canvas 把一段文字简报交给 agent：写简报、生成参考图和 3D 模型、搭一个 3D 场景、为每个镜头放一台相机，再把镜头渲染成图和视频。所有镜头来自同一个场景，所以布景、产品和人物跨镜头一致；推镜、环绕、摇臂、跟拍是在 Compose 里给真实相机打关键帧，而不是写进提示词。可导入 FBX / OBJ / GLB、高斯泼溅，或从 Blender、Maya、Houdini、Unreal 带入场景，并给物体绑定实物照片作参考；每个镜头可以单独选图像 / 视频模型。改场景后重渲，而不是从头重写提示词。更新日志显示 Canvas 已于 10 月 31 日（2.0.82）向所有人开放，「Batch visualize」可一次渲染场景里所有镜头。</p><p><strong class="runin">案例。</strong> <span class="tag tag-tip">第三方</span>Prime Video 创意总监 Heather Cooper 用 2.0 做了系列构想《The Rider》的动作预告，视频结尾附了幕后流程：先把角色、房子、摩托和汽车参考放到一块板上，再进入场景与镜头。</p><p><strong class="runin">同日视频工具动态。</strong> <span class="tag tag-ok">官方</span>Seedance 2.5 4K 在 <a href="https://x.com/pika_labs/status/2120551877486215348" target="_blank" rel="noopener">Pika</a> 与 <a href="https://x.com/runwayml/status/2120578138111656227" target="_blank" rel="noopener">Runway</a> 上线，Pika 明确标「原生 4K」，可先出草稿再定稿 4K；Luma 上线 <a href="https://x.com/LumaLabsAI/status/2120645286519562294" target="_blank" rel="noopener">Character Swap &amp; Insert</a>，同一镜头里换演员、换车、加一只狗或删掉一个人。</p><p><strong class="runin">局限。</strong> 复杂动作与表演仍取决于底层视频模型；3D 场景的搭建质量依赖 agent 生成的资产，官方未给出量化评测。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做 AI 短剧 / 预演管线的值得看帮助文档首页「What is Intangible?」和 Cooper 的幕后片段，这是「3D 白膜 + 相机 + 生成渲染」思路的完整产品化样本。</p>
+    <p class="item-sources">
+      <a class="src" href="https://help.intangible.ai/get-started/whats-new" target="_blank" rel="noopener">Intangible 更新日志 <span style="opacity:.65">(help.intangible.ai)</span></a>
+      <a class="src" href="https://www.intangible.ai/canvas" target="_blank" rel="noopener">Canvas 介绍页 <span style="opacity:.65">(intangible.ai)</span></a>
+      <a class="src" href="https://x.com/HBCoop_/status/2120588482167099779" target="_blank" rel="noopener">Heather Cooper 实测原帖 <span style="opacity:.65">(x.com)</span></a>
+      <a class="src" href="https://x.com/omarsar0/status/2120569275366728138" target="_blank" rel="noopener">elvis 介绍原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://x.com/ArtificialAnlys/status/2120672485167497335" target="_blank" rel="noopener">两条实用结论：同预算下换更大模型比把推理力度拉满更划算；红队测试别只给「夺旗」任务</a></h3>
+    <p class="item-meta">2026-11-12 · Perplexity · 2026-11-11 · 原文 AA 帖 1 分钟；Perplexity 博客约 15 分钟</p>
+    <div class="item-body"><p><strong class="runin">选模型。</strong> <span class="tag tag-tip">第三方</span>Artificial Analysis 按单任务成本画 Claude 全系的性能—成本曲线，结论是：在几乎每个成本档位上，帕累托前沿上的都是更大的模型（Opus 5.5）。也就是说，与其让小模型开到最高推理力度，不如换上一级模型、用较低力度。这只针对当前 Claude 产品线。</p><p><strong class="runin">红队方法。</strong> <span class="tag tag-ok">官方</span>Perplexity 用 12 个模型攻击自家 Computer agent 的虚拟机沙箱 SPACE：一个任务是逃出虚拟机读取宿主机上的凭据，一个是绕过网络策略访问被封的 URL。新增测试的 Claude Mythos 5.1、Claude Opus 5.5、GPT-6 Astra 也都没逃出虚拟机。关键发现是：标准的「夺旗（CTF）」任务写法会让 agent 花大量精力去找藏起来的 flag，而不是去测真正要评估的隔离边界；把任务改写成明确指向「宿主—客体隔离」后，agent 的努力随之转向目标。另一个发现是专门做网络安全训练的 GPT-5.6 Cyber 在这里反而不如通用的 GPT-5.6 Sol。<span class="tag tag-tip">第三方</span>Part I 曾披露，十个第三方沙箱平台中有八个存在类似的网络绕过漏洞，已按负责任披露流程通知。</p><p><strong class="runin">局限。</strong> AA 的结论只有一张图和一句话，未公开各档位数据；Perplexity 的实验在自家沙箱上，结论外推到其他隔离方案要谨慎。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 给 agent 配沙箱或做安全评估的读 Perplexity Part II 的「CTF 设计」一节；选模型的看 AA 原图即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://x.com/ArtificialAnlys/status/2120672485167497335" target="_blank" rel="noopener">Artificial Analysis 原帖 <span style="opacity:.65">(x.com)</span></a>
+      <a class="src" href="https://www.perplexity.ai/hub/blog/escaping-space-part-ii" target="_blank" rel="noopener">Escaping SPACE: Part II <span style="opacity:.65">(perplexity.ai)</span></a>
+      <a class="src" href="https://x.com/perplexity_ai/status/2120582674549203004" target="_blank" rel="noopener">Perplexity 原帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/" target="_blank" rel="noopener">Gemini Decision 1：不生成文字、只给选项打分，一次最多 1,000 个问题，$0.10 / 百万输入 token，输出免费</a></h3>
+    <p class="item-meta">Google DeepMind · 2026-11-11 · 原文 官方博客约 6 分钟</p>
+    <div class="item-body"><p><strong class="runin">是什么。</strong> <span class="tag tag-ok">官方</span>「决策模型」专做封闭选项判断：工具选择、策略检查、模型路由、上下文打分。传入一份多模态共享输入（文本、图片、音频、视频、PDF，最长 256K token）加最多 1,000 个独立问题，模型一次前向给每个选项打分，返回概率和 0–1 的置信度。三种题型：是 / 否、2–255 个选项的单选、有序量表评分。</p><p><strong class="runin">数字。</strong> <span class="tag tag-ok">官方</span>端到端延迟 150–250 毫秒，1 到 100 个问题几乎持平；在官方共用的测试集上比 Gemini 3.5 Flash-Lite 便宜近 5 倍。内部已用于 Gemini Notebook 的动态模型路由、搜索里 MCP 的对抗行为检测等。<span class="tag tag-tip">第三方</span>Artificial Analysis 决策指数 v2.1 得 66，知识与推理类领先；Simon Willison 指出 API 设计几乎照搬 TypeSafe 的 Jev（连「Noul」这个是 / 否题型名都沿用），价格与 OpenAI 的 GPT-6 Luna 决策模型相同，Jev 仍最便宜（每百万 4.2 美分），但 Gemini 是三者中唯一全模态的。</p><p><strong class="runin">局限。</strong> 只做封闭选项，开放问题仍要 LLM；各问题并行打分、彼此看不到，需要链式推理的判断不适合。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>agent 里大量「小分支」调用（要不要调工具、该路由到哪个模型、这段上下文相关吗）原本都在付生成 token 的钱，决策模型把它们变成便宜、可校准的分类；低置信度再交给大模型或人，是很自然的分层做法。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得，做 agent 编排的读博客的三种题型和置信度用法。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/" target="_blank" rel="noopener">Gemini Decisions API <span style="opacity:.65">(blog.google)</span></a>
+      <a class="src" href="https://venturebeat.com/technology/googles-gemini-decision-1-model-scores-up-to-1-000-questions-in-one-api-call" target="_blank" rel="noopener">VentureBeat 报道 <span style="opacity:.65">(venturebeat.com)</span></a>
+      <a class="src" href="https://simonwillison.net/2026/Nov/11/gemini-decisions-api/" target="_blank" rel="noopener">Simon Willison 点评 <span style="opacity:.65">(simonwillison.net)</span></a>
+      <a class="src" href="https://x.com/ArtificialAnlys/status/2120582049522127205" target="_blank" rel="noopener">Artificial Analysis 评测帖 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title"><a href="https://claude.com/resources/articles/sheets-whiteboards-data" target="_blank" rel="noopener">产品与行业：Claude 上线 Sheets / Whiteboards / Data；Qwen4-Max 预览；Anthropic 定 11 月 19 日上市</a></h3>
+    <p class="item-meta">Anthropic · 2026-11-10 · 阿里云 · Boston Business Journal · 原文 各约 3–6 分钟</p>
+    <div class="item-body"><p><strong class="runin">Claude 办公三件套。</strong> <span class="tag tag-ok">官方</span>Whiteboards（beta）：口述一个零散计划，Claude 整理成带负责人和日期的时间线白板，团队实时协作，框选一块即可提问，可转成文档 / 幻灯片或导入 Lucid、Miro。Sheets（beta）：从一句提示生成带标签页、公式、格式和下拉框的表格，在单元格里编辑并标出每处改动。原 Claude Dashboards 正式更名 Claude Data，加入数据故事、认证查询和实时共享。所有付费计划可用。</p><p><strong class="runin">Qwen4-Max 预览。</strong> <span class="tag tag-ok">官方</span>阿里通义发布下一代旗舰预览，面向复杂编码与专业任务，支持文本、图像、视频输入、工具调用、结构化输出和 100 万 token 上下文，兼容 OpenAI / Anthropic 接口，开放至 11 月 25 日。<span class="tag tag-tip">第三方</span>多家媒体指出官方未公布基准、模型卡、参数量，也未开放权重；有实测反映生成偏慢。</p><p><strong class="runin">Anthropic 上市。</strong> <span class="tag tag-tip">第三方</span>据报道，Anthropic 已为 IPO 定价，计划以代码 ANT 在纳斯达克上市，X 上流传的时间为 11 月 19 日；具体募资规模与估值以最终招股为准。同日 NVIDIA CEO 黄仁勋卷入私人关系丑闻、董事会聘律所调查（<a href="https://www.cnbc.com/2026/11/11/nvidia-jensen-huang-congress-resign-ai-chips.html" target="_blank" rel="noopener">CNBC</a>），这是 AI 算力链上最大的不确定事件，但与技术本身无关，这里只记一笔。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · Claude Sheets 的介绍值得 5 分钟；Qwen4-Max 等基准公布后再看。</p>
+    <p class="item-sources">
+      <a class="src" href="https://claude.com/resources/articles/sheets-whiteboards-data" target="_blank" rel="noopener">Claude Whiteboards, Claude Sheets, and Claude Data <span style="opacity:.65">(claude.com)</span></a>
+      <a class="src" href="https://www.alibabacloud.com/help/en/model-studio/qwen4-max-preview" target="_blank" rel="noopener">Qwen4-Max-Preview 文档 <span style="opacity:.65">(alibabacloud.com)</span></a>
+      <a class="src" href="https://www.bizjournals.com/boston/news/2026/11/11/anthropic-ipo-price-range-ant-spacex-openai.html" target="_blank" rel="noopener">Anthropic IPO 定价报道 <span style="opacity:.65">(bizjournals.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今天值得看的帖子</h3>
+    <div class="item-body"><p><strong>Demis Hassabis（DeepMind CEO）</strong> · <a href="https://x.com/demishassabis/status/2120565316619284734" target="_blank" rel="noopener">发布 AlphaGenome 2</a></p><p>点赞 2,600+。点评：同第 3 节，学术研究可通过 API 使用。</p><p><strong>Daniel Lenton（Unify 创始人）</strong> · <a href="https://x.com/DanielLenton1/status/2120535187587268777" target="_blank" rel="noopener">「OpenClaw、Hermes Agent、Prime Agent 都没有真正从经验中学习」</a></p><p>点评：同第 1 节 Continual-ARC；elvis（DAIR.AI）<a href="https://x.com/omarsar0/status/2120638750740844672" target="_blank" rel="noopener">转发推荐</a>，认为现有 harness 记忆只适合简单、一次性的通用任务。</p><p><strong>Artificial Analysis（独立评测）</strong> · <a href="https://x.com/ArtificialAnlys/status/2120582049522127205" target="_blank" rel="noopener">Gemini Decision 1 决策指数 66</a>；<a href="https://x.com/ArtificialAnlys/status/2120664556972257506" target="_blank" rel="noopener">去掉工具后 Fable 5.2 在 VIALS-AA 上不如带工具的 Haiku 5.5</a></p><p>点评：第二条值得注意，生命科学视觉推理基准上，工具使用让各模型平均分从约 25% 提到约 47%，说明这类评测里「给不给工具」比「用哪个模型」影响更大。</p><p><strong>Jim Fan（NVIDIA）</strong> · <a href="https://x.com/DrJimFan/status/2120540201994846253" target="_blank" rel="noopener">GR00T 2 用灵巧手 1 倍速、无剪辑完成化学实验并收拾桌面</a></p><p>点赞 550+。点评：他宣布开一个「不加 4x / 8x 加速标签」的实时机器人视频系列，针对的是行业演示普遍快放的问题。</p><p><strong>Runway（官方）</strong> · <a href="https://x.com/runwayml/status/2120533081182577116" target="_blank" rel="noopener">Praxis-1 开放权重</a>；<a href="https://x.com/runwayml/status/2120624097826680985" target="_blank" rel="noopener">在 Claude 里用 Fable 5.2 驱动 Runway + Blender 做出一支可吹的电子笛</a></p><p>点评：第一条同第 4 节；第二条是视频工具接入通用 agent 的又一例，概念图在 Runway、原型在 Blender、贴图与渲染再回 Runway。</p><p><strong>Ethan Mollick（Wharton 教授）</strong> · <a href="https://x.com/emollick/status/2120641914206892424" target="_blank" rel="noopener">编程是「AI 扩散很慢」的反例</a></p><p>点评：他认为真正可用的编程 agent 出现不到一年，整个职业的转变已在进行，快于历史上专业领域的技术采纳速度。<span class="tag tag-guess">评论</span>观点帖，未附数据。</p><p><strong>Aravind Srinivas（Perplexity CEO）</strong> · <a href="https://x.com/AravSrinivas/status/2120587855114432837" target="_blank" rel="noopener">SPACE 沙箱红队研究要点</a></p><p>点评：同第 6 节；他特别强调「非网络安全专用模型反而更会找漏洞」。</p><p><strong>Sydney Runkle（LangChain）</strong> · <a href="https://x.com/sydneyrunkle/status/2120671970887164029" target="_blank" rel="noopener">LangChain 首日支持 Gemini Decisions</a></p><p>点评：同第 7 节，生态接入当天跟上；她认为决策模型比 LLM 快且便宜，输出结构化、可靠。</p><p><strong>elvis（DAIR.AI）</strong> · <a href="https://x.com/omarsar0/status/2120500412763742329" target="_blank" rel="noopener">n8n 的 Nod：「拥有你自己的个人 agent」</a></p><p>点评：同第 1 节。</p></div>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>今日收束</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>Agent / 记忆</td><td>Continual-ARC：三个流行 harness 照出厂设置几乎不记事，专家指导后已见题节省 0.62–0.74，只有训练权重能泛化到新题；n8n 开源本地个人 agent Nod</td></tr>
+      <tr><td>RSI</td><td>FGSE 用证伪 + 回归探针门控记忆写入，有害提交 3.6%；OpenAI：无 CoT 能力随困惑度上升，CoT 可控性会经模型生成数据传给下一代</td></tr>
+      <tr><td>模型能力</td><td>AlphaGenome 2 细到细胞类型，TenK10K 因果变异识别 30% 对 16%</td></tr>
+      <tr><td>世界 / 具身</td><td>Runway Praxis-1 27B 开源可商用，RoboLab-120 46.2%；GR00T 2 实时化学实验</td></tr>
+      <tr><td>AIGC 视频</td><td>Intangible 2.0 用真实 3D 场景驱动多镜头一致；Seedance 2.5 4K 上 Pika / Runway；Luma 换角插入</td></tr>
+      <tr><td>用法</td><td>同成本下换大一级 Claude 比开满推理力度更划算；红队任务别只写成夺旗</td></tr>
+      <tr><td>评测落地</td><td>Gemini Decision 1 一次 1,000 题、$0.10/M 输入、输出免费；Claude Sheets / Whiteboards / Data；Qwen4-Max 预览无基准；Anthropic 定价上市</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 优先读 Continual-ARC 的 §4 和附录 E（约 20 分钟）与 OpenAI 的 CoT 可监控性博客；做 agent 编排的看 Gemini Decisions 博客；视频方向看 Intangible 帮助文档首页和 Heather Cooper 的幕后片段。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-11-12 · Asia/Shanghai</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
