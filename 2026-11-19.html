@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-11-19</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="Google 发布 Gemini 4 Neon，独立评测 Intelligence Index 上 xhigh 档为 61、暂列第三；编码 Agent 指数 59，与 Fable 5.2 相近但单任务成本更低。Genie 4 向符合条件的 Ultra 订阅者开放。OpenAI 更新研究加速报告：2–4 小时研究任务的自主完成率从 23% 升至 46%，并称提升并不均匀。Anthropic 将 IPO 定价为每股 83.00 美元，预期 11 月 19 日以代码 ANT 在纳斯达克开始交易。研究侧，EyeHeight 显示 6 个开源视频世界模型在转身走动后无法保持初始相机高度。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-11-19</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-11-19">截至 2026 年 11 月 19 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 11 月 19 日上午（CST）</strong>，覆盖 11 月 18 日约 09:16 上一期发布之后至今日上午。论文以 arXiv 11 月 18 日（星期三）新公告榜为主。产品稿多标注 November 18；Microsoft Ignite 与 Suno Visuals 标注 November 17，上一期上午未收入，今日补记并注明日期。X 官方帖时间戳另行注明。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客、新闻稿、产品页与论文、arXiv、独立评测（Artificial Analysis、Arena）与已打开核对的页面；X 用于选题与发帖人观点（关注名单优先），均附原帖。链接已逐一打开核对。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或报道，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。官方自报基准与独立榜分开写；列表价、宣传价与「每任务成本」不是同一口径。公开发行材料不等于已完成交易。</span></div><div class="meta-row"><span class="k">今天共 10 条正文、8 个板块。主线有三条</span><span>一条是 Google 继续加快发布节奏——Neon 在独立 Intelligence Index 上以 61 分排第三，换来的是明显更低的单任务成本与时延，同时 Genie 4 从研究预览走进 Ultra 可玩的 Project Genie；一条是 OpenAI 把「研究加速」写成可核对的 RSI 指标，数字在上升，但完成率随任务类型拉开，官方也写明这不应被读成已在追求完整递归自我改进；第三条是 Anthropic 给 IPO 定了价，交易预期于今日（美国时间 11 月 19 日）开始，交割仍取决于惯例条件。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">Agent / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">EvoDisco：让 Agent 自己发现该如何演化记忆；在 ALFWorld 上比 MemP 高 8.8 / 12.9 分</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI</a></div><ol class="toc-items"><li><a href="#s2-1">OpenAI 更新研究加速报告：2–4 小时研究任务的自主完成率从 23% 升至 46%，但监控训练跑到 79%，写推理与 serving 代码只有 25%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">世界 / 具身</a></div><ol class="toc-items"><li><a href="#s3-1">OpenAI 称与 AMD 合作：在旗舰 GPU IP 上相对已高度优化的基线最高改进 14%，约 5 个月内相当于约一年进度，部分改动已进入近期送制造的设计</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">AIGC 视频</a></div><ol class="toc-items"><li><a href="#s4-1">Genie 4 向符合条件的 Google AI Ultra 订阅者开放；可在探索中途用提示改世界，并首次带上实时原生音频。Genie 3 单次生成延长至 3 分钟</a></li><li><a href="#s4-2">EyeHeight：6 个开源交互式视频世界模型在 180° 转身走动后都丢掉初始相机高度，从 0.15 米起步时只有 0–20% 的片段仍落在起始高度的 1.3 倍以内</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">用法</a></div><ol class="toc-items"><li><a href="#s5-1">Suno 上线 Visuals：把歌曲做成最长 15 秒、可对口型的视频或歌词视频，视觉积分与歌曲积分分开计费</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">评测落地</a></div><ol class="toc-items"><li><a href="#s6-1">Google Antigravity 的 Orchestrator 现可将 Neon 用作规划器、Hydrogen 用作执行器，并在执行受阻时交回 Neon</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">模型发布与评测、AI 产品与落地</a></div><ol class="toc-items"><li><a href="#s7-1">Gemini 4 Neon 发布：AA Intelligence Index 上 xhigh 档得 61 分、暂列第三；编码 Agent 指数 59，与 Fable 5.2 相近，单任务成本明显更低。官方定价为每百万 token 输入 3 美元、输出 15 美元</a></li><li><a href="#s7-2">Anthropic 将 IPO 定价为每股 83.00 美元，拟发行 9.80 亿股 A 类普通股；预期 11 月 19 日以代码 ANT 在纳斯达克开始交易</a></li><li><a href="#s7-3">〔补记 · 11-17〕Microsoft 发布 MAI Code 2 与 Code 2 Flash：官方称在四项日常企业编码基准上达到 GPT-6.1 Sol 的 98% 表现、成本为 40%；但对比使用了 50% 宣传价，且明确尚未针对很长程 Agent 工作调优</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今天值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+  <p class="sec-lead">记忆不只是存什么，还有「用哪一套改写规则、何时改写」。把改写算子写死，等于把这一层判断提前交给了设计者。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.22102" target="_blank" rel="noopener">EvoDisco：让 Agent 自己发现该如何演化记忆；在 ALFWorld 上比 MemP 高 8.8 / 12.9 分</a></h3>
+    <p class="item-meta">Liu, Kang, Kai 等 · arXiv · 星期三（11-18）新公告 · 原文 摘要与设定约 15 分钟；全文更长</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>语言 Agent 会把经验写入记忆，但许多系统在线更新时，改写算子和选用规则仍是设计时固定的。作者认为：记忆如何演化，和里面存了什么同样重要；若模型已能对自身记忆做推理，演化方式不必预先由人写死。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>EvoDisco 把记忆演化写成策略发现：策略根据当前记忆状态和近期任务历史，选择并实例化四个语义算子之一——Abstract（压缩相关记忆）、Refine（拆开过载条目）、Bridge（连接弱关联经验）、Reframe（重组检索到的推理链）。适应度分两层：内层看一次改写带来的检索质量提升，并用记忆复杂度做正则；外层在一段时间窗口里看算子效用的遗憾、效用预测误差和选择多样性。评测采用一遍在线、再加冻结迁移的协议，基准包括 ALFWorld、WebShop 和 LifelongAgentBench（OS 与 DB）。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>作者称 EvoDisco 优于包括 MemP 与 MemRL 在内的较强记忆基线。最大增益在 ALFWorld：相对 MemP 为在线 <strong>+8.8</strong> 分、冻结迁移 <strong>+12.9</strong> 分；相对 MemRL 为 <strong>+16.4</strong> / <strong>+17.9</strong> 分。消融把增益同时归因于两层适应度和算子库。</p><p><strong class="runin">局限。</strong> 这是基准上的记忆演化方法，不是个人记忆产品评估。最大增益集中在 ALFWorld，不宜把 8.8 / 12.9 分写成已在开放环境里普遍成立。算子名称是作者定义的语义类别，不是已标准化的记忆 API。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>和昨日 AdMem「先写预期再对照」是同一条线的另一面：AdMem 管一条经验该不该留下，EvoDisco 管留下之后用哪套规则改写。数字清楚，仍停留在几个经典 Agent 基准。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做 Agent 记忆的值得读摘要、算子定义和 ALFWorld 对照，约 15 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.22102" target="_blank" rel="noopener">EvoDisco: Strategy Discovery for Evolving Agent Memory <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+  <p class="sec-lead">研究加速已经能被测到，但完成率随任务类型拉开；官方在报告指标的同时，明确写了「不要把这读成要追求完整 RSI」。</p>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://openai.com/index/research-acceleration-jagged-frontier/" target="_blank" rel="noopener">OpenAI 更新研究加速报告：2–4 小时研究任务的自主完成率从 23% 升至 46%，但监控训练跑到 79%，写推理与 serving 代码只有 25%</a></h3>
+    <p class="item-meta">OpenAI · 标注 November 18, 2026 · 原文 导语与主要数字约 15–20 分钟；全文更长</p>
+    <div class="item-body"><p><strong class="runin">核心结果。</strong> <span class="tag tag-ok">官方</span>这是对 9 月第一份研究加速报告的更新，测量编码 Agent 如何加速并改变 AI 研发循环。3 月至 10 月，估计需人类 <strong>2–4 小时</strong> 的任务，自主 Agent 成功率从 <strong>23%</strong> 升至 <strong>46%</strong>；估计 <strong>4–8 小时</strong> 的任务从 <strong>13%</strong> 升至 <strong>35%</strong>。但按任务类型拆开后并不均匀：监控训练跑为 <strong>79%</strong>，启动训练跑为 <strong>35%</strong>，为推理与 serving 栈写代码为 <strong>25%</strong>。官方把总体提升概括为 jagged（参差），并写：人类仍是 AI 研究循环的核心部分。</p><p><strong class="runin">用量与调研。</strong> <span class="tag tag-ok">官方</span>按 API 标价，10 月中位研究者每天的 Agent 用量约 <strong>2,400</strong> 美元，较 9 月升 <strong>62%</strong>；第 90 百分位约 <strong>23,000</strong> 美元，升 <strong>105%</strong>。调研中，为保留三个月的前沿编码 Agent，中位回答是愿拿团队算力的 <strong>30%</strong>，或在另一题中愿拿团队编制的 <strong>40%</strong> 来换。以每 8 小时 Agent 使用为 1 个「Agent 工作日」，人均从 <strong>0.5</strong> 增至 <strong>5.7</strong>，约 <strong>11</strong> 倍；预训练与后训练团队约每天 8 个 Agent 工作日，扩展与基础设施约 4 个。至 10 月中，超过三分之二的纳入统计研究者，日峰值平均至少 <strong>4</strong> 个并发 Agent，超过 <strong>10%</strong> 至少 <strong>16</strong> 个。截至 2026 年 9 月，研究组织内 Agent 用量的 API 等值约为非股权薪酬的两倍；官方注明股权一般占研究者目标薪酬的 <strong>70–80%</strong>，未计入该比值。内部部署约占研究算力的 <strong>2%</strong>。Safety and Alignment 的记录工作周 1 月至 9 月增加 <strong>77%</strong>，官方将其与 7 月 Hugging Face 事件后的工作联系起来。</p><p><strong class="runin">官方定位。</strong> <span class="tag tag-ok">官方</span>OpenAI 写：相信实验室应被要求跟踪并公开报告递归自我改进（RSI）指标，即 AI 加速未来 AI 系统研发的过程；同时写明，「我们的报告不应被读成打算追求完整 RSI」。文中也强调，能力在提高，戏剧性的 AI 驱动研究加速变得越来越可能，仍需解决新的技术和治理问题以维持人类监督。</p><p><strong class="runin">局限。</strong> 这是一家实验室的内部测量与调研，任务时长是「估计的人类工时」，成功率定义见原文方法注释。API 标价用量不等于实际内部结算成本；薪酬对比排除了股权。不要把 46% 写成「一半研究已自动化」，也不要把这份报告写成已经实现递归自我改进。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>今天最值得记下的不是又一个很高的总数，而是官方自己把「参差」写进了标题：监控训练跑和写 serving 代码不在同一条线上。指标在增加，人仍在回路里，这和「完整 RSI」要分开写。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读导语三条 takeaway、任务拆分和方法注释，约 15–20 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openai.com/index/research-acceleration-jagged-frontier/" target="_blank" rel="noopener">Research acceleration: The jagged frontier <span style="opacity:.65">(openai.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+  <p class="sec-lead">模型开始改生产芯片的 RTL，并有一部分已经送去流片；开放核上的分数更高，但评测允许省掉原设计里的部分功能。</p>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://openai.com/index/advancing-chip-design-with-our-models/" target="_blank" rel="noopener">OpenAI 称与 AMD 合作：在旗舰 GPU IP 上相对已高度优化的基线最高改进 14%，约 5 个月内相当于约一年进度，部分改动已进入近期送制造的设计</a></h3>
+    <p class="item-meta">OpenAI · 标注 November 18, 2026 · 原文 AMD 段与局限约 10–15 分钟</p>
+    <div class="item-body"><p><strong class="runin">AMD 与自研芯片。</strong> <span class="tag tag-ok">官方</span>OpenAI 称与 AMD 合作做功耗、性能和面积（PPA）改进，在旗舰 GPU IP 上相对已高度优化的基线最高改进 <strong>14%</strong>，并写这相当于在不到 <strong>5</strong> 个月里取得约一年的进度。模型通过改写描述电路的 SystemVerilog RTL，并用新思科技（Synopsys）工具做功能验证和 PPA 权衡。官方称，AMD 已把其中一些改动纳入近期送去制造的设计，并把另一些写入生产设计文件供后续版本使用。AMD 还核实：在其即将推出的下一代旗舰 CPU 的关键模块上，由该模型写出的设计带来了个位数百分比的 PPA 收益。关于自研推理芯片 Jalapeño，文中补充：团队估计模型提议的改动使向量单元标准单元面积约减 <strong>13%</strong>、矩阵单元约减 <strong>10%</strong>，并在硅验证中得到证实；这部分工作 8 月已部分公开，今日文是更细的回顾，不宜写成全新结果。</p><p><strong class="runin">开放核评测与下一步。</strong> <span class="tag tag-ok">官方</span>为比较各代模型，作者在两个开源 32 位 RISC-V 核（PicoRV32、OpenTitan 的 Ibex）上做优化与「按规格从头设计」两项任务，全部评测包含 <strong>9,881</strong> 次计分运行。在约 <strong>112,000</strong> token 的可比预算下，GPT-6.2 Astra 在两个核上的平均分最高。官方也写了关键局限：从书面规格起步时，模型可以省略原核中的性能计数器等对测试负载贡献不大的功能，这可能部分解释「从规格设计」分数更高；若强制保留这些功能、收紧面积上限并在物理综合后检查时序，测试会更接近生产芯片设计。展望中，OpenAI 宣布与 Synopsys 合作训练名为 GPT-Synopsys 的新模型，使其按专家方式使用 EDA 工具——这是合作声明，不是已发布的产品卡。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>把「模型会改 RTL」写成已经取代芯片团队还太早，但「有改动已送制造」是今天比基准分数更硬的一句。开放核分数必须带着「可以省略功能」那条脚注一起读。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读 AMD 段、Jalapeño 面积数字和 RISC-V 评测的局限段，约 10–15 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openai.com/index/advancing-chip-design-with-our-models/" target="_blank" rel="noopener">Advancing chip design with OpenAI models <span style="opacity:.65">(openai.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+  <p class="sec-lead">Genie 4 已经能在浏览器里玩；与此同时，开源交互式视频世界模型仍会在转身之后把相机「长回」人眼高度。</p>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/models-and-research/google-deepmind/genie-4-now-available-project-genie/" target="_blank" rel="noopener">Genie 4 向符合条件的 Google AI Ultra 订阅者开放；可在探索中途用提示改世界，并首次带上实时原生音频。Genie 3 单次生成延长至 3 分钟</a></h3>
+    <p class="item-meta">Google / DeepMind 产品博文，Diego Rivas 与 Pavan Kumar · 标注 November 18, 2026 · 原文 产品博文约 8–10 分钟</p>
+    <div class="item-body"><p><strong class="runin">今天上线的是什么。</strong> <span class="tag tag-ok">官方</span>Project Genie 向符合条件的 Google AI Ultra 订阅者推出新体验，首次提供 Genie 4，并更新 Genie 3、加入 Project Genie agent 与社区画廊。Google AI Pro 成员可在同一页面排队。Genie 4 被写成目前最真实、可交互的世界模型：可在探索过程中输入新提示，实时改天气、加入角色或改写情节；并首次为这些画面配上随场景变化的实时原生音频，包括环境声和角色对白。Project Genie agent 用自然语言协助搭建世界的视觉与配乐；探索时也可引入 Gemini，观察画面、给出下一步建议或自动触发事件。</p><p><strong class="runin">Genie 3 与安全边界。</strong> <span class="tag tag-ok">官方</span>要更长行程或用全景图做种子时，仍可在模型选择器里用 Genie 3。今日更新包括：单次生成最长 <strong>3</strong> 分钟（此前 <strong>60</strong> 秒），或把多个世界串起来；可用 360 度全景图做接地；探索中可用自然语言触发事件。安全方面，Project Genie 生成的视频和音频含 SynthID 水印，输入与输出都经过安全筛查。官方把 Genie 3 和 Genie 4 仍标在前沿研究区间，并写正在处理相机延迟、复杂物理交互、实时音频精度和长期场景持久性等问题。</p><p><strong class="runin">局限。</strong> 今天是产品可用性更新，不是 10 月 27 日那篇技术博文的重发。官方点名的四类挑战说明：可玩不等于已经解决空间持久性和物理交互。时长 3 分钟是 Genie 3 的上限，不要写成 Genie 4 已能稳定模拟任意长程世界。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>对关心空间一致性和可探索世界的人，今天该看的是「能中途改世界、带上原生音频」和官方自己列出的未解决问题，而不是把演示直接当成可交付的世界模拟器。它和昨日 FlipTest、下面这条 EyeHeight 可以一起读。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读产品博文和文末局限段，约 10 分钟。技术概述可按需回看，注意日期是 10 月 27 日。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/models-and-research/google-deepmind/genie-4-now-available-project-genie/" target="_blank" rel="noopener">Genie 4 is now available <span style="opacity:.65">(blog.google)</span></a>
+      <a class="src" href="https://deepmind.google/blog/genie-4-a-new-generation-of-world-simulation/" target="_blank" rel="noopener">Genie 4: A new generation of world simulation <span style="opacity:.65">(deepmind.google)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s4-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.21782" target="_blank" rel="noopener">EyeHeight：6 个开源交互式视频世界模型在 180° 转身走动后都丢掉初始相机高度，从 0.15 米起步时只有 0–20% 的片段仍落在起始高度的 1.3 倍以内</a></h3>
+    <p class="item-meta">Lu, Tao, Lu, Tai · arXiv · 星期三（11-18）新公告 · 原文 摘要与设定约 15 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>交互式视频世界模型常被当作具身智能的模拟器：从起始图像和一条动作轨迹，生成智能体本应看到的画面。起始图像已经固定了相机高度，例如地板机器人约 <strong>0.15</strong> 米、俯视相机约 <strong>2.2</strong> 米，忠实的模拟器应在运动中保持这一高度。作者显示，6 个近期开源权重模型做不到：随着运动用生成内容替换起始视图，相机会被拉向人眼高度。他们把这种失效称为 camera-height regression（相机高度回归）。</p><p><strong class="runin">方法与证据。</strong> <span class="tag tag-ok">论文</span>新基准 EyeHeight 配对 6 个渲染高度（<strong>0.15</strong> 米至 <strong>2.2</strong> 米）和 4 个经过标定的真实支架高度，并用无需绝对尺度的多视图高度估计。6 个模型在 <strong>180°</strong> 转身再行走的滚动生成中都失去初始高度：从 <strong>0.15</strong> 米起步时，只有 <strong>0–20%</strong> 的片段在结束时仍落在起始高度的 <strong>1.3</strong> 倍以内，推断视角收敛到约 <strong>1.1–1.5</strong> 米的人类高度；同期的真实渲染则保持在几个百分点以内。回归随转角增大，且在起始帧仍留在上下文里时就已经开始；在 SANA-WM 上，若做 <strong>360°</strong> 转一圈回到初始视图，回归大体可逆。作者将其追溯到以人类为中心的视频先验（几乎没有贴地视角）：在 SANA-WM 上，显式的文本高度提示和稠密地面视差图都挡不住；前半段去噪中的分类器自由文本引导还会加强它。关掉早期引导可部分恢复高度保持，且不降低 MUSIQ；再配合高度均衡微调能恢复更多，但会损失 <strong>5</strong> 个 MUSIQ 分。仅视角漂移，就会改变视觉导航策略预测的路径。</p><p><strong class="runin">局限。</strong> 结论针对被评估的 6 个开源权重模型，以及转身走动这类相机运动，不能直接外推到未点名的闭源系统（包括上面的 Genie 4）。公开摘要未逐一列出 6 个模型的分项分数，点名需回正文。高度估计是作者的评测管道，不是相机遥测。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这是 FlipTest 的好搭档：昨天问的是「会不会在该翻转未来的地方翻转」，今天问的是「相机高度会不会自己长成人眼视角」。对要把视频世界模型接进走位、预演或机器人仿真的工作，这是一个该先过的几何测试。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读，约 15 分钟看设定、0–20% 这一结果和消融。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.21782" target="_blank" rel="noopener">Every Camera Grows Up: Camera-Height Regression in Interactive Video World Models <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+  <p class="sec-lead">世界模型产品见第 4 节。下面补一条 11 月 17 日发布、上一期上午未收入的音乐视频工具。</p>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://suno.com/blog/introducing-visuals" target="_blank" rel="noopener">Suno 上线 Visuals：把歌曲做成最长 15 秒、可对口型的视频或歌词视频，视觉积分与歌曲积分分开计费</a></h3>
+    <p class="item-meta">Suno CPO Jack Brody · 标注 November 17, 2026 · 原文 约 5–8 分钟</p>
+    <div class="item-body"><p><strong class="runin">产品。</strong> <span class="tag tag-ok">官方</span>Suno 在 Web、iOS 和 Android 上线 Visuals，用于从歌曲生成图像和视频，包括歌词视频、专辑封面，以及把照片做成短片。官方称模型会跟随歌曲结构、拾取歌词并对口型。用户可将曲库中的歌曲拖入 Visuals 标签，生成最长 <strong>15</strong> 秒的片段，再延长、编辑或用文本重新提示。视觉积分与歌曲积分分开购买。</p><p><strong class="runin">安全与局限。</strong> <span class="tag tag-ok">官方</span>Suno 写明增加了文本和视觉过滤，试图阻止针对特定艺人、公众人物、受版权保护作品和 IP 的上传与提示；生成结果在展示前还会再检查。站外分享前会嵌入水印。官方也说，在其他视频平台可用的提示，在这里可能不可用，「这是有意的设计」。15 秒是单段上限，不是已经能一次生成完整 MV。这是 11 月 17 日的产品稿，不是新的通用视频基础模型卡。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 若在用 AI 做音乐视觉，看官方说明和积分规则即可，约 5 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://suno.com/blog/introducing-visuals" target="_blank" rel="noopener">Introducing Visuals <span style="opacity:.65">(suno.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+  <p class="sec-lead">把更贵的模型用在规划和卡点上，把更快的模型用在改文件和跑测试上，正在变成可配置的默认编排，而不是靠人中途手动切换。</p>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://antigravity.google/blog/gemini-4-neon-in-google-antigravity/" target="_blank" rel="noopener">Google Antigravity 的 Orchestrator 现可将 Neon 用作规划器、Hydrogen 用作执行器，并在执行受阻时交回 Neon</a></h3>
+    <p class="item-meta">The Antigravity Team · 标注 November 18, 2026 · 原文 约 5–8 分钟</p>
+    <div class="item-body"><p><strong class="runin">用法。</strong> <span class="tag tag-ok">官方</span>Antigravity 的 Orchestrator 现在支持在同一次会话里，把 Gemini 4 Neon 作为规划器、把 Gemini 4 Hydrogen 作为执行器。官方的分工是：Neon 负责事先规划、架构和复杂推理；例行改代码、更新依赖和跑测试交给 Hydrogen；若 Hydrogen 遇到阻力，再交回 Neon 检查状态、修正计划并继续执行。官方把这写成「不必在任务中途手动切模型」，并称因而能把额度用在更需要判断的步骤上。Neon 正在向付费的 Google AI Pro / Ultra 订阅者推送，覆盖 Antigravity 桌面应用、CLI 和 IDE 扩展；企业侧经 Gemini for business 使用。</p><p><strong class="runin">局限。</strong> 这是产品编排说明，不是独立对照实验。官方没有在这篇短文里给出「配对后比单用 Neon 节省多少额度」的外部评测。规划和执行如何交接、失败如何识别，仍取决于 Antigravity 自己的 orchestrator，不宜写成通用的多模型工作流已经被证明最优。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>值得记下的是分工被写进了官方默认路径：判断和修补计划用中间档，动作执行用更快更便宜的一档。要看它是否真省额度，还得回到自己的任务日志，而不是只看这篇 3 分钟博文。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 在用 Antigravity 的值得读这一节，约 5 分钟。模型和评测数字见第 7 节。</p>
+    <p class="item-sources">
+      <a class="src" href="https://antigravity.google/blog/gemini-4-neon-in-google-antigravity/" target="_blank" rel="noopener">Gemini 4 Neon in Google Antigravity <span style="opacity:.65">(antigravity.google)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+  <p class="sec-lead">今天最硬的产品数字在 Neon 的独立评测，以及 Anthropic 已经定价的 IPO。Microsoft 的编码模型是 11 月 17 日 Ignite 上的发布，上一期上午未收入，文末补记。</p>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/" target="_blank" rel="noopener">Gemini 4 Neon 发布：AA Intelligence Index 上 xhigh 档得 61 分、暂列第三；编码 Agent 指数 59，与 Fable 5.2 相近，单任务成本明显更低。官方定价为每百万 token 输入 3 美元、输出 15 美元</a></h3>
+    <p class="item-meta">Koray Kavukcuoglu（Google DeepMind SVP、Google 首席 AI 架构师） · 标注 November 18, 2026 · Artificial Analysis · 18 Nov · 原文 官方博文要点约 10 分钟，AA 文约 8 分钟</p>
+    <div class="item-body"><p><strong class="runin">独立评测。</strong> <span class="tag tag-tip">第三方</span>Artificial Analysis 写：Neon（xhigh）在 Intelligence Index 上得 <strong>61</strong> 分，比 Gemini 4 Carbon（high）高 1 分，暂列第三，排在 GPT-6.2 Astra（max）和 Claude Fable 5.2（max）之后。单任务成本约 <strong>6.44</strong> 美元，较 Carbon 按非折扣价计算的 <strong>7.76</strong> 美元低约 <strong>17%</strong>；单任务耗时约 <strong>21</strong> 分钟，较 Carbon 的约 <strong>36</strong> 分钟低约 <strong>40%</strong>。Neon 每任务输出 token 约多 <strong>15%</strong>，更低成本来自低 <strong>25%</strong> 的 token 单价（<strong>3 / 15</strong> 美元对 <strong>4 / 20</strong> 美元），更短耗时来自更高输出速度（约 <strong>110</strong> 对约 <strong>57</strong> token/秒）。在 high 档，AA 称 Neon 的智力分与 Carbon（high，<strong>60</strong>）相当，单任务成本 <strong>3.74</strong> 美元，不到 Carbon 标准价的一半；但 xhigh 档的 <strong>6.44</strong> 美元约为 Astra（max，<strong>4.00</strong> 美元）的 <strong>1.6</strong> 倍。编码方面，AA 测得：在 Antigravity CLI 上，Neon（xhigh）的 Coding Agent Index 为 <strong>59</strong>，比 Carbon（high，<strong>55</strong>）高 3 分，与 Claude Code + Fable 5.2（xhigh，<strong>58</strong>）以及 Opus 5.5（max，<strong>58</strong>）相当；平均每任务成本 <strong>6.86</strong> 美元，低于 Opus 的 <strong>12.61</strong> 美元和 Fable 的 <strong>15.47</strong> 美元。官方博文写的是该指数 <strong>58.6</strong>、并称整体第一；这里以 AA 正文的 <strong>59</strong> 和「与 58 分档相当」为准，58.6 视为同一测量的四舍五入或官方转述。</p><p><strong class="runin">官方产品与定价。</strong> <span class="tag tag-ok">官方</span>Neon 被放在 Carbon 与 Hydrogen 之间，面向复杂软件工程、知识工作和科学，上下文窗口 <strong>100 万</strong> token，四个思考档（Low 到 Extra High）。定价为每百万 token 输入 <strong>3</strong> 美元、输出 <strong>15</strong> 美元，缓存输入 <strong>0.15</strong> 美元（官方称 <strong>95%</strong> 折扣）。今日起在 Gemini API（Google AI Studio、Android Studio、Gemini for business）以及付费 Pro / Ultra 的 Gemini 应用和 Antigravity 中推出。官方还列出多项自报或合作基准（如 Vals Index 第二、AutomationBench <strong>56.3%</strong>、Agent Arena Index <strong>1336</strong> 分列第二等），其中 Agent Arena 的 <strong>1336</strong> 分与 Arena 官方帖一致；其余未在本条用独立榜逐项复核的，不升格为已核对名次。官方称默认 high 档相对 Carbon 的单任务成本低 <strong>32%</strong>，口径需与 AA 的 17%（相对 Carbon 非折扣价、且对比档位不同）分开读。</p><p><strong class="runin">局限。</strong> Intelligence Index 的 61 分仍落后昨日记下的 Fable 5.2（<strong>65</strong>）和 Astra Max（<strong>62</strong>），不要写成「新的第一」。编码指数「与 58 分档相当」也不是大幅领先。Carbon 目前仍有 <strong>2 / 10</strong> 美元的促销价，官方称持续到 11 月 30 日；和 Neon 比价时要分清促销价与标准价。官方「内部测试中迄今最低的虚构率」没有给出可复核的外部数字。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>和昨日 Astra 的故事对称：不是先抢回智力榜第一，而是在第三名上把单任务成本和时延压下来，编码 Agent 指数则回到与 Fable 相近的位置。值不值得换，取决于你更在意 61 对 65 的智力分，还是 21 分钟对 36 分钟的任务时长。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得先读 AA 文核对指数、成本和时延，再扫官方博文的定价与供应范围，合计约 15–20 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-neon/" target="_blank" rel="noopener">Introducing Gemini 4 Neon <span style="opacity:.65">(blog.google)</span></a>
+      <a class="src" href="https://artificialanalysis.ai/articles/gemini-4-neon-intelligence-gain" target="_blank" rel="noopener">Google continues to accelerate its release cadence with Gemini 4 Neon <span style="opacity:.65">(artificialanalysis.ai)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title"><a href="https://www.anthropic.com/news/anthropic-prices-initial-public-offering" target="_blank" rel="noopener">Anthropic 将 IPO 定价为每股 83.00 美元，拟发行 9.80 亿股 A 类普通股；预期 11 月 19 日以代码 ANT 在纳斯达克开始交易</a></h3>
+    <p class="item-meta">Anthropic · 标注 November 18, 2026 · 原文 公告本身约 3–5 分钟；招股说明书另计</p>
+    <div class="item-body"><p><strong class="runin">发行条款。</strong> <span class="tag tag-ok">官方</span>Anthropic, PBC 将其 A 类普通股 IPO 定价为每股 <strong>83.00</strong> 美元。发行规模为 <strong>9.80 亿</strong> 股 A 类普通股，其中 Anthropic 出售 <strong>956,351,354</strong> 股，部分售股股东出售 <strong>23,648,646</strong> 股；公司不会从售股股东的股份中获得任何所得。股票预期于 <strong>2026 年 11 月 19 日</strong> 在 Nasdaq Global Select Market 开始交易，代码为 <strong>ANT</strong>。发行预期于 <strong>11 月 20 日</strong> 交割，取决于惯例交割条件的满足。Anthropic 另授予承销商为期 30 天、最多追加购买 <strong>1.47 亿</strong> 股的选项。与这些证券相关的注册声明已于 11 月 18 日获美国证券交易委员会宣布生效。公告写明：发行仅通过招股说明书进行；今日公告不构成出售要约或购买邀请。招股说明书副本可向 Goldman Sachs &amp; Co. LLC 或 Morgan Stanley &amp; Co. LLC 的招股说明书部门索取。</p><p><strong class="runin">局限。</strong> 这是定价与预期交易安排，不是已经完成的上市交割，也不等于已经公布按完全稀释股本计算的估值。本文不把股价乘以发行股数写成「融资额」或「市值」——前一项还要扣除承销费用并区分公司售股与股东售股，后一项需要公告未在此给出的总股本。11 月 19 日开盘是美国市场时间，对应北京时间晚间；截稿时交易尚未开始。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>对后续模型与 API 价格环境，今天该记下的是定价和代码已经落地，以及交割仍取决于条件。估值和首日表现要等交易和招股说明书，不在这条里提前算。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 读官方公告即可，约 5 分钟。若要看风险因素和股本结构，需等或查阅招股说明书，耗时更长。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.anthropic.com/news/anthropic-prices-initial-public-offering" target="_blank" rel="noopener">Anthropic prices initial public offering <span style="opacity:.65">(anthropic.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-3">
+    <h3 class="item-title"><a href="https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash/" target="_blank" rel="noopener">〔补记 · 11-17〕Microsoft 发布 MAI Code 2 与 Code 2 Flash：官方称在四项日常企业编码基准上达到 GPT-6.1 Sol 的 98% 表现、成本为 40%；但对比使用了 50% 宣传价，且明确尚未针对很长程 Agent 工作调优</a></h3>
+    <p class="item-meta">Microsoft AI · 标注 November 17, 2026 · 原文 产品博文约 8–10 分钟</p>
+    <div class="item-body"><p><strong class="runin">官方口径。</strong> <span class="tag tag-ok">官方</span>Microsoft 称 MAI Code 2 面向日常企业编码中的生产改动、深度调试、多文件实现、仓库级推理和界面，Code 2 Flash 面向解释、局部修改和高频迭代。在 DeepSWE 1.1、Terminal Bench 2.1、SWE-Atlas 和 FrontierCode v1.1 四项基准的平均口径下，官方称 Code 2 达到 GPT-6.1 Sol 的 <strong>98%</strong> 表现、成本为其 <strong>40%</strong>，以及 Claude Opus 5.5 的 <strong>96%</strong> 表现、成本为其 <strong>5%</strong>。在盲测前端应用评估中，开发者有 <strong>64%</strong> 的次数更偏好 Code 2 而非 GPT-6 Sol，标注共 <strong>258</strong> 人。官方同时写明：这些模型「明确尚未针对更难的问题调优，例如基础科学研究与非常长程的智能体工作」。Code 2 与 Code 2 Flash 已在 GitHub Copilot 提供；Code 2 Flash 在 Microsoft Foundry 为受限预览。</p><p><strong class="runin">必须一起读的脚注。</strong> <span class="tag tag-ok">官方</span>四项基准均在最大推理力度下运行；其中 DeepSWE、TerminalBench 和 SWE Atlas 是在 Microsoft 内部平台 MSBench 上、用 GitHub Copilot CLI 且不启用子 Agent 测的；FrontierCode 1.1 的分数与成本来自 Artificial Analysis；Code 2 的成本按 <strong>50%</strong> 宣传价计算。Flash 相对 GPT-6 Luna 和 Claude Haiku 5.5 的 <strong>65%</strong> 与 <strong>20%</strong> 成本，同样使用宣传价。因此「40% 成本」不能直接当成长期标价对比。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这条补在今天，是因为它标明 11 月 17 日、上一期上午发布时尚未收入。数字只有连着「宣传价、内部平台、不启用子 Agent、不做长程 Agent 调优」一起读才有用。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 若在选 Copilot 默认编码模型，值得读正文和文末三条脚注，约 10 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://microsoft.ai/news/introducing-mai-code-2-and-mai-code-2-flash/" target="_blank" rel="noopener">MAI Code 2 and Code 2 Flash: Everyday coding at scalable prices <span style="opacity:.65">(microsoft.ai)</span></a>
+      <a class="src" href="https://blogs.microsoft.com/blog/2026/11/17/ignite-2026-building-the-frontier-ecosystem/" target="_blank" rel="noopener">Ignite 2026: Building the frontier ecosystem <span style="opacity:.65">(blogs.microsoft.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今天值得看的帖子</h3>
+    <div class="item-body"><p>发布、定价和 IPO 的主线见第 7 节，Genie 4 见第 4 节。下面保留官方补充和窗口里值得单独看的评测帖。互动数以查询时接口返回为准。</p><p><strong>Anthropic（官方）</strong> · <a href="https://x.com/AnthropicAI/status/2123196808675405860" target="_blank" rel="noopener">IPO 定价每股 83 美元，预期次日在纳斯达克开盘</a></p><p>11 月 19 日 07:29（Asia/Shanghai），点赞 6,700，转发 885，展示约 47.2 万。点评：<span class="tag tag-ok">官方</span>同第 7 节。主帖附完整法律声明，并链到 <a href="https://www.anthropic.com/news/anthropic-prices-initial-public-offering" target="_blank" rel="noopener">官方公告</a>。截稿时美国市场尚未开盘，「tomorrow」按发帖时的美国日期，即 11 月 19 日。</p><p><strong>Demis Hassabis（Google DeepMind CEO）</strong> · <a href="https://x.com/demishassabis/status/2123168218743554465" target="_blank" rel="noopener">发布 Gemini 4 Neon，面向 Pro 与 Ultra</a></p><p>11 月 19 日 05:35（Asia/Shanghai），点赞 4,737，展示约 13.3 万。同时间段 <a href="https://x.com/GoogleDeepMind/status/2123167884411077030" target="_blank" rel="noopener">Google DeepMind 官方上线帖</a> 点赞 5,301，展示约 34.6 万。点评：<span class="tag tag-ok">官方</span>产品定位与第 7 节一致。Hassabis 的用语是「frontier-level intelligence, super fast task completion」，具体名次和成本以 AA 文为准。</p><p><strong>Demis Hassabis（Google DeepMind CEO）</strong> · <a href="https://x.com/demishassabis/status/2123130606162985350" target="_blank" rel="noopener">Genie 4 已开放，符合条件的 Ultra 订阅者可在 Project Genie 中试用</a></p><p>11 月 19 日 03:05（Asia/Shanghai），点赞 1,501，展示约 8.5 万。DeepMind 跟帖称 Genie 3 单次会话最长 3 分钟，见 <a href="https://x.com/GoogleDeepMind/status/2123117735374659636" target="_blank" rel="noopener">这里</a>。点评：<span class="tag tag-ok">官方</span>同第 4 节。主帖里的「turtles all the way down」是修辞，不是技术声明。</p><p><strong>Artificial Analysis（独立评测）</strong> · <a href="https://x.com/ArtificialAnlys/status/2123170645777526962" target="_blank" rel="noopener">Neon xhigh 智力指数 61，暂列第三；编码指数 59，单任务成本更低</a></p><p>11 月 19 日 05:45（Asia/Shanghai），点赞 1,256，展示约 9.7 万。点评：<span class="tag tag-tip">第三方</span>同第 7 节。这是今天核对官方「第一 / 更便宜」说法最该对照的一条；编码指数的 59 与官方 58.6 应视为同一测量的不同转述，排名上 AA 写成与 Fable / Opus 的 58 分相当。</p><p><strong>Arena（官方）</strong> · <a href="https://x.com/arena/status/2123169189397709174" target="_blank" rel="noopener">Neon（High）在 Agent Arena Index 上以 1336 分列第二，并称 Gemini 4 发布间隔大致依次减半</a></p><p>11 月 19 日 05:39（Asia/Shanghai），点赞 977，展示约 7.1 万。跟帖称发布间隔为 Argon→Carbon 28 天、Carbon→Hydrogen 15 天、Hydrogen→Neon 6 天，见 <a href="https://x.com/arena/status/2123192239761596566" target="_blank" rel="noopener">这里</a>。点评：<span class="tag tag-tip">第三方</span>1336 分、约 4,200 次真实 Agent 会话，与 Google 官方博文一致。发布间隔是 Arena 对公开日期的归纳，不是 Google 官方承诺的节奏。Text Arena 上 Neon（High）为 1518，低于 Carbon 1526 和 Argon 1521，说明「中间档」并不在所有榜上都压过 Carbon。</p><p><strong>Greg Brockman（OpenAI 总裁）</strong> · <a href="https://x.com/gdb/status/2123130414323888463" target="_blank" rel="noopener">称用模型在不到 5 个月里为 AMD 芯片取得约一年进度，部分结果已进入近期送制造的设计</a></p><p>11 月 19 日 03:05（Asia/Shanghai），点赞 839，展示约 7.3 万。点评：<span class="tag tag-ok">官方</span>同第 3 节。数字以 <a href="https://openai.com/index/advancing-chip-design-with-our-models/" target="_blank" rel="noopener">官方博文</a> 的「最高 14%」和「个位数百分比 CPU 收益」为准，主帖是概括。</p><p><strong>Thariq（@trq212，前 Claude Code 团队）</strong> · <a href="https://x.com/trq212/status/2123174994138333484" target="_blank" rel="noopener">对 Neon 感兴趣，但认为元素命名已经造成预期负担</a></p><p>11 月 19 日 06:02（Asia/Shanghai），点赞 1,081，展示约 3.3 万。点评：<span class="tag tag-guess">评论</span>这不是评测，而是一线使用者对产品沟通的反馈。和 AA「61 分排第三、但更快更便宜」放在一起看更有用：命名体系变密之后，用户更不容易从名字读出该用哪一档。</p></div>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>今日收束</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>Agent / 记忆</td><td>EvoDisco 让 Agent 发现记忆该如何改写，而不是使用固定算子；ALFWorld 上相对 MemP 为在线 +8.8、冻结迁移 +12.9 分</td></tr>
+      <tr><td>RSI</td><td>OpenAI 称 2–4 小时研究任务自主完成率从 23% 升至 46%，但按任务类型从 79% 到 25% 不等；官方要求把这读成 RSI 指标，而不是已在追求完整 RSI</td></tr>
+      <tr><td>世界 / 具身</td><td>Genie 4 向 Ultra 开放，可中途改世界并带原生音频；EyeHeight 上 6 个开源视频世界模型在转身走动后会把相机拉向人眼高度</td></tr>
+      <tr><td>AIGC 视频</td><td>Suno Visuals（11-17）把歌曲做成最长 15 秒、可对口型的短视频，视觉积分单独计费</td></tr>
+      <tr><td>用法</td><td>Antigravity Orchestrator 可将 Neon 用作规划器、Hydrogen 用作执行器，受阻时再交回 Neon</td></tr>
+      <tr><td>评测落地</td><td>Neon 在 AA Intelligence Index 上以 61 分暂列第三；编码指数 59，单任务成本低于 Fable / Opus。Anthropic IPO 定价 83.00 美元，代码 ANT，预期 11 月 19 日开盘</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 先看 AA 对 Neon 的指数、成本和时延（约 8 分钟），再扫 Google 官方定价与供应范围。RSI 侧读 OpenAI 报告导语和任务拆分，不要停在 46% 这个总数。关心世界模型或镜头一致性的，把 Genie 4 产品博文的局限段和 EyeHeight 的 0–20% 放在一起看。Anthropic 公告只确认定价与预期交易安排，估值与开盘表现需另等。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-11-19 · Asia/Shanghai</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
