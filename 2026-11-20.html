@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-11-20</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="Anthropic（ANT）首日开盘 111.50 美元、收盘 97.17 美元，较发行价 83 美元上涨约 17%。Google 把 Genie 4 开进 Gemini API 与 AI Studio，官方计价约每秒 0.10 美元，并写明单次会话最长 120 秒、视觉连贯在前 45–90 秒更稳。Gemini 的 Mac 版上线 computer use。研究侧，SCH 把语义状态与证据分开后，在 150 题 SWE-bench 上 Pass@1 从 80.0% 升至 86.9%；StrideWorld 显示 15 个开源交互式视频世界模型里，除 1 个外都会在相机移动时让场景变形。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-11-20</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-11-20">截至 2026 年 11 月 20 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 11 月 20 日上午（CST）</strong>，覆盖 11 月 19 日约 09:19 上一期发布之后至今日上午。论文以 arXiv 11 月 19 日（星期四）新公告榜为主。产品稿方面，Stitch Loop 标注 November 18，上一期上午未收入，今日补记并注明日期。X 官方帖时间戳另行注明。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客、产品文档与更新日志、交易所新闻稿、主要财经媒体、arXiv 与已打开核对的页面；X 用于选题与发帖人观点（关注名单优先），均附原帖。链接已逐一打开核对。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或报道，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。官方自报基准与独立榜分开写；发行募集额是毛额口径，不等于公司净到手；市值数字随完全稀释或在外股本等口径而变，需标明出处。随笔若依据更早的技术报告，会同时写明报告日期。</span></div><div class="meta-row"><span class="k">今天共 10 条正文、7 个板块（AIGC 视频生成暂无独立新条，相关对照放在 X 热点）。主线有三条</span><span>一条是 Anthropic 作为首家上市的前沿实验室走完了首个交易日——开盘冲到 111.50 美元后回落到 97.17 美元，仍较发行价高约 17%，但并不能带动当日美股；一条是 Google 把世界模型和桌面 Agent 继续往可调用、可演示的方向推——Genie 4 进入付费 API，官方自己把「120 秒」和「前 45–90 秒更稳」写进了模型文档，Mac 上的 computer use 则强调隔离窗口和逐项批准；第三条是上下文和世界模型评测都在追问「参考系有没有先被固定」——SCH 把结论和证据拆开存放，StrideWorld 则不让模型用自己后来生成的视频去当裁判。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">Agent / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">SCH：把语义状态和证据分开存放；在 150 题 SWE-bench 上，证据回补把 Pass@1 从 80.0% 提到 86.9%</a></li><li><a href="#s1-2">〔补记 · 11-18〕Google Labs 发布 Stitch Loop：接上代码库和线上指标、在沙箱里写代码并开 PR，合并仍需人工批准</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI</a></div><ol class="toc-items"><li><a href="#s2-1">Think Offline, Act in Real Time：用代码保存改进，在 170 个 GameWorld 任务上平均进度 47.80%，高于受训控制器的 30.90%</a></li><li><a href="#s2-2">DeepMind Institute 发布随笔《What comes after AGI?》：把通往 ASI 的路写成四条，并强调 RSI 不是单一过程</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">能力进展</a></div><ol class="toc-items"><li><a href="#s3-1">Ultimate3D：用大规模 3D 视觉指令数据教模型相机–物体关系；作者称在自建基准上平均准确率比商业模型高 29.7 个百分点</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">Genie 4 进入 Gemini API 与 Google AI Studio；官方定价约每秒 0.10 美元，单次会话最长 120 秒，并写明视觉连贯在前 45–90 秒更稳</a></li><li><a href="#s4-2">StrideWorld：15 个开源交互式视频世界模型中，除 1 个外都会在相机移动时让场景变形，偏移最高可达刚性渲染的 7.3 倍</a></li><li><a href="#s4-3">F³：对世界–动作模型来说，经验是否有用取决于怎么存、何时用、从哪送进策略；乱复用相似轨迹会把成功率从 55% 降到 41%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">用法</a></div><ol class="toc-items"><li><a href="#s5-1">Gemini 的 Mac 应用上线 computer use：在隔离的后台窗口里操作本地文件、桌面应用和网页，关键动作需先批准</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">评测落地</a></div><ol class="toc-items"><li><a href="#s6-1">Anthropic（ANT）首日开盘 111.50 美元，收盘 97.17 美元，较发行价 83 美元上涨约 17%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">X 热点精选</a></div><ol class="toc-items"><li><a href="#s7-1">今天值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+  <p class="sec-lead">长程 Agent 的难点，常常不是「还记不记得」，而是后来要用的那条观察，还能不能被找回来。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.24357" target="_blank" rel="noopener">SCH：把语义状态和证据分开存放；在 150 题 SWE-bench 上，证据回补把 Pass@1 从 80.0% 提到 86.9%</a></h3>
+    <p class="item-meta">Zheng, Hou, Yang, Zhang, Huang · arXiv · 星期四（11-19）新公告 · 原文 摘要与设定约 12–15 分钟；全文更长</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>长程语言 Agent 若每一步都把全部动作–观察历史送回模型，上下文会持续变长，费用上升，也可能把当前真正有用的信息埋掉。若只保留压缩后的结论、丢掉先前观察，又可能在后来需要复核时，发现支撑那条结论的证据已经不在了。作者举的例子是：软件工程 Agent 先检查过一个文件并形成根因假设，许多步之后验证失败，这时最初的检查记录重新变得重要；按最近窗口丢弃，或做成不可逆摘要，都会把这条路堵上。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>Semantic Context Handoff（SCH）的核心抽象是状态–证据分离：一份紧凑的语义状态持续携带 Agent 当前的理解和任务进展；支撑性的动作–观察证据另行可寻址，当后续执行再次需要时再进入上下文，而不另训检索模型、也不做单独摘要。每一步交给模型的是「当前语义状态 + 与当下决策相关的证据」。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>在一项受控的 150 题 SWE-bench 研究中，SCH 的证据回补把 Pass@1 从 <strong>80.0%</strong> 提高到 <strong>86.9%</strong>，作者称 token 用量和执行时间基本不变。在完整系统对照中，SCH 取得 <strong>86.9%</strong> Pass@1，同时比「按任务表现最强的基线」少用 <strong>43%</strong> token、墙钟时间少 <strong>41%</strong>。作者还写：相对全历史提示，SCH 在多个模型和基准上持续降低 token 用量，并保持竞争力或更好；轨迹分析表明，它回收的是交互史上更早的证据，而不是仅仅保住最近窗口。</p><p><strong class="runin">局限。</strong> 这是 150 题 SWE-bench 上的受控研究，不是个人记忆产品评估，也不宜外推到开放网页或桌面 Agent。文中「按任务表现最强的基线」未在摘要里点名，完整对照需看原文表格。证据回补带来的 6.9 个百分点，是在已经较高的 80.0% 起点上取得的，不能写成「记忆本身把编码 Agent 提高了近 7 分」。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>和本周前面几篇记忆论文是同一条线上的不同切口：AdMem 问一条经验该不该留下，EvoDisco 问留下之后用哪套规则改写，SCH 问压缩之后，原来的观察还能不能被召回。数字清楚，场景仍主要是软件工程基准。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做长程 Agent 或上下文压缩的值得读摘要、状态–证据分离定义和 SWE-bench 对照，约 12–15 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.24357" target="_blank" rel="noopener">Semantic Context Handoff with On-Demand Evidence for Long-Horizon Agents <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-2">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/" target="_blank" rel="noopener">〔补记 · 11-18〕Google Labs 发布 Stitch Loop：接上代码库和线上指标、在沙箱里写代码并开 PR，合并仍需人工批准</a></h3>
+    <p class="item-meta">Justin Toupin（Google Labs 产品管理总监） · 标注 November 18, 2026 · 原文 产品说明约 8–10 分钟</p>
+    <div class="item-body"><p><strong class="runin">它做什么。</strong> <span class="tag tag-ok">官方</span>Stitch Loop 是 Google Labs 的一项实验：长驻的产品 Agent，接到代码库和线上指标后，持续寻找可改进之处，并一直工作到设定目标被满足。使用前先连接 GitHub 和产品上下文（日志、用户行为、反馈等），官方写可通过 <strong>180</strong> 余种集成、自定义 MCP 服务器或本地 CLI 上传。默认提供网络安全、时延和可访问性三组 loop，也可以自建，例如提升结账转化。每组 loop 分四步：Suggestions（依产品证据提出改进）、Solutions（给出方案、取舍和适用范围，必要时附视觉设计）、Build（在隔离云沙箱写代码并开出 GitHub PR，相关时附截图或视频）、Reflect（跟踪线上数据，目标达成后仍继续盯着，防止指标回落）。官方强调：在你审阅 PR 之前，不会合并任何改动。</p><p><strong class="runin">安全与工作流。</strong> <span class="tag tag-ok">官方</span>安全 loop 把 Gemini 4 Carbon 的网络安全能力与 DeepMind 的 CodeMender（官方称为提升代码安全的自主 Agent）配在一起，扫描代码库中的漏洞，附上证据并开出修复 PR 供审阅。它也可作为 Antigravity 等编码 Agent 的服务层；其他编码 Agent 可通过 Stitch CLI 和 MCP 拉取持续的产品上下文。Slack 里可用 @stitch 接收每日洞察并新建 loop。等候名单即日起对全球用户开放，符合条件的 Google AI Ultra 用户优先，登记页为 <a href="https://stitch.google.com/loop/waitlist" target="_blank" rel="noopener">stitch.google.com/loop/waitlist</a>。</p><p><strong class="runin">局限。</strong> 这是实验产品和等候名单，不是已全面开放的生产 SLA。官方没有给出默认 loop 的准确率、误报率或实际合并周期。安全能力分别挂在 Carbon 与 CodeMender 上，不能据此写成「Loop 本身已通过独立安全评测」。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它把「写完 PR 就结束」的编码 Agent，接成了「上线之后还对着指标继续改」的产品 Agent。控制点写得很清楚：建议可以自动出，合并必须人看。值不值得用，要等真正进入名单后才能看误报和返工，而不是看发布文。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心产品 Agent 或持续优化闭环的值得读官方说明，约 8–10 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/models-and-research/google-labs/stitch-loop/" target="_blank" rel="noopener">Stitch Loop: Continuous product optimization for teams <span style="opacity:.65">(blog.google)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+  <p class="sec-lead">把学到的东西写进程序，还是写进权重，在「游戏还在跑、模型还在想」的约束下，结果可以差出一截。</p>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.24590" target="_blank" rel="noopener">Think Offline, Act in Real Time：用代码保存改进，在 170 个 GameWorld 任务上平均进度 47.80%，高于受训控制器的 30.90%</a></h3>
+    <p class="item-meta">Qiu, Xu, Li 等 · arXiv · 星期四（11-19）新公告 · 原文 摘要与设定约 12 分钟；全文更长</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>预训练视觉–语言模型已经能读屏幕、推理游戏，但面对一款不熟悉的游戏，Agent 仍需自己搞清操作如何反馈、哪些视觉线索重要、失败策略如何修补。难点还在于：这是实时视觉游戏，Agent 只看屏幕，而它在思考时，游戏并不暂停。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>作者比较两种能承载自我改进的策略。一种是 model as policy：由模型在对局中直接选动作；他们为这种接口改编了 real-time chunking，让已提交的动作在模型思考时继续执行，并训练了一个 2B 控制器（文中称 RTC-2B）。另一种是 code as policy：模型在两次尝试之间编写、测试和修改程序，对局时由程序实时操作。项目仓库为 <a href="https://github.com/TabibitoQZP/SIGame" target="_blank" rel="noopener">github.com/TabibitoQZP/SIGame</a>。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>在 <strong>170</strong> 个 GameWorld 任务上，每次运行最多 <strong>8</strong> 次一分钟执行，code as policy 的平均进度为 <strong>47.80%</strong>，受训控制器为 <strong>30.90%</strong>，并在全部五个游戏类别领先。图注补充了预算并不对称：直接对局是一次 <strong>180</strong> 秒回合；代码开发运行则在最多八次 <strong>60</strong> 秒执行里取最佳提交。作者还写：在单一游戏上改进控制器的权重，只带来有限收益。文中用于开发程序的模型是 Qwen3.8-27B。</p><p><strong class="runin">局限。</strong> 这是游戏基准，不是软件工程或开放桌面任务。两种策略的时间预算和模型规模不同，不宜把 47.80% 对 30.90% 读成「同一算力下只换存储形式」。「只带来有限收益」没有在摘要里给出具体百分点。实时游戏里成立的「把改进写进程序」，不能直接外推到需要修改模型权重的 RSI。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它给「自我改进」加了一条很具体的约束：思考可以离线，行动必须赶上帧率。存储介质因此从权重变成了程序。这和把 RSI 理解成「模型改自己的参数」不是同一回事，但和 Agent 在回合之间修工具、修脚本的实践更近。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心 RSI 或实时 Agent 的值得读摘要、两种策略的预算说明和 170 任务对照，约 12 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.24590" target="_blank" rel="noopener">Think Offline, Act in Real Time: Self-Improving Visual Game Agents through Code <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s2-2">
+    <h3 class="item-title"><a href="https://institute.deepmind.com/essays/what-comes-after-agi/" target="_blank" rel="noopener">DeepMind Institute 发布随笔《What comes after AGI?》：把通往 ASI 的路写成四条，并强调 RSI 不是单一过程</a></h3>
+    <p class="item-meta">Tim Genewein（Google DeepMind 研究科学家） · DeepMind Institute · 标注 November 19, 2026 · 原文 随笔正文约 20–25 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>这是 11 月 19 日发布的随笔，不是新实验。文末写明：它基于 6 月 12 日的技术报告 *From AGI to ASI*（作者还包括 Shane Legg 等 14 人）以及之后在 DeepMind Institute 团队内的讨论。随笔把通用智能看成连续谱，AGI 只是其中一点；ASI 被写成能在几乎所有人类关心的任务上，持续优于大型人类专家团队、并用更少资源和更短时间完成他们可能要数年的工作。通往 ASI 的四条路是：继续扩展模型和数据、技术范式转变、改进 Agent 协同，以及递归自我改进（RSI）。</p><p><strong class="runin">关于 RSI。</strong> <span class="tag tag-ok">官方</span>随笔写：RSI 不是单一过程。它可以改进代码与设计（模型架构、训练算法到芯片布局），也可以通过数据（在部署时花算力产出更好结果，再用于训练后续模型；文中以 AlphaZero 为数据驱动自改进的例子），还可以在群体层面通过分工和角色特化进行。它同时写：若反馈信号差，RSI 回路很容易停滞或退化；因此需要能扩展到超人类区间的评测，而 RSI 预计在数学证明等可自动验证、不必人在回路里的领域进展更快。文中也提醒：改进往往「越来越难找」，RSI 会不会变成 runaway，主要是经验问题。四条路可以叠加；只限制其中一条（例如训练算力）并不足以挡住整体进展，还可能造成能力「悬空」后的陡峭跳跃。</p><p><strong class="runin">局限。</strong> 这是路线图和治理讨论，不是新的评测或产品发布。有效算力「至少每年 10 倍」、十年后同等质量 Agent 可超过世界人口等数字，是对既有趋势的外推，随笔自己也写了这些趋势只在熟悉边界内成立。不要把 11 月 19 日的发布日期，写成 6 月那份报告才出现。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>和昨日 OpenAI 的研究加速报告可以对着看：一家在报可核对的内部指标，并声明「不要读成已在追求完整 RSI」；另一家把 RSI 拆成代码、数据和群体三条机制，并把它放回多条可能叠加的路径里。都还不是「已经实现递归自我改进」的证据。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心 RSI 定义和治理口径的值得读「Four pathways」和 RSI 两节，约 15 分钟；不必把六月报告全文当作今日新论文。</p>
+    <p class="item-sources">
+      <a class="src" href="https://institute.deepmind.com/essays/what-comes-after-agi/" target="_blank" rel="noopener">What comes after AGI? From AGI to Superintelligence <span style="opacity:.65">(institute.deepmind.com)</span></a>
+      <a class="src" href="https://deepmind.google/research/publications/239142/" target="_blank" rel="noopener">From AGI to ASI <span style="opacity:.65">(deepmind.google)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+  <p class="sec-lead">多模态模型常能说出图里有什么，却说不准相机在哪、物体朝哪、镜头是近是远。</p>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.24795" target="_blank" rel="noopener">Ultimate3D：用大规模 3D 视觉指令数据教模型相机–物体关系；作者称在自建基准上平均准确率比商业模型高 29.7 个百分点</a></h3>
+    <p class="item-meta">He, Song, Xu 等（Purdue / Amazon） · arXiv · 星期四（11-19）新公告 · 原文 摘要约 8–10 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>多模态大模型在物体朝向、相机机位和镜头景别等相机–物体关系上仍然容易出错。作者认为，原因是现有训练图像里这类关系不够多样，配套文本描述也不够精确。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>他们用 3D 资产做渲染，再经扩散模型生成保持精确相机–物体关系的照片级图像，并用语言模型生成视觉指令微调所需的文本。由此构造 Ultimate3D：约 <strong>24 万</strong> 条带精确相机–物体标注的 VQA，以及相应基准。代码、数据和基准称将发布。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>在作者提出的相机–物体关系识别任务上，用该数据微调后的多模态模型平均准确率比商业模型高 <strong>29.7</strong> 个百分点。摘要称「大幅度优于商业模型」。</p><p><strong class="runin">局限。</strong> 29.7 个百分点是在自建基准上的平均准确率差，不是公开通用空间基准上的排名，也未在摘要中点名对照了哪些商业模型、原分数是多少。数据是合成管线生成的，迁移到真实镜头和短剧分镜时仍需另验。这是图像 VQA，不是视频生成模型。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它要补的是「看图说话」里经常缺的那一层：相机和物体之间的几何关系。对需要稳定机位、朝向和景别的分镜工作有参考价值，但首先是识别任务，还不是生成任务。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做空间理解或分镜一致性的值得读摘要和数据构造说明，约 8–10 分钟；若只关心生成模型，可先看第 4 节的 StrideWorld。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.24795" target="_blank" rel="noopener">Ultimate3D: Teaching Multimodal LLMs 3D Camera-Object Relations by Large-Scale Visual Instruction Data <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+  <p class="sec-lead">昨天是 Genie 4 对符合条件的 Ultra 订阅者开放；今天补上开发者可调用的 API，以及一份不让模型「用自己后半段视频当裁判」的评测。</p>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/technology/developers-tools/genie-4-in-gemini-api/" target="_blank" rel="noopener">Genie 4 进入 Gemini API 与 Google AI Studio；官方定价约每秒 0.10 美元，单次会话最长 120 秒，并写明视觉连贯在前 45–90 秒更稳</a></h3>
+    <p class="item-meta">Google · 标注 November 19, 2026 · 原文 发布说明约 5 分钟，模型文档与定价约 10 分钟</p>
+    <div class="item-body"><p><strong class="runin">开放范围。</strong> <span class="tag tag-ok">官方</span>发布文写：继前一天的 Genie 4 发布后，它现已通过 Interactions API 在 Gemini API 和 Google AI Studio 向开发者开放。可以从文本提示、参考图或两者同时开始，生成连续的 <strong>720p</strong>、<strong>24fps</strong> 世界，并带同步原生音频（环境声、音效到角色对白）。可用实时键盘控制，也可在过程中用文本提示改变天气、光照、物体或事件。官方称 Gemini 的推理会在过程中保持世界状态一致；每段输出都带不可感知的 SynthID 水印。更新日志将其记为 <code>models/genie-4</code> 在 Interactions API（<code>v1beta</code>）上一般可用（GA），输出为可转向的 24fps、16:9 视频，同步 <strong>48 kHz</strong> 立体声，经 WebRTC 和 WebSockets 传输；可用 <code>WASD</code> / 方向键以及会话中途的文本事件来转向。</p><p><strong class="runin">定价与限制。</strong> <span class="tag tag-ok">官方</span>更新日志和定价页写：仅付费档；输入 <strong>1.50</strong> 美元 / 百万 token（文本或参考图），文本输出 <strong>9.00</strong> 美元 / 百万 token，视频输出 <strong>17.50</strong> 美元 / 百万 token（音频计入视频 token）。模型文档写：每帧 <strong>240</strong> 个视频输出 token，即 24fps 下每秒 <strong>5,760</strong> 个 token；按标准定价折合约 <strong>0.10</strong> 美元/秒（约 <strong>6.05</strong> 美元/分钟）。单次会话最长 <strong>120</strong> 秒，并写明「视觉连贯和物体持续性在前 <strong>45–90</strong> 秒最强」。服务区域为美国、西欧和日本；北美、西欧/中欧和东亚以外延迟升高可能推迟转向并降低帧率。结束会话时必须调用 <code>complete()</code>，否则计费不会停。文档还写：离线固定时长片段、多轮视频编辑和最高 4K 上采样，应改用 Gemini Omni 1.2 Flash。</p><p><strong class="runin">局限。</strong> 「GA」指该 API 表面已一般可用，不代表世界模型已在长程一致性上过关。官方自己把 45–90 秒写进了文档，这和昨日 EyeHeight、今日 StrideWorld 要放在一起看。约 0.10 美元/秒是按视频输出 token 折算的有效费率，不是包时长套餐。昨日的 Project Genie（Ultra）和今日的付费 API 是两条通道，不要混写成「所有人都能免费玩」。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这是昨天产品开放的开发者续篇。更值得记下的不是「能用键盘走进生成世界」，而是官方把会话时长和连贯窗口写得很具体：两分钟封顶，前一分半更稳。调用之前先按这个窗口设计交互，而不是按「可无限探索」来想象。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 要接入的值得读模型文档和定价页，约 10 分钟；只需了解开放事实的，看发布说明即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/technology/developers-tools/genie-4-in-gemini-api/" target="_blank" rel="noopener">Genie 4 now available through the Gemini API <span style="opacity:.65">(blog.google)</span></a>
+      <a class="src" href="https://aistudio.google.com/docs/changelog" target="_blank" rel="noopener">Gemini API 更新日志 <span style="opacity:.65">(aistudio.google.com)</span></a>
+      <a class="src" href="https://ai.google.dev/gemini-api/docs/models/genie-4" target="_blank" rel="noopener">Genie 4 模型文档 <span style="opacity:.65">(ai.google.dev)</span></a>
+      <a class="src" href="https://ai.google.dev/gemini-api/docs/pricing" target="_blank" rel="noopener">定价页 <span style="opacity:.65">(ai.google.dev)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s4-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.24408" target="_blank" rel="noopener">StrideWorld：15 个开源交互式视频世界模型中，除 1 个外都会在相机移动时让场景变形，偏移最高可达刚性渲染的 7.3 倍</a></h3>
+    <p class="item-meta">Wang, Nie, Song 等（上海交大 / 上海 AI Lab / 北航 / 清华深圳等） · arXiv · 星期四（11-19）新公告 · 原文 摘要与设定约 15 分钟；全文更长</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>交互式视频世界模型要把用户指令变成对生成场景的探索，既要求场景在相机移动时保持三维结构，也要求同一动作的效果稳定。现有基准常常用「待测视频自己拟合出来的场景或相机轨迹」当参考，还可能带自由尺度；这样，缓慢的场景变形、步速变化和路线长短变化，都可能被参考系吃掉，从而漏检。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>StrideWorld 的参考系在被评判的运动开始之前就固定：场景刚性对照起始视角的真实几何；动作一致性对照 stride（一次指令对应的相机运动）。stride 先在模型自己的前几步上测量，再用来检验后续步骤，因此每个模型只对自己的步长负责。测量方法在已知相机运动的渲染视频上做过验证，分数也与人类判断一致。代码、数据和排行榜见 <a href="https://github.com/chuangwang123/strideworld" target="_blank" rel="noopener">github.com/chuangwang123/strideworld</a>。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>评测覆盖 <strong>15</strong> 个开源模型、从 <strong>140</strong> 个起始视角生成的 <strong>54,600</strong> 段视频。除 <strong>1</strong> 个模型外，其余都会在相机移动时让场景变形，偏移最高可达沿同一相机路径的刚性渲染的 <strong>7.3</strong> 倍。单动作持续执行时，多数模型步速还算稳。但在组合路线上，多个模型经常中途停滞；多数走完的路线，终点也偏离「按该模型自己的 stride 所预测的位置」。只有两个按估计场景深度缩放指令的模型，能让大多数路线接近这些位置。对其中两个模型用少量渲染片段微调后，中途停滞大多被消除。</p><p><strong class="runin">局限。</strong> 这是开源模型评测，摘要未纳入 Genie 4 等闭源系统，不能把 7.3 倍直接写到商业世界模型头上。「除 1 个外」和「两个按深度缩放的模型」在摘要里没有点名，需看原文表。微调能减少停滞，不等于已经修好场景变形。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它和 FlipTest、EyeHeight 是同一类提醒：如果裁判用的参考系可以跟着模型一起漂，失败就会看起来像成功。StrideWorld 把「先固定尺子，再量后面的步子」写成了评测协议。对要做可返回、可组合镜头运动的人来说，这比再看一段漂亮的演示更有用。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做世界模型或镜头一致性的值得读摘要、参考系定义和 15 模型结果，约 15 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.24408" target="_blank" rel="noopener">StrideWorld: Benchmarking Scene Rigidity and Action Consistency in Interactive Video World Models <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s4-3">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.24708" target="_blank" rel="noopener">F³：对世界–动作模型来说，经验是否有用取决于怎么存、何时用、从哪送进策略；乱复用相似轨迹会把成功率从 55% 降到 41%</a></h3>
+    <p class="item-meta">Huang, Zhou, Han 等 · arXiv · 星期四（11-19）新公告 · 原文 摘要与设定约 12–15 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>部署后的世界–动作模型（WAM）若要继续变好，必须用好自己的经验。现有方法常把检索到的回放或演示当作上下文送给策略，但这样的经验有时会把已经能做的任务重新做失败。作者用 Cosmos 3 Nano 做了成对闭环试验：把与自身历史中最相似的记录以文本和帧的形式送回，结果拆掉了原本能完成的 <strong>21</strong> 个回合，只挽回 <strong>7</strong> 个，成功率从 <strong>55%</strong> 降到 <strong>41%</strong>。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>F³ 用 Form、Fit、Fusion 分别决定存什么、何时用、从哪里进入策略。Form 把成功和失败回放都压成简短、经过核验的操作记录；Fit 让策略学会阅读记录，并预测它何时有帮助；Fusion 把记录中的图像、文本和动作作为前缀和动作先验注入策略。系统只在 <strong>200</strong> 个例子上训练一次，部署时带着不断增长的经验库。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>作者称在 MolmoSpaces 和 RoboLab 上达到当时最强结果，且并未在 RoboLab 上训练：相对原生 Cosmos 3 Nano，成功率分别提高 <strong>12.0</strong> 和 <strong>10.8</strong> 个百分点，到达成功所需步数分别减少 <strong>12.2%</strong> 和 <strong>11.3%</strong>，回归（把已会的做失败）减少 <strong>57%</strong>。</p><p><strong class="runin">局限。</strong> 这是两个具身/操作基准上的结果，基线是 Cosmos 3 Nano，不能写成所有世界模型通用定律。55%→41% 的对照说明「相似轨迹」会有害，并不自动证明任何检索都会有害。200 条训练加不断增长的经验库，是部署协议的一部分，不是零样本。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它把「多记一点就会更好」这句话拆开了：经验的价值只在被使用时才显现。这和 SCH 的「压缩后还要能把证据找回」、以及昨日 AdMem 的「乱记可能更差」是同一类教训，只是对象从语言 Agent 换成了世界–动作模型。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做世界模型记忆或部署后改进的值得读摘要和 55%→41% 对照，约 12–15 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.24708" target="_blank" rel="noopener">F³: What Makes Good Experience in World-Action Models? <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+  <p class="sec-lead">桌面 Agent 要能用，先要让屏幕和光标仍然属于用户。</p>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/products/gemini-app/computer-use-mac/" target="_blank" rel="noopener">Gemini 的 Mac 应用上线 computer use：在隔离的后台窗口里操作本地文件、桌面应用和网页，关键动作需先批准</a></h3>
+    <p class="item-meta">Michael Friedman（Gemini 应用集团产品经理） · 标注 November 19, 2026 · 原文 产品说明约 6–8 分钟</p>
+    <div class="item-body"><p><strong class="runin">它做什么。</strong> <span class="tag tag-ok">官方</span>Gemini 的 Mac 应用新增 computer use，用于处理重复的多步电脑任务。用户用语言描述需求后，Gemini 会在菜单、输入和点击中完成操作。它运行在隔离的后台窗口里，聊天中可看直播预览；主屏幕和光标保持空闲，用户可以继续自己的工作。官方写：由用户选择可访问的应用、随时暂停，并在关键动作发生前批准。举例包括：在设计软件里批量调色或搭建复杂 3D 场景；从本地 PDF 抽取重量、尺寸和地址去填多栏货运报价；从多个地区的线上仪表盘拉取指标和截图，在 Google Slides 里做成演示；以及分析本地服装照片、查询定价并上架转售平台。</p><p><strong class="runin">供应范围。</strong> <span class="tag tag-ok">官方</span>即日起在美国以英语推出，需在 <a href="https://gemini.google/mac" target="_blank" rel="noopener">gemini.google/mac</a> 下载 Gemini 的 Mac 应用。要求为搭载 Apple Silicon、运行 macOS Sequoia 15.0 或更高版本的 Mac；适用于 18 岁以上的个人 Google 账号，面向 Google AI Plus、Pro 和 Ultra 用户。官方未在这篇博文里给出其他国家或 Windows 的时间表。</p><p><strong class="runin">局限。</strong> 这是美国、英语、付费档和个人账号的首发，不是全平台能力。博文没有提供任务成功率、平均完成时间或误操作率。官方示例里的「把草图变成绑定好的 3D 模型」出现在配套 X 帖，而不是这篇博文的保证条款；演示不能当成已验证的 Blender 工作流。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>和 Stitch Loop 一样，发布文把控制权写得很靠前：隔离窗口、权限自选、关键动作先批。对短剧或 3D 预演而言，它提供的是「在本机软件里代为点选」的通道，而不是新的生成模型。能不能稳定跑完一组分镜，要等实际权限和失败恢复都被用过才知道。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 有符合条件的 Mac、打算试用桌面 Agent 的，值得读官方说明，约 6–8 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/products/gemini-app/computer-use-mac/" target="_blank" rel="noopener">Automate Mac tasks with Gemini computer use <span style="opacity:.65">(blog.google)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+  <p class="sec-lead">定价和开盘预期已在昨日写下；今天能核对的，是第一个交易日实际怎么走完的。</p>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://www.nasdaq.com/newsroom/anthropic-marks-ipo-at-nasdaq" target="_blank" rel="noopener">Anthropic（ANT）首日开盘 111.50 美元，收盘 97.17 美元，较发行价 83 美元上涨约 17%</a></h3>
+    <p class="item-meta">Nasdaq 新闻稿：Anthropic Marks its IPO at Nasdaq（标注 November 19, 2026, 3:30 PM EST） · 原文 交易所稿与收盘报道约 10 分钟</p>
+    <div class="item-body"><p><strong class="runin">已核对的交易结果。</strong> <span class="tag tag-ok">官方</span><span class="tag-q">· Nasdaq</span>Anthropic 于星期四在纳斯达克开始交易，代码 <strong>ANT</strong>，开盘价为每股 <strong>111.50</strong> 美元。<span class="tag tag-tip">第三方</span>CNBC、Nikkei Asia、The Guardian 和 Yahoo Finance 均写收盘价为 <strong>97.17</strong> 美元。按发行价 <strong>83</strong> 美元计，开盘约高 <strong>34%</strong>，收盘约高 <strong>17%</strong>（97.17 / 83 ≈ 17.07%，上述报道多写作 17%；开盘 111.50 / 83 ≈ 34.3%，报道多写作 34%）。Yahoo Finance 还写：股票在约 11:30 a.m. ET 之后开始交易。CNBC 写当日成交超过 <strong>8.46 亿</strong> 股。</p><p><strong class="runin">募集额与市值口径。</strong> <span class="tag tag-tip">第三方</span>CNBC 和 Yahoo Finance 写本次 IPO 募集 <strong>813</strong> 亿美元；这与昨日官方公告的 <strong>9.80 亿</strong> 股、每股 <strong>83.00</strong> 美元相一致（9.80 亿 × 83 = 813.4 亿美元），应视为发行毛额，其中包含售股股东出售的股份，不等于 Anthropic 公司净到手。Yahoo Finance 写发行时估值为 <strong>1.5</strong> 万亿美元。收盘市值则因口径而异：The Guardian 写约 <strong>1.75</strong> 万亿美元，CNBC 写完全稀释约 <strong>1.8</strong> 万亿美元；开盘阶段两家都提到约 <strong>2.01</strong> 万亿美元，指的是开盘而非收盘，不宜混用。昨日官方公告写交割预期为 11 月 20 日、取决于惯例条件；截稿时未见独立的交割完成确认。</p><p><strong class="runin">现场表态。</strong> <span class="tag tag-ok">官方</span><span class="tag-q">· 转述</span>Nasdaq 新闻稿和 Anthropic 官方账号发布了 CEO Dario Amodei 的开盘致辞。他重申将按需要放缓训练与部署，以确信系统安全并保持在人类控制之下，且「不会屈从于商业或政治压力」；并称上市使公司财务更稳固，只会加强这一决心。完整文本见第 7 节原帖。这是公司立场，不是监管裁定，也不能用来预测后续股价。</p><p><strong class="runin">局限。</strong> 收盘价来自多家主要财经媒体，与交易所新闻稿的开盘价一致，但本文并未打开交易所的官方收盘打印页。市值不是单一官方数字。首日上涨约 17%，同时报道写当日美股主要指数收跌，不能把 ANT 的首日表现读成「市场对 AI 板块全面重新定价」。公开发行材料与已完成交割也不是一回事。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>昨天能写的是定价和「预期开盘」；今天能写的是一条已经走完的价格路径：冲高后回落，但仍停在发行价之上。对读实验室动态的人来说，更值得对照的是致辞里「放缓部署、保持人类控制」的表述，而不是把 97.17 美元当成对新模型能力的评分。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 要核对开盘价看 Nasdaq 稿，要看收盘路径看 CNBC 或 Nikkei，约 10 分钟；致辞原文看 Anthropic 官方帖即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.nasdaq.com/newsroom/anthropic-marks-ipo-at-nasdaq" target="_blank" rel="noopener">Nasdaq 新闻稿：Anthropic Marks its IPO at Nasdaq <span style="opacity:.65">(nasdaq.com)</span></a>
+      <a class="src" href="https://www.cnbc.com/2026/11/19/anthropic-ipo-ant-live-updates.html" target="_blank" rel="noopener">CNBC 直播更新 <span style="opacity:.65">(cnbc.com)</span></a>
+      <a class="src" href="https://asia.nikkei.com/business/markets/ipo/anthropic-closes-17-above-ipo-price-after-34-opening-surge" target="_blank" rel="noopener">Nikkei Asia <span style="opacity:.65">(asia.nikkei.com)</span></a>
+      <a class="src" href="https://www.theguardian.com/business/live/2026/nov/19/anthropic-float-stock-market-nasdaq-raises-81bn-record-ipo-latest-news-updates" target="_blank" rel="noopener">The Guardian 直播博客 <span style="opacity:.65">(theguardian.com)</span></a>
+      <a class="src" href="https://finance.yahoo.com/technology/live/anthropic-ipo-live-anthropic-stock-begins-trading-in-record-81b-raise-with-15t-valuation-192410598.html" target="_blank" rel="noopener">Yahoo Finance 直播 <span style="opacity:.65">(finance.yahoo.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title">今天值得看的帖子</h3>
+    <div class="item-body"><p>IPO 首日路径见第 7 节，Genie 4 API 见第 4 节，Mac 版 computer use 见第 6 节。下面保留官方补充、独立评测和窗口里值得单独看的使用帖。互动数以查询时接口返回为准。</p><p><strong>Anthropic（官方）</strong> · <a href="https://x.com/AnthropicAI/status/2123461658890686863" target="_blank" rel="noopener">发布 CEO Dario Amodei 的 IPO 致辞</a></p><p>11 月 20 日 01:01（Asia/Shanghai），点赞 8,968，转发 888，展示约 107.6 万。点评：<span class="tag tag-ok">官方</span>同第 7 节。主帖是完整致辞，不是行情快报：核心是「按需要放缓训练与部署」「不屈从于商业或政治压力」，以及所谓 race to the top。价格数字仍以交易所和收盘报道为准。稍早还有一条以影像为主的官方帖，见 <a href="https://x.com/AnthropicAI/status/2123431689934291083" target="_blank" rel="noopener">这里</a>（点赞约 8.3 万）。</p><p><strong>Logan Kilpatrick（Google AI Studio 负责人）</strong> · <a href="https://x.com/OfficialLoganK/status/2123467449257623770" target="_blank" rel="noopener">宣布 Genie 4 进入 Gemini API 与 AI Studio，称为开发者可调用的首个世界模型</a></p><p>11 月 20 日 01:24（Asia/Shanghai），点赞 2,894，转发 162，展示约 14.8 万。同时间段 <a href="https://x.com/GoogleAIStudio/status/2123479057996116143" target="_blank" rel="noopener">Google AI Studio 官方帖</a> 点赞 443，展示约 3.5 万。点评：<span class="tag tag-ok">官方</span>同第 4 节。主帖是发布宣布，时长、计价和「前 45–90 秒更稳」以模型文档和定价页为准。</p><p><strong>Google Gemini（官方）</strong> · <a href="https://x.com/GeminiApp/status/2123513203745538423" target="_blank" rel="noopener">Mac 应用上线 computer use，示例为在后台窗口里把草图做成绑定的 Blender 模型</a></p><p>11 月 20 日 04:26（Asia/Shanghai），点赞 1,117，转发 96，展示约 10.9 万。跟帖写明美国、英语，面向 Plus / Pro / Ultra，并链到官方博文，见 <a href="https://x.com/GeminiApp/status/2123513377268109331" target="_blank" rel="noopener">这里</a>。点评：<span class="tag tag-ok">官方</span>供应范围与第 6 节一致。Blender 示例是演示，不是已公布的成功率。对需要在本机 3D 工具里点选的工作流，这条比博文里的货运表单例子更接近实际使用场景。</p><p><strong>Artificial Analysis（独立评测）</strong> · <a href="https://x.com/ArtificialAnlys/status/2123513872095269336" target="_blank" rel="noopener">梳理 Gemini 4 Carbon / Neon / Hydrogen：价位、低努力档与更高推理档的差异</a></p><p>11 月 20 日 04:28（Asia/Shanghai），点赞 286，展示约 2.3 万。跟帖写：Neon 与 Hydrogen 占据三条模型中「智力–每任务成本」「智力–每任务时延」的帕累托前沿；从 Hydrogen low 的智力指数 <strong>27</strong>、每任务 <strong>0.29</strong> 美元，到 Neon xhigh 的 <strong>61</strong>、每任务 <strong>6.44</strong> 美元，见 <a href="https://x.com/ArtificialAnlys/status/2123513875983462895" target="_blank" rel="noopener">这里</a>。点评：<span class="tag tag-tip">第三方</span>价位与官方一致（Carbon 4/20、Neon 3/15、Hydrogen 1.50/7.50 美元每百万 token）。今日帖中 Neon xhigh 的每任务成本是 <strong>6.44</strong> 美元，与昨日简报所引 <strong>6.86</strong> 美元不是同一条帖，这里不把它自动当成更正或同一口径。</p><p><strong>Demis Hassabis（Google DeepMind CEO）</strong> · <a href="https://x.com/demishassabis/status/2123567986565173289" target="_blank" rel="noopener">接受道歉，并说对方漏勾了「低估了 Google DeepMind 团队」这一项</a></p><p>11 月 20 日 08:03（Asia/Shanghai），点赞 1,965，转发 86，展示约 6.1 万。点评：<span class="tag tag-guess">评论</span>这是对近期「Gemini 被看衰」讨论的回应，不是新的评测声明。「cooking」是修辞。具体名次和成本仍以 Artificial Analysis 等独立榜为准。</p><p><strong>Simon Willison（LLM / Agent 实践者）</strong> · <a href="https://x.com/simonw/status/2123305131206967571" target="_blank" rel="noopener">用「鹈鹕骑自行车」对比 Gemini 4 Carbon、Neon、Hydrogen 在 low / medium / high 努力档上的差异</a></p><p>11 月 19 日 14:39（Asia/Shanghai），点赞 618，转发 24，展示约 5.5 万。随后他在博客补充了对 Neon 的笔记，见 <a href="https://x.com/simonw/status/2123305889700667899" target="_blank" rel="noopener">这里</a>。点评：<span class="tag tag-guess">评论</span>这不是基准分数，但把同一家族、不同档位的差异摊开了，适合和 AA 那条「低努力档 Carbon 更好、更高推理档 Neon / Hydrogen 更会涨」对着看。</p><p><strong>Artificial Analysis（独立评测）</strong> · <a href="https://x.com/ArtificialAnlys/status/2123581865965855205" target="_blank" rel="noopener">用 AA-3D 上的 GPT-6.2 Astra 与视频模型 Dreamina Seedance 2.5 走同一条相机路径，做并排演示</a></p><p>11 月 20 日 08:59（Asia/Shanghai），点赞 38，转发 5，展示约 4,238。点评：<span class="tag tag-tip">第三方</span>帖中写 Astra 是当时 AA-3D 第一，任务是把悉尼歌剧院、拆解机械表和一条龙攻城做成 three.js 场景，再按脚本相机在浏览器里输出 15 秒、1080p、24fps；Seedance 2.5 获得同一条相机路径和参考图。这是一条并排演示，不是给这场对照单独打分的榜；也不要把「语言模型做出了可飞行的 3D 场景」写成已经替代视频生成模型。对关心分镜和相机路径的人，值得看完这条再决定要不要深挖 AA-3D。</p></div>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>今日收束</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>Agent / 记忆</td><td>SCH 把语义状态和证据分开，150 题 SWE-bench 上证据回补把 Pass@1 从 80.0% 提到 86.9%；Stitch Loop（11-18）把产品 Agent 接到线上指标，合并仍需批 PR</td></tr>
+      <tr><td>RSI</td><td>在 GameWorld 上，把改进写进程序的平均进度为 47.80%，高于受训控制器的 30.90%；DeepMind 随笔把 RSI 拆成代码、数据和群体三条机制，依据的是 6 月的技术报告</td></tr>
+      <tr><td>能力进展</td><td>Ultimate3D 用约 24 万条 3D 视觉指令教相机–物体关系，作者称自建基准上平均准确率比商业模型高 29.7 个百分点</td></tr>
+      <tr><td>世界 / 具身</td><td>Genie 4 进入付费 API，约 0.10 美元/秒，会话最长 120 秒、前 45–90 秒更稳；StrideWorld 上 15 个开源模型里除 1 个外都会在相机移动时变形；F³ 显示乱复用相似轨迹会把成功率从 55% 降到 41%</td></tr>
+      <tr><td>用法</td><td>Gemini Mac 版 computer use 在隔离窗口里操作应用和网页，美国英语、Plus/Pro/Ultra，关键动作需批准</td></tr>
+      <tr><td>评测落地</td><td>Anthropic（ANT）开盘 111.50 美元、收盘 97.17 美元，较发行价约 +17%；AA 今日帖写 Neon xhigh 智力指数 61、每任务 6.44 美元</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 先看 Genie 4 模型文档里的 120 秒和 45–90 秒，以及 StrideWorld 的参考系定义，这两处决定「可交互世界」现在实际能走多远。Agent 上下文读 SCH 的状态–证据分离和 SWE-bench 对照即可。要核对上市结果，用 Nasdaq 的开盘价和 CNBC / Nikkei 的收盘价，不要把不同口径的市值加在一起。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-11-20 · Asia/Shanghai</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
