@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-11-23</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="OpenAI 首席科学家 Jakub Pachocki 发表《Perplexity and Intelligence》，公开内部预训练对数困惑度，并提议用该指标设立行业共同上限。研究侧，IBM 的部署实验显示「该记多少是模型的属性」；SkillPlumber 用指令级覆盖率引导技能自进化；世界模型在跨环境迁移时更偏向常见物理先验。产品侧补记 Gemini API Tool Retrieval 与 Pika Enact，另有 OpenRouter 下架三家推理服务商，以及 Anthropic 次日收盘 88.91 美元。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-11-23</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-11-23">截至 2026 年 11 月 23 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 11 月 23 日上午（CST）</strong>，覆盖 11 月 20 日约 09:31 上一期发布之后的周末。论文以 arXiv 星期五（11-20）新公告为主；Gemini API Tool Retrieval 标注 November 19、Pika Enact 标注 November 18，上一期未写入，今日补记并注明日期。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客、产品文档、Yahoo Finance 历史行情、主要财经媒体、arXiv 与已打开核对的页面；X 用于选题与发帖人观点（关注名单优先），均附原帖。链接已逐一打开核对。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或报道，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。官方自报基准与独立榜分开写；收盘价以行情源为准，不同媒体对同一日跌幅偶有出入，文中会写明出处。市值数字随完全稀释或在外股本等口径而变，本文不把不同口径的市值加在一起。</span></div><div class="meta-row"><span class="k">今天共 9 条正文、8 个板块。主线有三条</span><span>一条是 OpenAI 把内部预训练损失公开出来，试图把「模型聪明到哪了」写成可跨实验室对照的节奏指标，并明确把递归自我改进里最关键的加速点放在预训练算法研究上；一条是记忆和技能都在从「越记越多、越改进越好」转向可核对的剂量——该给模型看多少指南，取决于模型本身，技能该改哪一条，要用指令有没有被遵守来判断；第三条是可交互生成仍卡在「看见了证据，会不会还按常见先验走」以及「能不能边播边导戏」，前者是星期五的世界模型评测，后者是周末补记的 Pika Enact 研究预览。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">Agent / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">IBM 部署实验：该记多少是模型的属性；强模型吃全量指南继续涨，弱模型用约 29 条反而比 199 条更好</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI</a></div><ol class="toc-items"><li><a href="#s2-1">OpenAI 首席科学家公开内部对数困惑度，并提议在约 0.68–0.7 窗口到来之前约定行业共同上限</a></li><li><a href="#s2-2">SkillPlumber：用指令级覆盖率判断失败来自写错还是没遵守；三套执行器上比初始技能高 25.6–30.4 个百分点</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">能力进展</a></div><ol class="toc-items"><li><a href="#s3-1">OpenAI 发布 MedChemBench：99 道题来自 117 篇文献与专利；GPT-6.2 Astra 在 xhigh 档得到 84.5% 的可用分数</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">TailWorld：世界模型更容易跟着常见先验走；RIFT 在 2D / 3D 规则迁移上把 ADE 降到 0.0895 / 0.0989</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">视频生成</a></div><ol class="toc-items"><li><a href="#s5-1">〔补记 · 11-18〕Pika 发布 Enact 研究预览：可在播放中拖动演员、口头给词并控制相机；官方称暂不对消费者开放</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">用法</a></div><ol class="toc-items"><li><a href="#s6-1">〔补记 · 11-19〕Gemini API 上线 Tool Retrieval 预览：先只给工具名和描述，需要时再加载完整参数模式</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">评测落地</a></div><ol class="toc-items"><li><a href="#s7-1">OpenRouter：未发现自身被入侵，但下架三家推理服务商，并从零数据保留名单中移除 125 个端点</a></li><li><a href="#s7-2">Anthropic（ANT）次日收盘 88.91 美元，较首日收盘 97.17 美元下跌 8.50%；标普 500 当天下跌 3.7%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今天值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+  <p class="sec-lead">把经验写成指南很容易，难的是：同样一份记忆，对不同强弱的模型并不是同一剂药。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.26361" target="_blank" rel="noopener">IBM 部署实验：该记多少是模型的属性；强模型吃全量指南继续涨，弱模型用约 29 条反而比 199 条更好</a></h3>
+    <p class="item-meta">K. R. Jayaram、Vatche Isahagian 等（IBM） · arXiv · 星期五（11-20）新公告 · 原文 摘要、AppWorld 对照与部署教训最有用，约 12–15 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>作者阅读了 IBM CUGA 与 AppWorld 参考 Agent 的大量轨迹后认为：长程任务上的失败很少是「不知道 API」，而更多是程序性疏漏——翻页翻错、实体解析错、没被提问却给出答案，而且这些错误会反复出现，因而看起来可以从自身历史里学会。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>流水线分三步：先从 Agent 自己的轨迹里挖掘短教训，每轮 1–3 条；再把教训合并成更小的指南集，每条指南记录它合并了多少条教训；推理时把全部指南或筛选后的子集交给 Agent。流水线开源在 altk-evolve 库中，并已部署到 IBM 的 CUGA Agent 与 watsonx Orchestrate。主评测是 AppWorld，覆盖任务完成率基线约 40%–92% 的多种模型。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>中心结论是：合适的记忆量是模型的属性，而不是记忆系统的属性。强模型会随着指南增加继续提高：DeepSeek-V3.2 使用全部 191 条指南时，任务完成率提高 <strong>9.5</strong> 个百分点，场景完成率提高 <strong>16.1</strong> 个百分点。弱模型则不同：gpt-oss-120b 基线任务完成率为 <strong>39.9%</strong>，用上全部 199 条指南升到 <strong>51.2%</strong>，但用约 <strong>29</strong> 条筛选子集时达到 <strong>55.4%</strong>（两次运行的均值）。文中还记录了若干部署中实际出过的问题：一条高支持度指南反而有害、合并时静默丢掉出处、被吞掉的 API 错误让全部任务失败却留下看起来合理的日志，以及一个差点把对比做成误导的基线混淆。</p><p><strong class="runin">局限。</strong> 主数字来自 AppWorld，不是作者自己的生产日志；「约 29 条」是筛选子集的规模，不是对所有弱模型通用的剂量。两次运行的均值说明该对照并不宽。开源与产品部署是作者自述，本文未独立核对线上行为。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它把「记忆越多越好」这句口语拆开了：同样的自蒸馏指南，强模型可以吃全集，弱模型多了反而更差。对个人 Agent 来说，这比再提出一种新的记忆格式更紧要——先要按执行模型来决定写回多少条。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。先读中心结论、两组 AppWorld 数字和文末部署教训，约 12 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.26361" target="_blank" rel="noopener">How Much Should an Agent Remember? Deployment Lessons from Self-Distilled Memory for LLM Agents <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+  <p class="sec-lead">周末最重要的不是又一篇「模型改自己」的实验，而是 OpenAI 把预训练损失写成了可以拿来谈节奏和共同上限的公共尺度；同一天的论文里，技能自进化则把失败拆成「指令写错了」还是「模型没遵守」。</p>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://openai.com/index/perplexity-and-intelligence/" target="_blank" rel="noopener">OpenAI 首席科学家公开内部对数困惑度，并提议在约 0.68–0.7 窗口到来之前约定行业共同上限</a></h3>
+    <p class="item-meta">Jakub Pachocki（OpenAI 首席科学家） · OpenAI · 标注 November 22, 2026 · 原文 博文约 12–15 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>Pachocki 认为，跟踪「更好的压缩器（预测器）」的训练进度，是理解 AI 能力弧线的关键，并主张把困惑度（等价于交叉熵损失）写成实验室之间可比较、并能支撑共同安全标准的指标。他写明：公开内部困惑度会让竞争对手更清楚 OpenAI 的位置，但「建立全行业共享安全措施的紧迫性」压过了这一顾虑。文中报告的是 GPT-3.5 以来主用的内部代码库留出集、固定快照上的对数困惑度：GPT-3.5 约 <strong>0.99</strong>，对应流畅对话并成为最初 ChatGPT 的基础；GPT-4 约 <strong>0.91</strong>，已能有效使用思维链，并推动了后来对推理能力的定向激发；当损失降到 <strong>0.8</strong> 以下，官方称在网络安全和数学上出现了「变革性」能力。这些能力并不是事先就能从精确阈值推出来的，而被写成是这一指标进步带来的涌现。</p><p><strong class="runin">关于 RSI。</strong> <span class="tag tag-ok">官方</span>他区分两件事：用提示、微调或强化学习去引出已有潜在能力，以及创造出那些难以预测的能力本身。他认为，常被讨论的「完整递归自我改进、不再需要人类监督」这个框架漏掉了更关键的一步：AI 参与预训练算法研究，可能带来台阶式加速。他给出一个类比：他们用开放数学问题评估模型超过一年；当模型升到对数困惑度约 <strong>0.76</strong> 时，开始连续给出突破性结果。据此他写道，深度学习研究「最早在 2027 年」就有可能出现类似的基础预训练进展井喷。他同时认为，AI 也会显著促进对齐和监控，但「这一进度不太可能快到足以跟上预训练可能达到的全部加速」。外推近期进度，进入约 <strong>0.68–0.7</strong> 的窗口时，应预期出现新的变革性能力，同时现有的对齐审计会进一步失效、评测与训练意识会进一步增强。因此他提议：前沿实验室应共同约定如何评测和红队这类模型，并基于困惑度和其他测量设立共同上限，在理解与监控能力达到某一具体里程碑（例如思维链监控的后继方案）之前不越过这条线。</p><p><strong class="runin">局限。</strong> 文中自己列了四条挑战：各实验室的评测集和训练数据不同，跨实验室比较并不直接；困惑度不对应某一项人们关心的任务；思维链等预训练之外的进展不会降低该指标，却会大幅提高能力；数据固有熵未知，损失不可能到 0，接近地板时表面上的指标进步会变慢，但更小的损失下降可能对应更大的智力跃迁。这些数字测的是 OpenAI 自己的内部代码库留出集，不能直接当成公开基准上的排名。「2027 年井喷」是作者的外推，原文用的是 conceivably（有可能），不是时间表。不要把公开损失曲线写成已经实现完整 RSI。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它和上周 OpenAI 的研究加速报告、DeepMind 把 RSI 拆成代码、数据和群体三条机制，可以放在一起看：一家在报可核对的内部研发指标，一家在把 RSI 定义写清楚，今天这篇则试图给出一条跨实验室都能盯的尺子，并把最危险的加速点明确写在「预训练算法研究」而不是「模型改自己的权重」上。尺子能不能共用，取决于其他实验室是否愿意用可对照的方式公开自己的损失。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。先读损失阈值、四条挑战和共同上限那段，约 12 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openai.com/index/perplexity-and-intelligence/" target="_blank" rel="noopener">Perplexity and Intelligence <span style="opacity:.65">(openai.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s2-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.25429" target="_blank" rel="noopener">SkillPlumber：用指令级覆盖率判断失败来自写错还是没遵守；三套执行器上比初始技能高 25.6–30.4 个百分点</a></h3>
+    <p class="item-meta">Tan、Zhang、Ma 等（MBZUAI / 利物浦大学） · arXiv · 星期五（11-20）新公告 · 原文 摘要与覆盖率消融最有用，约 10 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>Agent 技能是写成自然语言的程序性知识，只有指令本身正确、并且被 Agent 遵守时才有用。现有自进化方法往往按整轮结果或出错位置来改技能，分不清失败是指令写错了，还是指令没被遵守。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>作者利用指令级覆盖率：把一轮中的每条指令标成 follow、not-follow 或 not covered，从而分开上述两种原因。SkillPlumber 只在覆盖率显示不足的地方改技能：一个持续存在的根因分析 Agent 把每个标签变成修订问题，并对照下一轮检查修订是否成立；一个维护者再把跨任务的调查沉淀进共享策略库。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>在三个基准、三套执行器上，SkillPlumber 解开了 <strong>64.7%–70.5%</strong> 的任务，比初始技能高 <strong>25.6–30.4</strong> 个百分点，比最强基线高 <strong>8.7–14.0</strong> 个百分点。去掉覆盖率后，在 SkillsBench、以 GPT-5.5 为执行器时，被挽回的失败减少 <strong>20.8%</strong>。</p><p><strong class="runin">局限。</strong> 64.7%–70.5% 是三条执行器上的区间，摘要未逐一给出各基准的原始分数。覆盖率标签本身也依赖判定流程，标错会把修订问到错误的位置。这是改技能文本，不是改模型权重。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它给技能自进化加了一条很具体的约束：先分清「写错了」和「没照做」，再决定改哪一句。对在用技能文件、希望 Agent 自己迭代操作说明的人，覆盖率比只看最终成败更可操作。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心技能或 harness 自改进的值得读摘要和覆盖率消融，约 10 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.25429" target="_blank" rel="noopener">Evolve Where It Matters: Coverage-Guided Self-Evolution of Agent Skills <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+  <p class="sec-lead">药物化学里最难的往往不是认出分子，而是在「对靶点更强」和「吸收、代谢更差」之间做取舍。</p>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://openai.com/index/introducing-medchembench/" target="_blank" rel="noopener">OpenAI 发布 MedChemBench：99 道题来自 117 篇文献与专利；GPT-6.2 Astra 在 xhigh 档得到 84.5% 的可用分数</a></h3>
+    <p class="item-meta">OpenAI · 标注 November 20, 2026 · 原文 发布说明约 8–10 分钟</p>
+    <div class="item-body"><p><strong class="runin">是什么。</strong> <span class="tag tag-ok">官方</span>MedChemBench 评估模型能否把分子结构与实验证据连起来：解释结果、比较化合物、预测性质。基准含 <strong>99</strong> 道题，来自 <strong>117</strong> 篇论文与专利，共 <strong>761</strong> 个不同分子结构。多数题目会提供研究进行到某一时刻时已有的上下文：生物靶点、研究目标、已研究的化合物和部分实验发现。评分分四块：分子结构（原子连接与指定立体化学）、有证据支撑的科学推理、排序与选择、与文献中数值和类别相符的性质预测。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">官方</span>在 xhigh 推理档，GPT-6.2 Astra 得到可用分数的 <strong>84.5%</strong>，对照为 GPT-6 Astra <strong>83.3%</strong>、GPT-6.1 Sol <strong>82.0%</strong>、GPT-5.6 Sol <strong>58.2%</strong>。官方称 GPT-6 Astra 最强的是重建分子结构和解释实验证据，选择化合物和预测数值性质更难。文中以 PRMT5 抑制剂为例：模型要同时预测细胞水平抑制强度、透过细胞屏障的难易，以及肝酶分解速度；后续实验（对模型隐瞒）显示化合物 23 在细胞中更强，化合物 24 更易透过屏障、在肝酶实验中分解更慢。另一道空间题要求在保留 18 原子环的前提下组装分子：在所有 11 个模型共享的最高推理档（xhigh）上，GPT-6 Astra 十次全部正确，GPT-5.6 Sol 与 GPT-5.6 Luna 十次全部失败。</p><p><strong class="runin">局限。</strong> 这是 OpenAI 自建基准上的官方分数，不是独立评测。GPT-6.2 Astra 相对 GPT-6 Astra 只高 1.2 个百分点，主要拉开的是与 GPT-5.6 系列的差距。题目来自已发表文献，模型是否在预训练中见过相关文本，文中未给出排除说明。不要把 84.5% 写成已经可以替代药物化学家做「下一步测哪个化合物」的决定。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它把「认分子」和「在互相打架的性质之间做预测」拆开了，后一项才是药用价值所在，而官方自己也说这一项更难。适合看题型和评分方式，不必把总分差当成这一代模型的主进展。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心科学 Agent 或分子推理的值得读题型说明和 PRMT5 例子，约 8 分钟；只看总分的话，官方这段已经够用。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openai.com/index/introducing-medchembench/" target="_blank" rel="noopener">Can AI help scientists identify promising drug candidates? <span style="opacity:.65">(openai.com)</span></a>
+      <a class="src" href="https://x.com/OpenAI/status/2123856316187975756" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+  <p class="sec-lead">交互式世界模型常能「接着往下演」，但训练集里常见的物理规则，会不会压过眼前这段视频给出的证据？</p>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.26366" target="_blank" rel="noopener">TailWorld：世界模型更容易跟着常见先验走；RIFT 在 2D / 3D 规则迁移上把 ADE 降到 0.0895 / 0.0989</a></h3>
+    <p class="item-meta">Xiao、Bao、Liu、Chen、Wu（厦门大学 / 东北大学 / 同济大学） · arXiv · 星期五（11-20）新公告 · 原文 摘要、任务定义与表 1 最有用，约 12 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>要在新环境里做预测，模型需要先认出当前的物理规则，而只看出相往往不够。作者因此研究视觉校准：用一小段视频里的物体运动和相互作用作为证据，推断当前规则，再从另一个初始状态出发、按该规则预测运动。麻烦在于，不同物理条件的数据量常呈长尾，模型即使看见了支持罕见规则的证据，仍可能偏向常见规则。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>他们提出基准 TailWorld：在保持预测初始状态相同的前提下，提供两条参考未来，一条遵循演示规则，一条遵循常见规则，用来测量模型是否偏向常见动力学；训练不平衡和校准信息量被分开控制。方法 RIFT（Rule Inference for Transfer）先学习不同规则如何影响物体运动，再从校准交互中推断当前规则，并把它用到新的初始状态上；它显式控制训练频率对规则推断的影响，使足够信息量的观察能够支持罕见规则。合成实验里，轨迹方法共享冻结的视觉状态读出，以便公平比较。对比还包括未微调的预训练世界模型 Cosmos-Predict2.5-2B 与 Wan2.2-TI2V-5B。</p><p><strong class="runin">证据。</strong> <span class="tag tag-ok">论文</span>表 1：在 2D 物理规则迁移上，RIFT 的平均位移误差（ADE）为 <strong>0.0895</strong>、终点位移误差（FDE）为 <strong>0.1388</strong>；同表里此前较好的 MaNGO 为 ADE <strong>0.1767</strong>、FDE <strong>0.3485</strong>，Cosmos-Predict2.5-2B 为 ADE <strong>0.4375</strong>，Wan2.2-TI2V-5B 为 ADE <strong>0.4693</strong>。在 3D 上，RIFT 的 ADE 为 <strong>0.0989</strong>、FDE 为 <strong>0.1205</strong>；较好的专用基线 NCF 的 ADE 为 <strong>0.1772</strong>，GEPS 的 FDE 为 <strong>0.3261</strong>，Cosmos 与 Wan 的 ADE 分别为 <strong>0.5874</strong> 和 <strong>0.6859</strong>。ADE、FDE 的单位是米。真实摆锤视频上也做了评估，但摘要未给出与表 1 同口径的主数字。</p><p><strong class="runin">局限。</strong> 主表是作者自建的合成碰撞场景；Cosmos 与 Wan 未经针对该任务的微调，和专门训练的适应方法不是同一设置。位移误差是轨迹指标，不是「视频看上去像不像」。长尾偏差是核心主张，但跨频率比的详细曲线需要读正文，摘要没有把它写成单一百分数。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它和最近几周「相机一动场景就变形」「模型用自己后半段视频当裁判」是同一类问题的另一面：模型不是看不见证据，而是训练里更常出现的规则，会在预测时把证据压下去。对要靠短演示迁移物理或镜头行为的世界模型，这条比再报一条生成观感更有用。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 关心世界模型或物理一致性的值得读任务定义和表 1，约 12 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.26366" target="_blank" rel="noopener">World Models Favor Learned Priors over Visual Evidence <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+  <p class="sec-lead">上一期窗口里已经出现、但未写入的一条：Pika 把「导戏」从提示词做成了边播边改的研究预览。</p>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://pika.art/blog/pika-enact" target="_blank" rel="noopener">〔补记 · 11-18〕Pika 发布 Enact 研究预览：可在播放中拖动演员、口头给词并控制相机；官方称暂不对消费者开放</a></h3>
+    <p class="item-meta">Pika · 标注 November 18, 2026 · 原文 博文与各节技术说明约 12–15 分钟</p>
+    <div class="item-body"><p><strong class="runin">是什么。</strong> <span class="tag tag-ok">官方</span>Enact 是建立在 Pika H3 Flex 上的实验性直播环境，按亚秒级块生成画面和声音，一边把场景上下文往后带，一边把新的导演指令写进正在生成的内容。官方把它写成接近现场导戏，而不是只在提示框里生成一段成片。</p><p><strong class="runin">三种交互。</strong> <span class="tag tag-ok">官方</span>Live Staging：用鼠标在正在播放的视频里放置或挪动演员与物体，场景继续播放；官方称在单机服务器上生成速度是播放速度的 <strong>1.8</strong> 倍，低延迟设置下画面响应（含解码）在 H100 上低于 <strong>0.4</strong> 秒。Live Actor Direction：用语音或文字给演员说戏，他们会记住备注，并在叫 “Action” 后从第一帧重新拍一条连贯的新镜头；这一模式的画音生成速度是播放速度的 <strong>1.75</strong> 倍。Live Camera Control：用鼠标在正在播放的场景里控制运镜。演员侧被写成各有性格的 AI Agent，会话内会记住导演备注。官方注明：演员排练示范视频为剪辑后的长度，字幕和导演摄像头画中画是事后加上的。</p><p><strong class="runin">实现要点。</strong> <span class="tag tag-ok">官方</span>拖动训练需要与光标轨迹严格对齐的前后视频对，真实素材难以提供，因而使用物理驱动的合成数据引擎。为赶上光标，模型被蒸馏到少数采样步，并以短因果块流式解码（标准块 <strong>0.7</strong> 秒，低延迟 <strong>0.17</strong> 秒）。运镜方面，官方给出在 8 张 NVIDIA B300、<strong>640×480</strong>、24 fps 下的数字：首帧 <strong>0.51</strong> 秒，随后块以 <strong>1.50</strong> 倍实时速度生成；稳态计算为每 <strong>0.708</strong> 秒块耗时 <strong>0.473</strong> 秒，亦即 1.50 倍实时。</p><p><strong class="runin">局限。</strong> <span class="tag tag-ok">官方</span>这是研究预览，当前不对消费者开放；试用或集成需联系 enterprise@pika.art。运镜基准是 640×480，不是电影级分辨率。1.8 倍、1.75 倍和 1.50 倍是官方在指定硬件上的生成速度，不是质量偏好或镜头一致性分数。示范视频有后期剪辑，不能当成完整连续场次的无剪辑记录。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它把控制从「生成后再改提示」挪到了「播放时直接搬位置、说话、移机位」。对短剧和分镜来说，这条比又一个更长的文生视频模型更接近实际导戏方式，但目前仍是实验室预览，还不是可纳入日常管线的产品。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 做 AI 视频或导戏工作流的值得读三种交互和运镜那节的硬件数字，约 12 分钟；若只关心能否马上用，看文末「暂不对消费者开放」即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://pika.art/blog/pika-enact" target="_blank" rel="noopener">Research Preview: Pika Enact <span style="opacity:.65">(pika.art)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+  <p class="sec-lead">工具一多，先把全部参数模式塞进上下文，既贵也容易选错。这条同样是上一期窗口里已发布、当时未写入的官方能力。</p>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://blog.google/innovation-and-ai/technology/developers-tools/gemini-api-tool-retrieval/" target="_blank" rel="noopener">〔补记 · 11-19〕Gemini API 上线 Tool Retrieval 预览：先只给工具名和描述，需要时再加载完整参数模式</a></h3>
+    <p class="item-meta">Lucia Loher、Nora Kassner（Gemini API / Google DeepMind） · Google · 标注 November 19, 2026 · 原文 发布说明约 6–8 分钟</p>
+    <div class="item-body"><p><strong class="runin">是什么。</strong> <span class="tag tag-ok">官方</span>Tool Retrieval 在 Gemini Interactions API 中以预览形式提供。做法是在请求里加入 <code>tool_search</code>，并对希望暂缓加载的工具设置 <code>defer_loading: true</code>。模型仍能看到每个被暂缓工具的名称和描述，但参数模式先不进入上下文；需要某个工具时，模型在同一次请求里按名称索取，API 再加载完整模式并完成函数调用。这三步会出现在 <code>interaction.steps</code> 里，便于检查模型考虑过哪些工具。常用工具可以仍预先加载，长尾工具再暂缓。</p><p><strong class="runin">配套能力。</strong> <span class="tag tag-ok">官方</span>无需自建或托管索引，搜索在服务端完成。它与前缀缓存兼容：被暂缓的模式不会出现在提示词开头，后来加载的模式加在对话后部，缓存前缀跨轮可保持不变。远程 MCP 服务器也可对整个 <code>mcp_server</code> 设置暂缓加载。若要使用自己的工具注册表、向量索引或按用户权限过滤，可以把 <code>tool_search</code> 设为 <code>"execution": "client"</code>，由应用执行查找，这会为每次搜索增加一次往返，也可以在对话中途暴露新工具。Tool Retrieval 没有单独收费，按所用模型的标准输入、输出价格计费；开启 <code>tool_search</code> 会增加一小块固定输入，随后加载的模式按输入计费。官方称它适用于 Gemini 3.6 及以后的模型，包括所有 Gemini 4 模型。</p><p><strong class="runin">局限。</strong> 这是预览，官方没有在这篇博文里给出选工具准确率或节省了多少 token 的评测数字。省不省 token，取决于「从未加载的模式」是否多于「实际加载的模式」，官方建议按自己的流量测量。不要把一年前 Anthropic 工具搜索文中的 85% 或 49%→74% 挪到这条上。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它要解决的是 Agent 接上几十、上百个工具之后的上下文膨胀，和「先发现、再调用」这个已经出现过的产品方向一致，只是这次是 Gemini API 的官方预览。对要接 MCP 或自建工具目录的人，这篇的配置说明比再看一篇工具选择论文更直接。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 要接 Gemini 工具或 MCP 的值得读设置示例和计价说明，约 6 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://blog.google/innovation-and-ai/technology/developers-tools/gemini-api-tool-retrieval/" target="_blank" rel="noopener">Introducing Tool Retrieval in the Gemini API <span style="opacity:.65">(blog.google)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+  <p class="sec-lead">周末有两件需要核对原文的事：一件是推理路由层上的数据政策事故，一件是 Anthropic 上市后的第一个完整交易日。</p>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers" target="_blank" rel="noopener">OpenRouter：未发现自身被入侵，但下架三家推理服务商，并从零数据保留名单中移除 125 个端点</a></h3>
+    <p class="item-meta">OpenRouter · 标注 11/22/2026 · 原文 公告约 5 分钟</p>
+    <div class="item-body"><p><strong class="runin">是什么。</strong> <span class="tag tag-ok">官方</span>OpenRouter 称，安全研究人员近期报告部分推理服务商出现数据受损，或有证据表明其数据政策未被遵守。官方写明：检测结果<strong>没有</strong>显示 OpenRouter 自身遭到入侵或未授权访问，但揭示了特定推理服务商的问题。公告感谢 Dragos 的报告。</p><p><strong class="runin">行动。</strong> <span class="tag tag-ok">官方</span>基于调查结果，OpenRouter 已下架三家服务商；从零数据保留（ZDR）资格中移除 <strong>125</strong> 个端点，其中既包括研究人员标出的服务商，也包括作为预防措施额外移除的端点；并通知了所有可能受影响的客户。接下来的工作包括：把研究人员的测试方法纳入持续检查、对网络路径做技术核验以发现请求和响应是否被转发到第三方，以及在恢复任何端点的 ZDR 资格前要求相应保证与验证。公告列出已收到的服务商安全说明：Atlas Cloud、Novita（关于 MiniMax 请求的隐私说明）、Phala（11 月初步事故报告）、Together（2026 年 6–7 月请求发生提示词泄漏）。官方同时写明：并非所有受影响服务商都已公开发文，无论是否有公开说明，受影响用户都已收到通知。</p><p><strong class="runin">局限。</strong> 官方没有在公告正文里点名被下架的三家是哪三家，也没有给出受影响客户或请求的数量。服务商说明是当事方自己的通告，细节以各篇为准。ZDR 被移除不等于已经证实发生了泄漏，其中包含预防性下架。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这是路由层而不是模型层的事故：用户以为请求按零数据保留处理，实际还要看后面的推理服务商有没有把提示词转走。对通过聚合接口调用模型的人，这篇的行动清单和「未恢复前先不要默认 ZDR 仍有效」比情绪性的「被黑了」更有用。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 如果正在用 OpenRouter 或 ZDR 端点，值得读完公告和文末服务商说明列表，约 5 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://openrouter.ai/blog/announcements/data-processing-incidents-on-inference-providers" target="_blank" rel="noopener">Data Processing Incidents on Inference Providers <span style="opacity:.65">(openrouter.ai)</span></a>
+      <a class="src" href="https://x.com/OpenRouter/status/2124315081899200715" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title"><a href="https://finance.yahoo.com/quote/ANT/history/" target="_blank" rel="noopener">Anthropic（ANT）次日收盘 88.91 美元，较首日收盘 97.17 美元下跌 8.50%；标普 500 当天下跌 3.7%</a></h3>
+    <p class="item-meta">Yahoo Finance ANT 历史行情（周五收盘 88.91 美元，较前收 97.17 美元下跌 8.26 美元 / 8.50% · 原文 行情表约 2 分钟，CNBC / 美联社报道约 8 分钟</p>
+    <div class="item-body"><p><strong class="runin">行情。</strong> <span class="tag tag-tip">第三方</span>上一期已记录：星期四（11-19）ANT 开盘 <strong>111.50</strong> 美元、收盘 <strong>97.17</strong> 美元，较发行价 <strong>83</strong> 美元上涨约 17%。Yahoo Finance 历史行情显示，星期五（11-20）ANT 收盘 <strong>88.91</strong> 美元，较前收下跌 <strong>8.26</strong> 美元，即 <strong>8.50%</strong>；当日开盘 <strong>89.86</strong> 美元，最高 <strong>92.56</strong> 美元，最低 <strong>83.05</strong> 美元，最低价只略高于发行价。CNBC 的报道口径是「下跌 8.5%」，并写英伟达与 AMD 当日均下跌超过 13%。美联社写：星期五人工智能股票的抛售使标普 500 下跌 <strong>3.7%</strong>，为逾 18 个月来最差一周，并令纳斯达克综指年内转为下跌。收盘价 88.91 美元仍高于发行价 83 美元，但已明显低于首日开盘的 111.50 美元。</p><p><strong class="runin">背景与口径。</strong> CNBC 把下跌放在人工智能交易承压的语境里，并提到黄仁勋已离任英伟达 CEO、数据中心情绪和利率等因素；这些是报道中的解释，不是对单一原因的裁定。不同媒体对同一日跌幅并非完全一致，本文收盘价以 Yahoo Finance 历史行情为准，百分比同时与 CNBC 的 8.5% 相符。本文不计算或转述不同口径的市值。</p><p><strong class="runin">局限。</strong> 这是一个交易日的价格，不是对 Anthropic 业务或模型能力的评测。盘后报价不以收盘价为准，本文只采用常规交易时段收盘。美股星期五收盘对应北京时间星期六凌晨，不改变「11-20 交易日」这一归属。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>首日「高开回落但仍高于发行价」的叙述，在第二个交易日被改写成更接近发行价的位置，而且是在大盘同步下跌里发生的。要看上市结果，仍然应该把交易所或行情源的开盘、收盘和最低价放在一起，而不是只留星期四的 +17%。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 要核对价格，看 Yahoo Finance 历史表即可；要看市场语境，CNBC 与美联社各约 8 分钟。不必把分析师评级或市值估算当成今日主读。</p>
+    <p class="item-sources">
+      <a class="src" href="https://finance.yahoo.com/quote/ANT/history/" target="_blank" rel="noopener">Yahoo Finance ANT 历史行情 <span style="opacity:.65">(finance.yahoo.com)</span></a>
+      <a class="src" href="https://www.cnbc.com/2026/11/20/anthropic-stock-ai-amd-nvidia.html" target="_blank" rel="noopener">CNBC <span style="opacity:.65">(cnbc.com)</span></a>
+      <a class="src" href="https://apnews.com/article/stock-markets-anthropic-ai-chips-boom-c4c3f4878b12989347f8a930ed813dad" target="_blank" rel="noopener">美联社 <span style="opacity:.65">(apnews.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今天值得看的帖子</h3>
+    <div class="item-body"><p>Pachocki 一文见第 2 节，OpenRouter 见第 7 节，MedChemBench 见第 3 节。下面保留官方和权威人士对这几件事的表态，以及窗口里一条与世界模型、具身能力有关的评论。互动数以查询时接口返回为准。</p><p><strong>Sam Altman（OpenAI CEO）</strong> · <a href="https://x.com/sama/status/2124551594691932405" target="_blank" rel="noopener">称 Pachocki 一文是 OpenAI 近来最重要的发布，并希望行业就共同上限达成一致</a></p><p>11 月 23 日 01:12（Asia/Shanghai），点赞 7,626，转发 489，展示约 94.3 万。点评：<span class="tag tag-ok">官方</span>同第 2 节。主帖把这篇写成「近来最重要的发布」，并出现笔误 frield，他随后在跟帖里改成 field。同一线程里他还摘录了文中关于共同上限和思维链监控后继方案的原句，见 <a href="https://x.com/sama/status/2124551883130114403" target="_blank" rel="noopener">这里</a>。具体损失数字和四条挑战仍以博文为准。</p><p><strong>Greg Brockman（OpenAI 总裁）</strong> · <a href="https://x.com/gdb/status/2124582684840399311" target="_blank" rel="noopener">认为这篇为行业共同安全门槛提供了可公开对照的基础</a></p><p>11 月 23 日 03:15（Asia/Shanghai），点赞 1,179，转发 82，展示约 8.6 万。点评：<span class="tag tag-ok">官方</span>他特别抽出原文这句话：AI 也会显著促进对齐和监控，但这一进度不太可能快到足以跟上预训练可能达到的全部加速。随后把共同上限概括为：先约定一条可跨实验室跟踪的指标，再写明越过它之前必须达到的退出条件。这是对博文的解读，不是新的实验。</p><p><strong>OpenAI（官方）</strong> · <a href="https://x.com/OpenAI/status/2123862344422088794" target="_blank" rel="noopener">发布对抗性蒸馏研究，称精确推理轨迹会额外转移能力</a></p><p>11 月 21 日 03:33（Asia/Shanghai），点赞 4,796，转发 372，展示约 193.1 万。点评：<span class="tag tag-ok">官方</span>对应博文 <a href="https://openai.com/index/combatting-adversarial-distillation/" target="_blank" rel="noopener">Combatting adversarial distillation</a>（标注 November 20）。官方在文中给出一项内部自适应评测：在强力自动化红队下，从模型先前回答中恢复受保护推理的平均攻击成功率，从针对 GPT-6 Astra 原有防护的 <strong>54.0%</strong>，降到针对 GPT-6.2 Astra 更新防护的 <strong>0.2%</strong>。这是官方自报的内部数字，不是第三方复现；也不要把「蒸馏有风险」写成禁止一切合法蒸馏。</p><p><strong>Yann LeCun（主攻机器学习与世界模型）</strong> · <a href="https://x.com/ylecun/status/2124605292402946483" target="_blank" rel="noopener">写：已经有人在谈超级智能，但仍没有 L5 自动驾驶</a></p><p>11 月 23 日 04:45（Asia/Shanghai），点赞 3,732，转发 330，展示约 29.9 万。点评：<span class="tag tag-guess">评论</span>这是对一条关于超级智能讨论的回复，不是新评测。他的对照很具体：大多数 17 岁的人用约 20 小时练习就能学会驾驶，而且已有数十亿小时训练数据，却仍没有 L5；机器人也还远不能做到一个 8 岁孩子无需预先训练就能做的事。可以和第 4 节「看见了证据，仍可能跟常见先验走」对着看：语言和数学上的突破，并不自动等于世界模型和身体技能已经过关。</p><p><strong>elvis（@omarsar0，LLM / harness 实践者）</strong> · <a href="https://x.com/omarsar0/status/2123863490800828830" target="_blank" rel="noopener">建议大家自己做 harness，并称它仍被明显低估</a></p><p>11 月 21 日 03:38（Asia/Shanghai），点赞 505，转发 42，展示约 3.2 万。点评：<span class="tag tag-guess">评论</span>这不是基准分数。他认为自定义 harness 有明显优势，但「为什么有效」研究得还很少，并提到 harness 可以作为组合式的泛化器，以及用后训练让 harness 与模型共同进化。这和第 2 节 SkillPlumber「先分清指令写错还是没遵守」是同一方向的实践观察，适合当作阅读论文后的对照，而不是替代证据。</p></div>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>今日收束</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>Agent / 记忆</td><td>IBM 的自蒸馏指南实验表明，合适的记忆量是模型的属性：DeepSeek-V3.2 用全量 191 条继续涨，gpt-oss-120b 用约 29 条（55.4%）好过全部 199 条（51.2%）</td></tr>
+      <tr><td>RSI</td><td>Pachocki 公开内部对数困惑度（GPT-3.5 约 0.99、GPT-4 约 0.91、已低于 0.8），并提议在约 0.68–0.7 窗口前约定共同上限；SkillPlumber 用覆盖率引导技能自进化，三套执行器上比初始技能高 25.6–30.4 个百分点</td></tr>
+      <tr><td>能力进展</td><td>MedChemBench 含 99 道题；官方称 GPT-6.2 Astra 在 xhigh 档得到 84.5% 的可用分数，选择化合物和预测数值性质仍更难</td></tr>
+      <tr><td>世界 / 具身</td><td>TailWorld 显示模型易偏向常见物理先验；RIFT 在 2D / 3D 规则迁移上 ADE 为 0.0895 / 0.0989，低于表中未微调的 Cosmos 与 Wan</td></tr>
+      <tr><td>视频生成</td><td>Pika Enact（11-18）可在播放中拖人、给词和运镜，官方称暂不对消费者开放；8×B300、640×480 下后续块为 1.50 倍实时</td></tr>
+      <tr><td>用法</td><td>Gemini API Tool Retrieval（11-19）预览：先只给工具名和描述，需要时再加载参数模式，适用于 Gemini 3.6 及全部 Gemini 4</td></tr>
+      <tr><td>评测落地</td><td>OpenRouter 下架三家推理服务商，并从 ZDR 名单移除 125 个端点，称自身未被入侵；ANT 周五收盘 88.91 美元，较首日收盘下跌 8.50%</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 先读 Pachocki 一文里的损失阈值、四条挑战和共同上限，再看 IBM 那组「全量指南 vs 约 29 条」的对照——前者给的是行业节奏尺度，后者给的是个人 Agent 记忆的剂量。世界模型看 TailWorld 表 1 即可。如果在用聚合推理接口，把 OpenRouter 公告里的 ZDR 变更看完。Enact 和 Tool Retrieval 都是补记，前者还不能当作已经能用的产品。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-11-23 · Asia/Shanghai</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
