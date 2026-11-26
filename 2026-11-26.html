@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-11-26</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="Leto 把 Agent 记忆改成按「是否改善下次回答」来选；Anthropic 用线上 Messages API 当验证器，把服务迁到 Rust，官方称每请求 CPU 约降 70%；DeepMind 为 Antigravity 配质谱技能，库内 100 条谱上三种模型准确率约 97%；OpenAI 预印本宣称矩阵乘法指数恰为 9/4；Artificial Analysis 发布具身仿真榜，并给出 MAGI-2 的独立图生视频成绩。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-11-26</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-11-26">截至 2026 年 11 月 26 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 11 月 26 日上午（CST）</strong>，覆盖 11 月 25 日约 09:42 上一期发布之后的约 24 小时；并补记窗口内仍未写过的 11 月 24 日官方文档。arXiv 今日可见 11 月 25 日（Wed）批次。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客、产品文档、预印本说明、arXiv 摘要与正文、Artificial Analysis 评测页与其官方账号；X 用于选题与发帖人观点（关注名单优先），均附原帖。链接已逐一打开核对。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或社区声明，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。官方自报基准与独立榜分开写。库内光谱识别率不能外推到未知分子；预印本与 Lean 机器检查通过，不等于证明已被人读懂；领跑榜不是生产成功率。</span></div><div class="meta-row"><span class="k">今天共 11 条正文、8 个板块。主线有三条</span><span>一条是记忆和工具入口继续从「塞进窗口」转向「按用处取用」——Leto 用回答效果回写选择，Google Workspace 则要求智能体从 2027 年 2 月起走 MCP 而不是直接打 REST；一条是验证比生成更难：Anthropic 把正在跑的 Python API 当成预言机，才把 Messages API 迁到 Rust，OpenAI 的矩阵乘法预印本也把主张写到可被形式化的下界上；第三条是技能和仿真评测把通用模型推进实验室与机器人，但边界很清楚——质谱技能在已有库谱上约 97%，对数据库里没有的分子仍只能给出起点，具身仿真里走路已经满分，装进洗碗机和洗衣机还不行。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">Agent / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">Leto：把 Agent 记忆看成对未来有用的预测，而不是对过去的忠实记录；PrefEval 准确率 60.5%，比最强对照高 16.3 个百分点</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI</a></div><ol class="toc-items"><li><a href="#s2-1">Anthropic：用正在运行的 Messages API 当验证器，把服务从 Python 迁到 Rust；官方称每请求 CPU 约降 70%，中位首 token 时间约降 20%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">能力进展</a></div><ol class="toc-items"><li><a href="#s3-1">DeepMind：为 Antigravity 配备质谱技能；在 100 条已有库谱上，三种 Gemini 的精确匹配约 97%，轻量模型与旗舰持平</a></li><li><a href="#s3-2">OpenAI 预印本宣称：方阵乘法指数在任意域上恰好是 9/4；Lean 形式化覆盖的是无除法电路上的陈述</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">Artificial Analysis 发布 AA-Robotics-Sim v0.1：GPT-6.2 Astra 以 71.0 分领先；洗碗和洗衣仍然接近做不成</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">视频生成</a></div><ol class="toc-items"><li><a href="#s5-1">Artificial Analysis：MAGI-2 在图生视频榜以 Elo 1163 排第一，与 Seedance 2.5 统计上接近；文生视频排第 7，主要受音频和对白拖累</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">用法</a></div><ol class="toc-items"><li><a href="#s6-1">〔补记 · 11-24〕Google Workspace：MCP 服务器与官方 CLI 正式可用；2027 年 2 月 1 日起将要求智能体经 MCP 访问，而不是直接调用 REST</a></li><li><a href="#s6-2">OpenAI：12 月起 Plus / Pro / Business 的 ChatGPT 与 Codex 将共用同一份以 token 计量的额度</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">评测落地</a></div><ol class="toc-items"><li><a href="#s7-1">OpenAI 正在一小群客户中测试 Private Inference，作为 Private Intelligence 的一部分</a></li><li><a href="#s7-2">〔补记 · 11-24〕Anthropic：可将 artifact 安装为 Mac / Windows 应用；三种权限，且许可只覆盖当前版本</a></li><li><a href="#s7-3">Artificial Analysis 上线 FrontierPhysics 榜：官方账号称 Claude Fable 5.2 以 32% 领先，比 GPT-6.2 Astra 高 6 个百分点</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今天值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+  <p class="sec-lead">记忆系统常按「是否忠实记下了对话」来打分；今天有一篇论文把标准改成：这段记忆有没有让下一次回答变得更好。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.33005" target="_blank" rel="noopener">Leto：把 Agent 记忆看成对未来有用的预测，而不是对过去的忠实记录；PrefEval 准确率 60.5%，比最强对照高 16.3 个百分点</a></h3>
+    <p class="item-meta">Shuguang Chen、Salman Paracha（DigitalOcean） · arXiv:2611.33005 · 11 月 25 日（Wed）批次 · 原文 摘要与设定约 8–12 分钟；方法与表格约 20 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>一个跨会话的 Agent 需要记住用户上周说的偏好，或一项没做完的任务。现有记忆系统多半从对话里抽事实、写摘要，再按与当前请求的相似度取回。评测也常看记忆是否覆盖了对话、取回的内容是否含有标准证据，也就是对过去的忠实程度（fidelity）。但用户往往不会在新请求里重申自己的偏好。论文用一个虚构订酒店的例子说明：只按请求匹配，可能订到用户去不了的酒店；若同时送上「用户使用轮椅」这一条未在当前请求里出现的记忆，结果才会可用。忠实记下对话，不等于下次回答会变好。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>作者把记忆写成一个预测问题，并称其为效用（utility）：写入时要预测哪些信息以后用得上，取用时要预测这次回答需要哪一段，再用回答的结果回写选择。Leto 用索引保留对原始对话细节的访问，请求到来时做 memory replay，补上请求没有明说、但回答可能需要的上下文，再用结果更新效用。对照了六套记忆系统，评测分三条线：个性化（PrefEval、PERMA），长程任务（MemoryArena），长上下文问答（LoCoMo、LongMemEval S）。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">论文</span>PrefEval（十轮填充之后）上，Leto 的准确率为 <strong>60.5%</strong>，比最强对照 Hindsight 高 <strong>16.3</strong> 个百分点；RAG 与不用记忆的基线分别为 13.1% 与 3.3%。以词面重合为代理，偏好出现在 Leto 所送上下文里的比例为 <strong>84%</strong>，其他记忆系统为 12%–69%。摘要还写，PERMA 的任务完成比最强对照高 <strong>3.1</strong> 分。长上下文上，Leto 在 LoCoMo 为 <strong>71.82%</strong>（比直接检索原始历史的 RAG 低 2.79 个百分点），在 LongMemEval 为 <strong>73.20%</strong>（比 RAG 高 6.80 个百分点）；文中称 RAG 取回的 token 大约分别是 Leto 的 <strong>1.7 倍</strong>和 <strong>8 倍</strong>。MemoryArena 上，相对无记忆基线的增益随任务链加深而变大：购物链从第 1 次购买的 1.3 个百分点升到第 6 次的 7.3 个百分点。</p><p><strong class="runin">局限。</strong> 这是 DigitalOcean 作者的一篇预印本，对照系统未必覆盖你正在用的产品记忆。PrefEval 的 16.3 个百分点是在特定协议（十轮填充）下对 Hindsight 的差值，不能当成所有个性化任务的通值。效用回写依赖「回答好不好」这一信号，线上若缺少可靠反馈，这一环会变弱。LoCoMo 上它仍低于直接检索全文的 RAG。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这和近日简报里「该记多少」「压缩历史还是各留一份可查记录」是同一类问题，只是判据从覆盖率改成了下游回答。例子很清楚，表格也够用来判断自己关心的场景；方法并不新奇，不必单独做深挖。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读摘要、订酒店的例子和 Table 1 / Table 3，约 10 分钟。不必从附录的分项误差开始。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.33005" target="_blank" rel="noopener">Leto: Utility-Centric Agent Memory <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+  <p class="sec-lead">生成代码已经很快，难的是证明新代码和正在跑的旧系统行为一致。Anthropic 把这个问题写成了一篇工程实录。</p>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://www.anthropic.com/research/migrating-api-to-rust" target="_blank" rel="noopener">Anthropic：用正在运行的 Messages API 当验证器，把服务从 Python 迁到 Rust；官方称每请求 CPU 约降 70%，中位首 token 时间约降 20%</a></h3>
+    <p class="item-meta">Lance Martin 等 · Anthropic · 标注 November 25, 2026 · 原文 约 18–25 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">官方</span>Messages API 是客户以及 Claude Code、Cowork 等自家应用访问 Claude 的主入口。文中称，从 2024 年初到 2026 年秋，API 流量大约增长了 <strong>1,800</strong> 倍。服务最初用 Python 写成，后来每条请求都要做校验、组提示、分词和安全分类，再把输出流拆成文本、思考和工具调用。完整重写通常令人却步：测试很难覆盖全部线上行为，而且旧服务还在继续加功能。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">官方</span>他们先只把解析模型输出的部分改成 Rust、再从 Python 调用，CPU 大约降了 <strong>8%–10%</strong>，但每个 token 要在两种语言之间往返三次，复杂度增加得不值。到 2026 年 5 月，文中称 Claude 已写出 Anthropic 合并代码的 <strong>80%</strong> 以上，生成不再是主瓶颈，验证才是。约 700 个集成测试也不够：测试和 Python 实现绑在一起，移植后审计发现 <strong>100</strong> 多处断言被削弱；2026 年 4 月 Rust 版测试通过率约 <strong>98%</strong>，但在对比的生产流量上，输入侧一致的比例大约只有四分之一。他们于是把仍在运行的 Python API 当成预言机，做流量镜像（shadowing）：模型只跑一次，把同一份输出重放到 Rust，再在计费和限额只计一次的前提下，逐步比较请求被接受与否、设置解析、提示拼装等检查点。因为不能阅读用户请求和回复，他们只记录差异出现的步骤、位置和长度，形成指纹，再按指纹归并后交给智能体修复。内环在沙箱里用自造请求快速试假设，外环用镜像的生产流量确认，规则以散文形式写入可被后续智能体阅读的记忆。</p><p><strong class="runin">结果。</strong> <span class="tag tag-ok">官方</span>公开流量在 2026 年 9 月切到 Rust。官方写：在不停机、也不冻结功能开发的前提下，新服务每请求 CPU 约少 <strong>70%</strong>，中位首 token 时间约少 <strong>20%</strong>。文中配有 CPU、内存和首 token 时间的图，但正文没有单独给出内存下降的百分比，这里不另写一个内存数字。Claude 大约用一周写出了核心请求路径的第一版；人逐渐从亲手追差异，退到在循环之间做判断、写规则和审查修复。</p><p><strong class="runin">局限。</strong> 这是一家公司对一条自己最熟悉的服务的迁移实录，不是可直接套用的通用框架。镜像依赖「旧系统仍可作为正确标准」，若旧系统本身有错，新系统会被拉去对齐错误行为。Claude 回复并不确定，所以他们必须比较模型调用前后的各步，而不是只看最终文本。测试通过率与生产一致率之间的缺口，也说明「测过了」不等于「和线上一样」。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>值得读的不是「用 Claude 重写了 API」，而是他们把验证信号设计成智能体能行动的指纹，并把人放在循环外侧。若你也在用 Agent 改生产系统，可先问：有没有一个不依赖阅读用户数据、又能定位差异的验证器。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。重点看「测试约 98%、生产输入大约只对上四分之一」这一段，以及检查点 / 指纹 / 内外环，约 20 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://www.anthropic.com/research/migrating-api-to-rust" target="_blank" rel="noopener">Migrating our Messages API to Rust <span style="opacity:.65">(anthropic.com)</span></a>
+      <a class="src" href="https://x.com/AnthropicAI/status/2125627317263466739" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+  <p class="sec-lead">通用模型要做实验室里的结构鉴定，仍然得把推理接到领域工具上；与此同时，OpenAI 的数学预印本给出了一个更强的主张——矩阵乘法的指数恰好是 9/4。</p>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://deepmind.google/blog/interpreting-mass-spectra-with-google-antigravity/" target="_blank" rel="noopener">DeepMind：为 Antigravity 配备质谱技能；在 100 条已有库谱上，三种 Gemini 的精确匹配约 97%，轻量模型与旗舰持平</a></h3>
+    <p class="item-meta">Robert Brunck 等 · Google DeepMind · 标注 November 25, 2026 · 原文 博文约 12–18 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">官方</span>一滴血液、土壤或植物提取物里，质谱仪可以测到成千上万个分子信号；串联质谱（MS/MS）还会记下分子裂成的碎片。但谱峰并不直接等于结构。标准做法是把谱和已有参考库比对，文中称十年扩库之后，平均也只能注释约 <strong>5%</strong> 的实测谱，人体样本约 <strong>10%</strong>，其余常被称为质谱里的「暗物质」。许多未注释信号对应的分子其实已出现在公共化学数据库里，只是还没有参考谱，需要从碎片反推。每一步的工具是现成的，但一条研究可能有数千张谱，人工跑完全流程跟不上。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">官方</span>Mass Spec Skills 是一套给 Google Antigravity 用的领域技能：把 Gemini 的化学推理，与社区常用工具和公共数据库查询接在一起。智能体按用户的自然语言任务串起流程，并给出可供化学家复核的证据报告。文中的端到端例子：负离子前体 m/z 395.1387，先去掉 1,700 多个低强度噪声峰，剩下 19 个碎片峰；在参考库没有高置信匹配时，用 SIRIUS 得到公式 C20H21ClN6O（质量误差 −1.5 ppm），再对 PubChem 中 845 个同分异构体打分。按峰强度覆盖，有几个候选都解释了 <strong>14 / 19</strong> 个峰、合计 <strong>97.7%</strong> 的碎片强度；智能体再用中性丢失和键断裂是否说得通做区分，排除没有脲键、无法丢失 HNCO 的候选，最后得到 CID 137835447。</p><p><strong class="runin">评测。</strong> <span class="tag tag-ok">官方</span>他们从 MoNA 中 Enamine REAL 的 MS/MS 集合抽样 <strong>100</strong> 个化合物（结构也在 PubChem 中），去掉几乎不碎裂的记录，比较三种设置：无网络无技能、仅允许上网、上网并启用技能；模型为 Gemini 3.8 Flash、Gemini 4 Argon 和 Gemini 4 Carbon，每条谱三次尝试，超过一小时记为失败。无网络时，三个模型的准确率都低于 <strong>4%</strong>。只给网络时，旗舰模型仍漏掉约四分之一到三分之一，轻量模型漏掉四分之三以上。加上技能后，三个模型都在约 <strong>97%</strong> 的尝试中识别并验证了确切分子，轻量模型与旗舰持平。技能还降低了生成 token：相对「有网络、无技能」，Flash 几乎降到约四分之一，Argon 约一半，Carbon 大约少五分之一。</p><p><strong class="runin">局限。</strong> 约 97% 测的是参考库里已有的谱，不是「暗物质」或全新天然产物。官方写明：对数据库中不存在的分子，系统不能自行确认结构，只能给出公式、峰归属和注释表作为起点；对映体和某些近异构体也单靠一张 LC-MS/MS 谱分不开，还需要保留时间、离子淌度或核磁等其他测量。协作单位的「大多数评估中结构预测超过 90%」是引用评语，不是这篇博文里的主评测数字，不宜与 97% 混用。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这和昨天 GPT-6 蛋白质设计是同一类故事的另一面：通用模型单独看谱几乎做不成（低于 4%），但加上可审计的领域工具后，轻量模型也能接近旗舰。真正要看的是证据报告和「库外分子怎么办」，而不是把 97% 读成已解决结构解析。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。先看端到端例子和三种设置的对照，约 15 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://deepmind.google/blog/interpreting-mass-spectra-with-google-antigravity/" target="_blank" rel="noopener">From spectrum to structure: Identifying Molecules with Mass Spec Skills for Google Antigravity <span style="opacity:.65">(deepmind.google)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s3-2">
+    <h3 class="item-title"><a href="https://github.com/openai/math/tree/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026" target="_blank" rel="noopener">OpenAI 预印本宣称：方阵乘法指数在任意域上恰好是 9/4；Lean 形式化覆盖的是无除法电路上的陈述</a></h3>
+    <p class="item-meta">OpenAI Math Release 预印本 · 标注 November 24, 2026 edition · 原文 README 约 3 分钟；论文本身需数学背景，耗时视读者而定</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>这份 11 月 24 日修订的预印本主张：方阵乘法的指数在任意域上都是 <strong>9/4</strong>。README 还写：论文证明了形式算术电路上与之匹配的下界；对每个边长 n≥2，至少需要 ⌈n^(9/4)/2⌉ 个非标量乘法或除法门。方阵乘法张量的几何边界秩至少为 n^(9/4)，它在基域上的渐近秩等于 n^(9/4)。下界的几何框架放在同日的伴生论文里。仓库中的 Lean 开发证明的是：在任意域上，计算形式多项式恒等式的<strong>无除法</strong>电路，方阵指数为 9/4；形式化范围文档还写了对偶和矩形指数。同一目录下还有 10 月 2 日的上界预印本；此次文本把主张写成「恰好是 9/4」，并补上匹配下界。</p><p><strong class="runin">公开讨论。</strong> <span class="tag tag-ok">官方</span>Brockman 在 11 月 25 日 10:31（Asia/Shanghai）发帖，并转述「This is really the kind of result that I never thought I would see in my lifetime」。他在随后一条里把此事放进「AI 正在帮助我们发现更好的计算方式，并理解计算的根本限度」。这些是介绍，不是额外的数学证明。</p><p><strong class="runin">局限。</strong> 这是预印本，不是经过传统同行评审的定论。官方自己把 Lean 的范围写在「无除法电路 / 形式多项式恒等式」上，不要把机器检查过的这一段，自动升级成论文里每一句主张都已被形式化，更不要升级成「证明已被人读懂」。这和 11 月 24 日简报里 Lean FRO 对黎曼猜想 Lean 证明的态度是同一类谨慎：检查通过是一件事，理解是另一件事。对算法工程的实际加速，文本也没有给出可落地的实现数字。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>若你关心「模型能否产出可核验的新数学」，先读 README 和形式化范围，再决定是否打开 PDF。不宜只凭标题或转述把 9/4 写成已关闭的问题。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 先读 README 和 Lean 范围说明，约 5 分钟。除非你能核对证明，不必把 PDF 当作今日必读。</p>
+    <p class="item-sources">
+      <a class="src" href="https://github.com/openai/math/tree/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026" target="_blank" rel="noopener">The matrix multiplication exponent is nine fourths <span style="opacity:.65">(github.com)</span></a>
+      <a class="src" href="https://github.com/openai/math/blob/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026/README.md" target="_blank" rel="noopener">README <span style="opacity:.65">(github.com)</span></a>
+      <a class="src" href="https://raw.githubusercontent.com/openai/math/main/preprints/The-matrix-multiplication-exponent-is-nine-fourths-November-24-2026/paper.pdf" target="_blank" rel="noopener">论文 PDF <span style="opacity:.65">(raw.githubusercontent.com)</span></a>
+      <a class="src" href="https://x.com/gdb/status/2125418102049628201" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+  <p class="sec-lead">语言模型已经能在仿真里给人形机器人写控制代码。今天的新评测说明：走到目标已经不难，稳稳抓住一个盘子还很难。</p>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://artificialanalysis.ai/articles/aa-robotics-sim" target="_blank" rel="noopener">Artificial Analysis 发布 AA-Robotics-Sim v0.1：GPT-6.2 Astra 以 71.0 分领先；洗碗和洗衣仍然接近做不成</a></h3>
+    <p class="item-meta">Artificial Analysis · 标注 November 25, 2026 · 原文 约 10–15 分钟</p>
+    <div class="item-body"><p><strong class="runin">设定。</strong> <span class="tag tag-tip">第三方</span>这是仿真研究预览，接在他们上个月的真机手臂评测 AA-Robotics v0.1 之后。模型通过同一套 Stirrup 编程智能体，直接控制仿真中的 Unitree G1（29 个关节、三指手、头部相机；物理引擎为 NVIDIA Isaac Sim）。共 10 项家务和轻工业任务。每个任务先在 5 个新场景里练习，只保留模型写下的笔记、代码和技能，再拿到 10 个房间、光线和布置都不同的新场景上评分。每个回合 0–100 分，允许部分分；总分是 10 项任务得分的平均。</p><p><strong class="runin">结果。</strong> <span class="tag tag-tip">第三方</span>GPT-6.2 Astra 以 <strong>71.0</strong> 分领先，比 Claude Fable 5.2 的 <strong>57.5</strong> 和 GPT-6.2 Sol 的 <strong>53.7</strong> 分别高 13.5 和 17.3 分。Astra 在 100 个评估回合里成功 61 次，Fable 5.2 为 43 次，Sol 为 41 次；并在玩具钢琴、算盘和传送带装配上拿满分。所有模型在仓库导航上都是 100 分，且每个导航回合都走到了目标、没有撞动包裹。短板也很集中：抓取搬运是所有模型最弱的一组，Astra 为 40.0，Gemini 4 Neon 为 31.7，Sol、Claude Opus 5.5 和 Fable 5.2 均为 23.3。90 个洗碗回合里，只有 5 个盘子最后在架子上；没有模型把一件衣物完整放进洗衣机。所有模型都更常调动右臂；27 次成功把箱子放到架子上的回合里，没有一次是合拢手去抓，全部是两掌夹着搬。额外的「易碎盘」任务不计入总分：事先告知盘子易碎，9 个模型里仍有 7 个至少摔破一次；Astra 是唯一两次成功放入的模型，但也摔得最多，10 次里破了 3 次。耗时与费用方面，Sol 每个评估回合 17.3 分钟、约 <strong>0.98</strong> 美元，Astra 约 <strong>3.90</strong> 美元，Fable 5.2 约 <strong>9.01</strong> 美元。</p><p><strong class="runin">局限。</strong> 这是单一仿真、单一机器人、同一套 harness 的研究预览，不能代表真机部署。部分分规则和场景设计都会影响总分。右利手和「不用手指、用掌夹」说明策略在模仿训练数据或示范，还不是可靠的操作技能。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>和世界模型讨论可以对照着看：走路和按提示弹琴已经像「有了身体就能做」；抓住、放入、不打碎，仍然是另一件事。读的时候把 71.0 分和洗碗 5/90、洗衣 0 件放在一起，印象会更准。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。先看十项任务定义和抓取这一组的失败模式，约 12 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://artificialanalysis.ai/articles/aa-robotics-sim" target="_blank" rel="noopener">Can language models drive a humanoid robot? Introducing AA-Robotics-Sim v0.1 <span style="opacity:.65">(artificialanalysis.ai)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+  <p class="sec-lead">昨天简报写的是 Sand.ai 对 MAGI-2 的官方自报。今天 Artificial Analysis 给出了独立的图生视频榜成绩。</p>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://artificialanalysis.ai/video/leaderboard/image-to-video" target="_blank" rel="noopener">Artificial Analysis：MAGI-2 在图生视频榜以 Elo 1163 排第一，与 Seedance 2.5 统计上接近；文生视频排第 7，主要受音频和对白拖累</a></h3>
+    <p class="item-meta">Artificial Analysis AA-Video-I2V v2.1 榜 · 原文 榜单与说明帖约 5–8 分钟</p>
+    <div class="item-body"><p><strong class="runin">独立榜，不是官方自报。</strong> <span class="tag tag-tip">第三方</span>Artificial Analysis 的图生视频榜 AA-Video-I2V v2.1 上，MAGI-2 的 Elo 为 <strong>1163</strong>（95% 区间 1149–1177），基于 <strong>5,943</strong> 对人类偏好比较，排在第一，并与 Dreamina Seedance 2.5 在统计上接近。官方账号还写：1080p 带音频的定价为每秒 <strong>0.08</strong> 美元，也就是每分钟 <strong>4.80</strong> 美元；同一帖把 Seedance 2.5 写作每分钟 34.12 美元，并称 MAGI-2 把对方挤出了该榜的性价比前沿，成本约为其 <strong>7</strong> 倍之一（另一条说明写作 7.1 倍）。图生视频上，说明帖称 MAGI-2 在每项能力上都进入前三，并在音频时机、文字渲染和多镜头一致性上领先。文生视频 AA-Video-T2V v2.1 上，官方账号称 MAGI-2 排第 7，主要是音频和对白拖了后腿；相对 MAGI-2 Preview 上升了 14 位，并在物理、人体解剖与复杂构图上分别排到第 2、第 3 和第 4。</p><p><strong class="runin">和昨天数字的关系。</strong> 昨天简报里的 <strong>1150.3</strong>，是 Sand.ai 官方自报的 AA Video Arena v2.1 四任务均分 Elo，不要和今天这条图生视频单榜的 1163 直接当成同一个数字的更新。两边都挂着 Artificial Analysis 的方法，但任务集合和统计口径不同。</p><p><strong class="runin">局限。</strong> Elo 会随对战样本继续变。性价比比较用的是榜上标价，实际结算还取决于平台折扣、分辨率和是否带音频。文生视频第 7 说明「旗舰」在不同任务上并不自动领先。说明帖发布于 11 月 26 日上午，互动还很少，但数字来自 AA 官方账号和其榜单页。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>对要做短视频或图生视频的读者，这条的价值是独立榜和单价，而不是再读一遍 480B 的规格。若你更关心对白和纯文本出片，不要只看图生视频第一。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得看 I2V 榜和 AA 官方说明帖，约 5 分钟。不必再回头读昨天已写过的 MAGI-2 发布博文。</p>
+    <p class="item-sources">
+      <a class="src" href="https://artificialanalysis.ai/video/leaderboard/image-to-video" target="_blank" rel="noopener">AA-Video-I2V v2.1 榜 <span style="opacity:.65">(artificialanalysis.ai)</span></a>
+      <a class="src" href="https://x.com/ArtificialAnlys/status/2125759745655210113" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+      <a class="src" href="https://x.com/ArtificialAnlys/status/2125759750554177625" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+  <p class="sec-lead">一边是公司开始给智能体规定统一入口，一边是个人套餐开始把聊天和编程用量放到同一只计量表里。</p>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://workspaceupdates.googleblog.com/2026/11/mcp-servers-cli-standardized-usage-tiers-now-available.html" target="_blank" rel="noopener">〔补记 · 11-24〕Google Workspace：MCP 服务器与官方 CLI 正式可用；2027 年 2 月 1 日起将要求智能体经 MCP 访问，而不是直接调用 REST</a></h3>
+    <p class="item-meta">Google Workspace Updates · 标注 November 24, 2026 · 原文 约 8–12 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>Workspace 托管的 MCP 服务器和官方 Workspace CLI 现已正式可用。MCP 服务器面向云端和网页智能体，预置工具覆盖 Gmail、Drive、Docs、Sheets、Slides、Calendar、Chat 和 Tasks，Keep 即将加入。CLI 则给终端、虚拟机和容器里的本地智能体用，并带有打包的 agent skills、动态命令发现和范围登录。官方把它们写成面向动态智能体工作流，而不是传统的确定性应用调用：由 Google 托管并持续改工具与模式，运行时发现即可跟上；MCP 工具在 Workspace 边界内返回综合摘要，而不是按 REST 逐行拉取原始数据。文中还配了新的 Workspace AI Tools Addendum，以及审计日志、自动数据丢失防护，和对读取外部文件、外发数据等敏感动作要求用户确认等管理能力。</p><p><strong class="runin">硬约束与计费。</strong> <span class="tag tag-ok">官方</span>「AI 智能体或类似访问工具必须通过 MCP 访问 Workspace 数据，而不是直接调用 Workspace REST API。」技术执行从 <strong>2027 年 2 月 1 日</strong> 开始。从即日起，Workspace API（包括 MCP 与 CLI）先对 Gmail、Drive 和 Calendar 实行两档用量：免费的 Standard 档有公开配额；需要更高配额的 Scaled 档，将从 <strong>2027 年 4 月 1 日</strong> 起对超出每日免费额度的部分计费。官方称超过 <strong>99%</strong> 的活跃开发者目前都在 Standard 档内。不选择 Scaled 的项目，日后可能被限到已公布的配额。</p><p><strong class="runin">局限。</strong> 这是平台政策公告，不是性能评测。「99%」是官方自述。强制走 MCP 从 2027 年 2 月才开始执行，现在仍有窗口做盘点，但自建的 REST 自动化需要提前改。Addendum 的具体禁止项要以文本为准，这里不引申。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>对在用个人或公司 Workspace 搭 Agent 的读者，这比又一个连接器更重要：入口、配额和审计会被收拢到同一层。若你现在还在用脚本直接打 Gmail / Drive / Calendar 的 REST，值得先登记有哪些调用会在执行日被挡住。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得。先读 MCP 要求、两档计费和生效日期，约 8 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://workspaceupdates.googleblog.com/2026/11/mcp-servers-cli-standardized-usage-tiers-now-available.html" target="_blank" rel="noopener">Simplifying agent access while keeping organizations in control <span style="opacity:.65">(workspaceupdates.googleblog.com)</span></a>
+      <a class="src" href="https://developers.google.com/workspace/guides/quota-usage-tiers" target="_blank" rel="noopener">Usage tiers and quotas <span style="opacity:.65">(developers.google.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s6-2">
+    <h3 class="item-title"><a href="https://help.openai.com/en/articles/20001625-understanding-chatgpt-and-codex-usage-limits" target="_blank" rel="noopener">OpenAI：12 月起 Plus / Pro / Business 的 ChatGPT 与 Codex 将共用同一份以 token 计量的额度</a></h3>
+    <p class="item-meta">OpenAI 帮助中心 · 页面标注 Updated: yesterday · 原文 约 3 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>从 12 月起，Plus、Pro 和 Business 套餐的用量额度将在 ChatGPT 与 Codex 之间共享，官方的说法是把 Work 里的智能体能力并入主 ChatGPT 体验。用量按 token 计量，选更强的模型和更复杂的任务通常消耗更多额度。即时聊天（Instant chat）不占用这份额度。剩余额度和重置时间可在 Settings → Usage 查看。用完后可以等待重置、升级套餐，或购买积分以继续使用符合条件的功能。官方预计，大多数用户不必比现在更频繁地等待重置。一小部分用户可能在 12 月前先看到变化，以便收集早期反馈。</p><p><strong class="runin">局限。</strong> 帮助文档没有公布各档额度有多大，也没有给出 Chat 与 Codex 之间的换算表。「大多数用户不会更频繁地等到重置」是预期，不是保证。Free / Go 是否变化，文中没有写。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这是一条会直接碰到手感的产品变化：同一个月里，在 Chat 里把额度用在日常对话，还是留给 Codex 做改代码，将变成显式取舍。在额度数字公布前，不宜按传闻去估算能跑多少会话。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得看一遍帮助页，约 3 分钟。等设置里出现合并用量后再对照自己的实际消耗。</p>
+    <p class="item-sources">
+      <a class="src" href="https://help.openai.com/en/articles/20001625-understanding-chatgpt-and-codex-usage-limits" target="_blank" rel="noopener">Understanding ChatGPT and Codex usage limits <span style="opacity:.65">(help.openai.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+  <p class="sec-lead">企业侧，OpenAI 开始小范围测试推理过程中的更强隔离；消费侧，Claude 可以把常用 artifact 装成桌面应用。评测上，物理学研究任务仍然很难完整做对。</p>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://x.com/sama/status/2125638790593274259" target="_blank" rel="noopener">OpenAI 正在一小群客户中测试 Private Inference，作为 Private Intelligence 的一部分</a></h3>
+    <p class="item-meta">Sam Altman 的宣布帖 这里 · 原文 帖子约 1 分钟，产品页约 5 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>Altman 在 11 月 26 日 01:12（Asia/Shanghai）写道：OpenAI 正在一小群客户中测试 Private Inference，这是 OpenAI Private Intelligence 的最新一项；更强的隐私保护会让前沿模型能用于更多工作，企业隐私对健康的生态也很重要，并欢迎有需求的人联系。产品页把 Private Inference 标为 Alpha，与 Zero Data Retention（ZDR）并列，为符合条件的工作流提供；图示里写的是机密计算（confidential computing）和严格、可验证的控制，位置在 API Preview。页中同时强调：企业拥有自己的输入和输出，可决定智能体访问哪些数据、能采取哪些动作、何时需要批准。</p><p><strong class="runin">局限。</strong> 目前是小范围测试，页面没有给出全面开放的时间表，也没有把「机密计算」的具体保证范围、密钥归属和是否可独立审计写成可核对的技术说明。不宜把营销页上的架构图理解成已经对所有 API 客户生效。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>若你关心把公司和私人材料交给模型时「推理过程中谁能看见」，这比又一次模型升级更值得记下；但现在只能记下「开始测试」，还不能当成可采购的保证。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 先看 Altman 的原帖和产品页上 Private Inference 的标注，约 5 分钟。材料不足以下结论时，不必追更多转述。</p>
+    <p class="item-sources">
+      <a class="src" href="https://x.com/sama/status/2125638790593274259" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+      <a class="src" href="https://openai.com/business/private-intelligence/" target="_blank" rel="noopener">OpenAI Private Intelligence <span style="opacity:.65">(openai.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title"><a href="https://claude.com/resources/articles/install-as-app" target="_blank" rel="noopener">〔补记 · 11-24〕Anthropic：可将 artifact 安装为 Mac / Windows 应用；三种权限，且许可只覆盖当前版本</a></h3>
+    <p class="item-meta">Anthropic · 近日（多家报道标注 November 24, 2026） · 原文 约 5–8 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>「Install as app」正在 Claude for Mac 和 Windows 以测试版推出。安装后的 artifact 有自己的图标，在独立窗口中打开，而不再待在 Claude 里；它可以使用 Claude 和你的连接器，底层 artifact 被编辑后会自动更新，向 Claude 发出的请求计入套餐用量。权限分三档：默认（仅相当于浏览器里能做的事）；应用权限（置顶窗口、全局快捷键、通知等）；完全访问（可在不每次询问的情况下运行程序、读写或删除文件）。许可只覆盖当前版本，之后每次更新——包括你自己的修改——都会再问一次。完全访问只适用于你自己做的应用，或 Team / Enterprise 里本组织的人做的应用。Anthropic 不在安装前审查应用。功能对所有套餐推出；Team 默认打开但完全访问关闭，Enterprise 需所有者先打开，HIPAA 就绪组织和混合部署不可用。Claude Docs、Slides 和 Sheets 不能安装。使用时需在线并登录 Claude。</p><p><strong class="runin">局限。</strong> 官方写明不预审应用，且若应用有一部分来自其他网站，那一部分可以在不被再次询问的情况下改变。这把主要风险放在用户和管理者自己的许可判断上。它也不是把 Claude 变成通用的本地应用商店。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>对经常反复打开同一份 artifact 的人，独立窗口和通知是具体的便利。给完全访问之前，应按「只信任自己或本组织刚看过的这一版」来处理，而不是把它当成已经沙箱化的安装包。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得看权限三档和「许可只覆盖当前版本」这一句，约 5 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://claude.com/resources/articles/install-as-app" target="_blank" rel="noopener">Turn artifacts into Mac and Windows apps <span style="opacity:.65">(claude.com)</span></a>
+      <a class="src" href="https://support.claude.com/en/articles/18516354-install-an-artifact-as-an-app" target="_blank" rel="noopener">Install an artifact as an app <span style="opacity:.65">(support.claude.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-3">
+    <h3 class="item-title"><a href="https://artificialanalysis.ai/evaluations/frontierphysics" target="_blank" rel="noopener">Artificial Analysis 上线 FrontierPhysics 榜：官方账号称 Claude Fable 5.2 以 32% 领先，比 GPT-6.2 Astra 高 6 个百分点</a></h3>
+    <p class="item-meta">Artificial Analysis · 原文 方法说明约 8 分钟；论文摘要可另看 5 分钟</p>
+    <div class="item-body"><p><strong class="runin">设定。</strong> <span class="tag tag-tip">第三方</span>FrontierPhysics 由 BenchFlow 提出，请物理学家根据自己的研究出题：智能体要检索文献、做模拟或分析，并提交结构化结果和手稿。Artificial Analysis 在自己的 Stirrup harness 里跑其中 <strong>54</strong> 道（去掉两道依赖 GPU 的题），覆盖 9 个领域，每题 3 次。一次运行要先通过确定性校验器，再由三名 GPT-6 Luna（xhigh）评审按专家量表判断所有否决项；通过后才计入评审给出的质量分，否则记 0。总分是全部运行的平均。AA 写明：这和 BenchFlow 自己在 Claude Code、Codex 等原生产品里、并用单次评审得到的结果，不能直接对比。</p><p><strong class="runin">数字。</strong> <span class="tag tag-tip">第三方</span>Artificial Analysis 官方账号称，Claude Fable 5.2 以 <strong>32%</strong> 领跑，领先 GPT-6.2 Astra <strong>6</strong> 个百分点；他们跑的是 54 道题中的 54 道（原文写 excluding 两项 GPU 任务）。说明帖还按领域举例：Fable 5.2 在光子与成像为 64%、量子信息为 6%，统计物理为 41%（该领域次高为 Opus 5.5 的 15%）。BenchFlow 论文摘要写：56 道题由 42 位物理学家出题；在 22 个模型的 26 种配置下，没有任何配置在 168 次运行里通过超过 <strong>46</strong> 次。对轨迹的人工审阅认为，主要弱点是推理不够严、专家直觉不足，而不是物理知识或执行错误本身。</p><p><strong class="runin">局限。</strong> 32% 来自 AA 官方帖对「Score」的简写，榜单页是交互图表，这里不以未直接读出的更细小数替代。任务保密，存在污染防范，但也无法外部复核题目。评审模型本身是 GPT-6 Luna，评分不是人类物理学家的逐份审稿。低分既可能来自做不对，也可能来自没过否决项。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>和 DeepMind 的 Humanity’s First Exam 正好对照：HFE 问的是简单题能不能每次都对，FrontierPhysics 问的是研究任务能不能既算对又写得像可发表。两边的领先者不必相同，也不宜把 32% 读成「已经能做物理研究」。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 先看 AA 的方法和官方说明帖，约 8 分钟。若关心出题方式，再读 BenchFlow 摘要即可。</p>
+    <p class="item-sources">
+      <a class="src" href="https://artificialanalysis.ai/evaluations/frontierphysics" target="_blank" rel="noopener">FrontierPhysics Benchmark <span style="opacity:.65">(artificialanalysis.ai)</span></a>
+      <a class="src" href="https://x.com/ArtificialAnlys/status/2125691597602058284" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+  <p class="sec-lead">窗口内最值得看的，多半是官方账号把自己的发布再讲清楚，而不是新的爆款争论。下列各条已尽量与上文去重，只保留需要回到原帖看的一句。</p>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今天值得看的帖子</h3>
+    <div class="item-body"><p><strong>Greg Brockman（OpenAI 总裁）</strong> · <a href="https://x.com/gdb/status/2125418102049628201" target="_blank" rel="noopener">称矩阵乘法指数恰好是 9/4，并转述「这是我以为这辈子都不会看到的那种结果」</a></p><p>11 月 25 日 10:31（Asia/Shanghai），点赞 4,127，转发 169，引用 46。点评：<span class="tag tag-ok">官方</span>这是把预印本介绍给更广的读者，随后一条把它放到「AI for science」的框架里。数字和主张以仓库 README 为准，详见第 3 节；不要把转述当成额外证明。</p><p><strong>Sam Altman（OpenAI CEO）</strong> · <a href="https://x.com/sama/status/2125638790593274259" target="_blank" rel="noopener">宣布正在一小群客户中测试 Private Inference</a></p><p>11 月 26 日 01:12（Asia/Shanghai），点赞 6,974，转发 373，引用 290。点评：<span class="tag tag-ok">官方</span>这是窗口内最明确的企业隐私产品信号。细节很少，产品页仅标 Alpha，见第 7 节。同日他还有一条在讨论 “hyperstitioning”，与这项测试不是同一件事。</p><p><strong>Anthropic（官方）</strong> · <a href="https://x.com/AnthropicAI/status/2125627317263466739" target="_blank" rel="noopener">介绍如何把 Messages API 从 Python 迁到 Rust，并用 Claude 智能体追踪两个版本的差异</a></p><p>11 月 26 日 00:26（Asia/Shanghai），点赞 8,545，转发 602，引用 502。点评：<span class="tag tag-ok">官方</span>工程博文的入口帖。值得点进去的是验证设计，而不是流量增长的倍数，见第 2 节。</p><p><strong>Artificial Analysis（官方）</strong> · <a href="https://x.com/ArtificialAnlys/status/2125691597602058284" target="_blank" rel="noopener">发布 FrontierPhysics 榜，称 Fable 5.2 以 32% 领先 Astra 6 个百分点</a></p><p>11 月 26 日 04:42（Asia/Shanghai），点赞 396，转发 21，引用 14。点评：<span class="tag tag-tip">第三方</span>这是独立评测机构自己的榜，不是实验室官方数字。同一条线程里还有分领域和耗时说明，正文见第 7 节。</p><p><strong>Artificial Analysis（官方）</strong> · <a href="https://x.com/ArtificialAnlys/status/2125683704609771743" target="_blank" rel="noopener">写 AA-Robotics-Sim 里「每个模型都更常动右臂」，成功搬箱的回合全部是两掌夹着</a></p><p>11 月 26 日 04:11（Asia/Shanghai），点赞 227，转发 15，引用 17。点评：<span class="tag tag-tip">第三方</span>比总分更好记的观察。完整任务分数和易碎盘附加项见第 4 节。</p><p><strong>Artificial Analysis（官方）</strong> · <a href="https://x.com/ArtificialAnlys/status/2125759745655210113" target="_blank" rel="noopener">称 MAGI-2 在图生视频榜排第一，并给出每分钟 4.80 美元的标价</a></p><p>11 月 26 日 09:13（Asia/Shanghai），点赞 16，转发 1。点评：<span class="tag tag-tip">第三方</span>发布时间就在本期撰写前后，互动还不高，但账号和榜单是同一来源。不要和昨天 Sand.ai 自报的四任务均分混用，见第 5 节。</p><p><strong>Cognition（官方）</strong> · <a href="https://x.com/cognition/status/2125659035231780966" target="_blank" rel="noopener">推出 Org Charts：在一块画布上查看所有 Devin Bot 的进展，以及需要人处理的事项</a></p><p>11 月 26 日 02:33（Asia/Shanghai），点赞 511，转发 44，引用 30。点评：<span class="tag tag-ok">官方</span>这是 Devin Bots 的管理视图，现已上线。窗口内未见单独的长篇博文，能力范围以产品说明和原帖为准。适合已经在跑多个 Bot 的人看一眼，不必当成新模型发布。</p><p><strong>Demis Hassabis（Google DeepMind CEO）</strong> · <a href="https://x.com/demishassabis/status/2125663033993437651" target="_blank" rel="noopener">回应推荐时写：你可以试试 Gemini Neon，它是一个好模型</a></p><p>11 月 26 日 02:48（Asia/Shanghai），点赞 3,652，转发 153，引用 26。点评：<span class="tag tag-ok">官方</span>这是负责人对已发布模型的背书，不是新的评测或新版本。Neon 本身已在上周的简报里出现过。同日 DeepMind 官方还发了 Neon 在 Antigravity 里做街机鲁布·戈德堡装置的演示，属于展示而非基准。</p></div>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>今日收束</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>Agent / 记忆</td><td>Leto 用回答效用回写记忆选择，PrefEval 准确率 60.5%，比最强对照高 16.3 个百分点；Workspace 要求智能体从 2027-02-01 起经 MCP 访问，而不是直接打 REST</td></tr>
+      <tr><td>RSI</td><td>Anthropic 用线上 API 当验证器完成 Python 到 Rust 的迁移，官方称每请求 CPU 约降 70%、中位首 token 时间约降 20%；4 月测试约 98% 通过时，生产输入大约只对上四分之一</td></tr>
+      <tr><td>能力进展</td><td>Antigravity 质谱技能在 100 条库内谱上约 97%，无工具时低于 4%；OpenAI 预印本主张矩阵乘法指数恰为 9/4，Lean 目前覆盖无除法电路上的陈述</td></tr>
+      <tr><td>世界 / 具身</td><td>AA-Robotics-Sim 中 Astra 71.0 分领先，导航满分，90 次洗碗只有 5 个盘子进架，洗衣无一次完成</td></tr>
+      <tr><td>视频生成</td><td>AA 图生视频榜上 MAGI-2 的 Elo 为 1163（95% 区间 1149–1177），与 Seedance 2.5 统计上接近；文生视频排第 7。不要与昨天官方自报的四任务均分 1150.3 混用</td></tr>
+      <tr><td>用法</td><td>Workspace MCP / CLI 正式可用，两档配额从 2027-04-01 起对 Scaled 超额计费；12 月起 ChatGPT 与 Codex 在 Plus / Pro / Business 共用 token 额度</td></tr>
+      <tr><td>评测落地</td><td>Private Inference 进入小范围测试；Claude 可将 artifact 装成桌面应用，许可只覆盖当前版本；AA 的 FrontierPhysics 上 Fable 5.2 官方帖称为 32%，研究任务整体仍很难通过</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 若关心记忆怎么设计，先读 Leto 的订酒店例子和 PrefEval 表，不必先看附录。若关心用 Agent 改生产系统，Anthropic 这篇迁移是今天最值得读的长文，重点是验证信号而不是 Rust 本身。科学工具看质谱技能的三种设置对照，以及「库外分子不能自行确认」。数学预印本先停在 README 和形式化范围。具身和视频都优先看独立榜的失败项：洗碗 / 洗衣，以及文生视频的音频和对白。产品上，Workspace 的 MCP 生效日和 ChatGPT / Codex 合并计量，会比新模型更早碰到日常工作。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-11-26 · Asia/Shanghai</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
