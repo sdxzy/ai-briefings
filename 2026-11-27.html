@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>科技与 AI 每日简报 · 2026-11-27</title>
+<meta name="doc-type" content="briefing">
+<meta name="description" content="NVIDIA 让模型自己决定何时压缩上下文，GPT 6.1 在 32K 预算上 OfficeQA Pro v2 从 21% 升到 56%；TASK Memory 指出记忆已在提示里仍可能被忽略或用错；HoMe 用评测驱动改记忆系统的 harness；Sber 开源 GigaChat 4（708B/41B，MIT）；OpenAI 修正 GPT-6.2 计费错误后，Astra 会比上周更快触及额度。">
+<style>
+:root{
+  --font-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB",
+               "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei",
+               "Segoe UI", system-ui, sans-serif;
+  --font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC",
+                "STSong", "SimSun", Georgia, "Times New Roman", serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 38rem;
+  --lh-body: 1.75;
+  --lh-head: 1.28;
+
+  --bg: #faf9f7;
+  --ink: #1a1a1a;
+  --ink-2: #3d3d3d;
+  --ink-3: #6b6b6b;
+  --rule: #d9d4cb;
+  --accent: #8b3a1a;
+  --link: #1a4a8a;
+  --surface: #ffffff;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#141414; --ink:#eceae4; --ink-2:#c4c1b8; --ink-3:#8e8b84;
+    --rule:#33302b; --accent:#d4845a; --link:#8eb4e8; --surface:#1c1c1c;
+  }
+}
+*,*::before,*::after{box-sizing:border-box}
+html{font-size:112.5%; -webkit-text-size-adjust:100%; scroll-behavior:smooth; scroll-padding-top:1.25rem}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-serif); line-height:var(--lh-body);
+  font-kerning:normal; text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased;
+}
+a{color:var(--link); text-decoration:underline; text-underline-offset:0.15em; text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+.wrap{max-width:var(--measure); margin:0 auto; padding:2.25rem 1.25rem 4rem}
+@media (min-width:720px){ .wrap{padding:3rem 1.5rem 5rem} }
+
+/* —— masthead —— */
+.kicker{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.12em; text-transform:uppercase; color:var(--accent); margin:0 0 0.6rem;
+}
+h1{
+  font-family:var(--font-serif); font-size:1.85rem; font-weight:700;
+  line-height:var(--lh-head); margin:0 0 0.5rem; letter-spacing:-0.01em;
+}
+.deck{font-family:var(--font-sans); font-size:0.95rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.55}
+.byline{
+  font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3);
+  border-top:1px solid var(--rule); border-bottom:1px solid var(--rule);
+  padding:0.65rem 0; margin:0 0 1.5rem; display:flex; flex-wrap:wrap; gap:0.35rem 1.25rem;
+}
+.byline time{color:var(--ink-2)}
+.meta{font-family:var(--font-sans); font-size:0.8rem; color:var(--ink-2); margin:0 0 1.5rem}
+.meta-row{margin:0.2rem 0; display:flex; gap:0.5rem; flex-wrap:wrap}
+.meta-row .k{color:var(--ink-3); min-width:4.5em}
+
+.editor-note{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  border-left:2px solid var(--accent); padding:0.15rem 0 0.15rem 0.9rem; margin:0 0 1.75rem;
+}
+.editor-note p{margin:0.35rem 0}
+.editor-note .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--accent); display:block; margin-bottom:0.25rem;
+}
+
+/* —— TOC —— */
+.toc{
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 2.25rem;
+  padding:0; list-style:none; border-top:1px solid var(--rule); padding-top:1rem;
+}
+.toc li{margin:0.3rem 0; display:flex; gap:0.65rem; align-items:baseline}
+.toc .n{color:var(--ink-3); font-variant-numeric:tabular-nums; min-width:1.5em}
+.toc a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid transparent}
+.toc a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-label{
+  font-family:var(--font-sans); font-size:0.7rem; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-3); margin:0 0 0.5rem;
+}
+
+/* —— sections —— */
+.section{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.section:first-of-type{margin-top:0}
+.sec-head{margin:0 0 0.85rem}
+.sec-num{
+  font-family:var(--font-sans); font-size:0.72rem; font-weight:600;
+  letter-spacing:0.1em; color:var(--ink-3); display:block; margin-bottom:0.25rem;
+}
+.sec-title{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700;
+  line-height:var(--lh-head); margin:0; color:var(--ink);
+}
+.sec-lead{
+  font-family:var(--font-sans); font-size:0.9rem; color:var(--ink-2);
+  margin:0.65rem 0 1.5rem; line-height:1.6;
+}
+
+/* —— items —— */
+.item{margin:0 0 2rem; padding:0}
+.item + .item{padding-top:1.5rem; border-top:1px dotted var(--rule)}
+.item-title{
+  font-family:var(--font-serif); font-size:1.08rem; font-weight:700;
+  line-height:1.35; margin:0 0 0.35rem;
+}
+.item-title a{color:var(--ink); text-decoration:none; border-bottom:1px solid var(--rule)}
+.item-title a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-meta{
+  font-family:var(--font-sans); font-size:0.74rem; color:var(--ink-3);
+  margin:0 0 0.7rem; line-height:1.45;
+}
+.item-body{font-size:0.95rem; color:var(--ink)}
+.item-body p{margin:0 0 0.7rem}
+.item-body p:last-child{margin-bottom:0}
+.item-verdict{
+  font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-2);
+  margin:0.85rem 0 0; padding-top:0.55rem; border-top:1px solid var(--rule);
+}
+.item-verdict strong{font-weight:600; color:var(--ink)}
+.item-sources{font-family:var(--font-sans); font-size:0.74rem; margin:0.55rem 0 0; color:var(--ink-3)}
+.item-sources a{margin-right:0.75rem; white-space:nowrap; display:inline-block}
+.item-body strong.runin{font-family:var(--font-sans); font-size:0.78em; letter-spacing:0.04em; color:var(--accent); font-weight:700; margin-right:0.35em}
+.tag-q{font-family:var(--font-sans); font-size:0.75em; color:var(--ink-3); margin:0 0.3em 0 0.25em}
+
+.callout-trend{
+  font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2);
+  margin:1.5rem 0 0; padding:0.85rem 0 0; border-top:1px solid var(--rule);
+}
+.callout-trend .label{
+  font-size:0.7rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+  color:var(--ink-3); display:block; margin-bottom:0.35rem;
+}
+
+/* —— summary table —— */
+.summary{margin:2.75rem 0 0; padding-top:1.5rem; border-top:1px solid var(--rule)}
+.summary h2{
+  font-family:var(--font-serif); font-size:1.35rem; font-weight:700; margin:0 0 1rem;
+}
+table.overview{
+  width:100%; border-collapse:collapse;
+  font-family:var(--font-sans); font-size:0.85rem; margin:0 0 1.25rem;
+}
+table.overview th, table.overview td{
+  text-align:left; vertical-align:top; padding:0.55rem 0.4rem;
+  border-bottom:1px solid var(--rule);
+}
+table.overview th{font-weight:600; color:var(--ink-3); font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase}
+table.overview td:first-child{font-weight:600; white-space:nowrap; padding-right:1rem; width:7.5em}
+.note{font-family:var(--font-sans); font-size:0.88rem; color:var(--ink-2); margin:0 0 1rem; line-height:1.6}
+footer.site{
+  font-family:var(--font-sans); font-size:0.75rem; color:var(--ink-3);
+  margin-top:2.5rem; padding-top:1rem; border-top:1px solid var(--rule);
+}
+
+@media print{
+  body{background:#fff; color:#000; font-size:11pt}
+  a{color:#000; text-decoration:underline}
+  .wrap{max-width:none; padding:0}
+  .item{break-inside:avoid}
+}
+
+@media (max-width:480px){
+  html{font-size:100%}
+  h1{font-size:1.55rem}
+  .sec-title{font-size:1.2rem}
+  table.overview td:first-child{white-space:normal; width:auto}
+}
+
+/* —— sidebar TOC (v3) —— */
+.toc-box>summary{cursor:pointer; list-style:none}
+.toc-box>summary::-webkit-details-marker{display:none}
+.toc-box>summary::after{content:" ▾"; font-weight:400}
+.toc-box:not([open])>summary::after{content:" ▸"}
+.toc{margin:0 0 2rem}
+.toc li{display:block}
+.toc-sec{display:flex; gap:0.65rem; align-items:baseline}
+.toc-items{list-style:none; margin:0.15rem 0 0.55rem 2.15em; padding:0; font-size:0.78rem; line-height:1.45}
+.toc-items li{margin:0.28rem 0}
+.toc-items a{color:var(--ink-3)}
+.toc a.is-current{color:var(--accent); border-bottom-color:var(--accent)}
+.toc-items a.is-current{border-bottom-color:transparent}
+@media (max-width:899px){
+  .toc-nav{position:sticky; top:0; z-index:5; background:var(--bg); margin:0 -1.25rem 1.5rem; padding:0.6rem 1.25rem; border-bottom:1px solid var(--rule)}
+  .toc-box[open] .toc{max-height:60vh; overflow-y:auto; margin:0.4rem 0 0.2rem; border-top:0; padding-top:0.2rem}
+  .toc-label{margin:0}
+}
+@media (min-width:900px){
+  .wrap{margin-left:max(18.5rem, calc(50% - var(--measure)/2 + 4rem))}
+  .toc-nav{position:fixed; top:0; left:max(1rem, calc(50% - var(--measure)/2 - 13rem)); width:15.5rem;
+    height:100vh; overflow-y:auto; padding:3rem 0.5rem 2rem 0; border-right:1px solid var(--rule)}
+  .toc-box>summary{pointer-events:none}
+  .toc-box>summary::after{content:""}
+  .toc{border-top:0; padding-top:0.25rem; padding-right:0.75rem}
+}
+@media print{ .toc-nav{display:none} .wrap{margin:0 auto} }
+
+/* —— back nav & extended reading (v4) —— */
+.backnav{font-family:var(--font-sans); font-size:0.8rem; margin:0 0 1.6rem; display:flex; flex-wrap:wrap; gap:0.3rem 1.1rem}
+.backnav a{color:var(--ink-2); text-decoration:none; border-bottom:1px solid var(--rule); padding-bottom:1px}
+.backnav a:hover{color:var(--accent); border-bottom-color:var(--accent)}
+.item-ext{font-family:var(--font-sans); font-size:0.82rem; color:var(--ink-3); margin:0.5rem 0 0.4rem}
+.item-ext .k{color:var(--accent); margin-right:0.4rem}
+.item-ext a{color:var(--ink-2)}
+@media print{ .backnav{display:none} }
+
+/* —— v5: diagrams, tables, lists, inline code, confidence markers —— */
+:root{ --cell:#f6ebe4; --cell-line:#b9714d; --host:#e8eef6; --host-line:#4a6f9e; --ext:#eeeeea; --ext-line:#8a857c; --box:#ffffff; }
+@media (prefers-color-scheme: dark){ :root{ --cell:#2a1e18; --cell-line:#c98a66; --host:#18212c; --host-line:#7ea3d4; --ext:#222220; --ext-line:#77736c; --box:#1f1f1f; } }
+.item-body code, .sec-lead code{font-family:var(--font-mono); font-size:0.84em; background:var(--rule); background:color-mix(in srgb, var(--rule) 55%, transparent); padding:0.05em 0.3em; border-radius:3px; word-break:break-word}
+.item-body ul, .item-body ol{margin:0 0 0.8rem; padding-left:1.4em}
+.item-body li{margin:0.3rem 0}
+.item-body ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.tag{font-family:var(--font-sans); font-size:0.68rem; font-weight:600; letter-spacing:0.04em; padding:0.05em 0.35em; border-radius:3px; border:1px solid currentColor; margin-right:0.3em; vertical-align:0.12em; white-space:nowrap}
+.meta-row span:last-child{flex:1; min-width:12em}
+.item-body .tag, .sec-lead .tag, .meta .tag{margin-left:0.2em}
+.tag-ok{color:#2f6b3a} .tag-guess{color:#9a5b00} .tag-tip{color:var(--ink-3)}
+@media (prefers-color-scheme: dark){ .tag-ok{color:#86c493} .tag-guess{color:#e0a85a} }
+.grid-wrap{overflow-x:auto; margin:0.4rem 0 1rem}
+table.grid{width:100%; border-collapse:collapse; font-family:var(--font-sans); font-size:0.82rem; line-height:1.55}
+table.grid th, table.grid td{text-align:left; vertical-align:top; padding:0.5rem 0.45rem; border-bottom:1px solid var(--rule)}
+table.grid th{font-size:0.72rem; color:var(--ink-3); font-weight:600; letter-spacing:0.04em}
+table.grid td:first-child{font-weight:600; width:32%}
+table.grid td:nth-child(2){min-width:5.5em}
+figure.diagram{margin:1rem 0 1.3rem; padding:0}
+figure.diagram .scroll{overflow-x:auto}
+figure.diagram svg{display:block; width:100%; min-width:600px; height:auto}
+figure.diagram figcaption{font-family:var(--font-sans); font-size:0.78rem; color:var(--ink-3); margin-top:0.5rem; line-height:1.55}
+@media (max-width:640px){ figure.diagram figcaption::before{content:"图较宽，可左右滑动。"; color:var(--ink-2)} }
+@media (min-width:1240px){ figure.diagram.wide{margin-right:-9rem} }
+.dg text{font-family:var(--font-sans); fill:var(--ink); font-size:13px}
+.dg .sm{font-size:11px; fill:var(--ink-2)} .dg .xs{font-size:10.5px; fill:var(--ink-3)}
+.dg .b{font-weight:700} .dg .acc{fill:var(--accent)}
+.dg .vm{fill:none; stroke:var(--ink-3); stroke-width:1.2; stroke-dasharray:6 4}
+.dg .cell{fill:var(--cell); stroke:var(--cell-line); stroke-width:1.4}
+.dg .host{fill:var(--host); stroke:var(--host-line); stroke-width:1.4}
+.dg .ext{fill:var(--ext); stroke:var(--ext-line); stroke-width:1.2}
+.dg .box{fill:var(--box); stroke:var(--ink-3); stroke-width:1}
+.dg .key{fill:var(--box); stroke:var(--accent); stroke-width:2}
+.dg .ln{stroke:var(--ink-2); stroke-width:1.3; fill:none}
+.dg .ln-acc{stroke:var(--accent); stroke-width:1.8; fill:none}
+.dg .dash{stroke-dasharray:5 4}
+.dg .life{stroke:var(--rule); stroke-width:1.2; stroke-dasharray:3 4}
+.dg .ah{fill:var(--ink-2)} .dg .ah-acc{fill:var(--accent)}
+.dg .band{fill:var(--accent); opacity:0.07}
+.dg .t-ok{fill:#2f6b3a} .dg .t-guess{fill:#9a5b00}
+@media (prefers-color-scheme: dark){ .dg .t-ok{fill:#86c493} .dg .t-guess{fill:#e0a85a} }
+/* takeaway box (v5.1) */
+.takeaway{border:1px solid var(--rule); border-left:3px solid var(--accent); background:var(--surface); padding:1rem 1.15rem 0.9rem; margin:0.2rem 0 0.4rem; border-radius:0 6px 6px 0}
+.takeaway .tk-label{font-family:var(--font-sans); font-size:0.72rem; font-weight:600; letter-spacing:0.06em; color:var(--accent); margin:0 0 0.5rem}
+.takeaway .tk-main{font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 0.7rem}
+.takeaway ol{margin:0.3rem 0 0.7rem; padding-left:1.4em} .takeaway li{margin:0.35rem 0}
+.takeaway ol li::marker{font-family:var(--font-sans); color:var(--accent); font-weight:600}
+.takeaway .tk-sum{font-family:var(--font-sans); font-size:0.9rem; margin:0.6rem 0 0; padding-top:0.6rem; border-top:1px dotted var(--rule)}
+@media print{ figure.diagram svg{min-width:0} figure.diagram.wide{margin-right:0} }
+</style>
+</head>
+<body>
+<div class="layout">
+<div class="wrap">
+
+<nav class="backnav" aria-label="返回"><a href="./">← 全部简报</a></nav>
+<header>
+  <p class="kicker">AI 研究进展简报</p>
+  <h1>科技与 AI 每日简报 · 2026-11-27</h1>
+  <!-- optional -->
+  <div class="byline">
+    <time datetime="2026-11-27">截至 2026 年 11 月 27 日（CST）</time>
+  </div>
+<div class="meta">
+<div class="meta-row"><span class="k">面向</span><span>Dong（技术 / AI 从业读者）</span></div><div class="meta-row"><span class="k">时间范围</span><span>截止 <strong>2026 年 11 月 27 日上午（CST）</strong>，覆盖 11 月 26 日约 09:31 上一期发布之后的约 24 小时。arXiv 今日可见 11 月 26 日（Thu）批次。当天是美国感恩节，美国实验室新博客很少，主要来源是周四论文、开源权重和产品更正。</span></div><div class="meta-row"><span class="k">信息来源</span><span>官方博客与模型卡、产品文档、预印本摘要与正文、Hugging Face 页面；X 用于选题与发帖人观点（关注名单优先），均附原帖。链接已逐一打开核对。</span></div><div class="meta-row"><span class="k">原则</span><span>按论文摘要体例写；不编造数字与链接；<span class="tag tag-ok">官方</span><span class="tag tag-ok">论文</span>为当事方自述，<span class="tag tag-tip">第三方</span>为独立评测或社区声明，<span class="tag tag-guess">推测</span><span class="tag tag-guess">评论</span>为编者判断，<span class="tag tag-guess">未证实</span>为未获独立核实的说法。官方自报基准与独立榜分开写。论文数字只在所述协议下成立；「快 40% 碰到额度」不等于额度被砍掉 40%。</span></div><div class="meta-row"><span class="k">今天共 9 条正文、8 个板块。主线有三条</span><span>一条是上下文该由谁来管——NVIDIA 把压缩时机交给模型，TASK Memory 则说明记忆就算已经放进提示，模型仍可能不用或用错；一条是 harness 可以按评测结果改，而不只靠人手调，HoMe 改的是记忆系统，RoboEvo 2 改的是机器人策略与技能库；第三条是开源侧仍在发大模型，但订阅产品这边，OpenAI 把上周算错的折扣改了回来，同一份工作会比你已经习惯的更快用完额度。</span></div>
+</div>
+  <div class="editor-note">
+    <span class="label">编者按</span>
+    <p>本简报按论文摘要体例重写各条目（约 250–450 字），均经 WebFetch 核读原文；不编造数字与链接。无法核验处会标明。</p>
+  </div>
+</header>
+
+<nav class="toc-nav" aria-label="目录">
+<details class="toc-box" open>
+<summary class="toc-label">目录</summary>
+<ol class="toc">
+  <li><div class="toc-sec"><span class="n">01</span><a href="#s1">Agent / 记忆</a></div><ol class="toc-items"><li><a href="#s1-1">NVIDIA：把压缩上下文的决定交给模型；GPT 6.1 在 32K 预算上，OfficeQA Pro v2 从 21% 升到 56%</a></li><li><a href="#s1-2">TASK Memory：记忆已经放进提示，模型仍可能不用或用错；在十组设定里，忽略记忆的比例降到不超过 1.5%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">02</span><a href="#s2">RSI</a></div><ol class="toc-items"><li><a href="#s2-1">HoMe：用评测结果迭代改记忆系统的 harness；在 BEAM-1M 上比原 harness 高 5.4 个百分点，查询时 token 约少 41%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">03</span><a href="#s3">能力进展</a></div><ol class="toc-items"><li><a href="#s3-1">通义千问：Qwen-Audio-3.1 扩展多语言和方言；官方称 ASR 覆盖 59 种语言和 8 种中国方言</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">04</span><a href="#s4">世界 / 具身</a></div><ol class="toc-items"><li><a href="#s4-1">RoboEvo 2：让机器人的 harness 与策略互相迭代，而不再额外收集人工演示；LIBERO-PRO 上独立成功率从 11.0% 升到 84.1%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">05</span><a href="#s5">视频生成</a></div><ol class="toc-items"><li><a href="#s5-1">Agentic LongLive：给实时长视频加一套异步的实体记忆；相对基线，主角身份一致性提高 44.9 分，重访地点提高 40.4 分</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">06</span><a href="#s6">用法</a></div><ol class="toc-items"><li><a href="#s6-1">腾讯混元开源 DFly2：草稿模型复用目标模型已经选好的稀疏位置；官方称长上下文和 Agent 任务上最高约 4.2 倍加速</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">07</span><a href="#s7">评测落地</a></div><ol class="toc-items"><li><a href="#s7-1">Sber 发布并开源 GigaChat 4：708B 总参、41B 激活，原生 100 万上下文，MIT 许可；官方自报 Terminal-Bench 2.0 推理模式为 71.26%</a></li><li><a href="#s7-2">OpenAI 修正 GPT-6.2 上线时的计费错误：同一工作现在会消耗更多套餐额度；官方称 Astra 会比上周快 40% 碰到上限，Sol 为 25%</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">08</span><a href="#s8">X 热点精选</a></div><ol class="toc-items"><li><a href="#s8-1">今天值得看的帖子</a></li></ol></li>
+  <li><div class="toc-sec"><span class="n">··</span><a href="#summary">总览</a></div></li>
+</ol>
+</details>
+</nav>
+
+<main>
+<section class="section" id="s1">
+  <header class="sec-head">
+    <span class="sec-num">第 01 节</span>
+    <h2 class="sec-title">个人 Agent 与记忆/上下文管理</h2>
+  </header>
+  <p class="sec-lead">窗口满了就摘要历史，是现在多数 Agent harness 的默认做法。今天有两篇论文分别问：能不能让模型自己决定压什么，以及记忆已经在提示里时，模型会不会照样答错。</p>
+
+  <article class="item" id="s1-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.34147" target="_blank" rel="noopener">NVIDIA：把压缩上下文的决定交给模型；GPT 6.1 在 32K 预算上，OfficeQA Pro v2 从 21% 升到 56%</a></h3>
+    <p class="item-meta">Alessio Devoto、Avinash Vem、Tara Safavi 等（NVIDIA） · arXiv:2611.34147 · 11 月 26 日（Thu）批次 · 原文 摘要与设定约 8–10 分钟；对照实验约 20 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>长程 Agent 的工具调用、输出和对话会把上下文窗口填满。现在的常见做法是：窗口快满时，由 harness 触发一次压缩，把历史收成摘要。作者把这种做法称为 harness 驱动的上下文管理。问题是：该留哪一段、该摘要哪一段、该在什么时候动手，并不总是「满了再压」这一条规则能决定的。论文要问的是：如果把这些决定交给模型，任务成绩会不会更好，推理引擎能不能把这种编辑做得更便宜。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>作者在 NVIDIA 的开源 Agent harness NOOA 里给模型提供一套 context API，由模型决定何时、对哪一段做压缩。对照是 harness 在窗口满时自动压缩。评测覆盖文档研究和机器学习工程，上下文预算从 8K 到 512K。他们还测试了推理引擎在模型改上下文之后，能否复用未被改动的后缀 KV cache，以降低预填充（prefill）计算。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">论文</span>在 32K 预算的 OfficeQA Pro v2 上，由模型自己管理上下文时，GPT 6.1 的分数从 <strong>21%</strong> 升到 <strong>56%</strong>。文中还写，Kimi 在提高准确率的同时，最多可少用 <strong>41%</strong> 的输入 token。模型之间差异很大：调用 API 的频率、压缩的激进程度、以及何时开始压缩都不一样，而且改一点提示就会改变这个时机。推理侧，复用编辑后未改动后缀的 KV cache，单次请求的预填充计算最多降约 <strong>15%</strong>，作者称准确率没有可测到的变化。</p><p><strong class="runin">局限。</strong> 这是预印本，数字绑定在所报告的任务、模型和预算上，不能外推成「所有 Agent 只要把压缩交给模型就会接近三倍」。作者自己也写，不同模型用 API 的方式差得很远，提示一变，压缩时机就变。KV cache 复用节省的是预填充，不是生成；而且 15% 是上限。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这和近日简报里「该记多少、该不该把历史滚成一份摘要」是同一类问题，只是把决定权从规则移到了模型。例子清楚，32K 预算上的对照也够用来判断自己的场景。方法并不复杂，不必单独做深挖；更值得记下的是：上下文管理正在变成模型和推理引擎要一起设计的接口，而不只是 harness 里的一段脚本。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读摘要、两种策略的对照和 32K 预算那一组数字，约 10 分钟。不必先从推理引擎的实现细节读起。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.34147" target="_blank" rel="noopener">Letting Models Manage Their Own Context: Where We Stand <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://github.com/NVIDIA-NeMo/labs-OO-Agents" target="_blank" rel="noopener">NOOA <span style="opacity:.65">(github.com)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s1-2">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.34762" target="_blank" rel="noopener">TASK Memory：记忆已经放进提示，模型仍可能不用或用错；在十组设定里，忽略记忆的比例降到不超过 1.5%</a></h3>
+    <p class="item-meta">Jinkun Zhao、Wenjun Wu（北京航空航天大学） · arXiv:2611.34762 · 11 月 26 日（Thu）批次 · 原文 摘要与错误分类约 8–12 分钟；方法与表格约 25 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>Agent 常常依赖外部记忆，但答错不一定是没取到。正确的记忆已经检索出来、放进了提示，回答却和它矛盾，或者把这段记忆安到了别的问题上。作者把这类错误称为使用时的记忆幻觉（use-time memory hallucination）。一个具体情形是：用户上周把地址改了，记忆库里有新地址，模型却仍报训练数据里的旧地址；或者把甲的偏好说成了乙的。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>作者在五个开源模型上观察这类错误，并把它分成三种：忽略记忆（回到权重里的旧事实）、用错对象（把记忆安到相邻实体上）、版本混淆（新旧两个版本都在，却坚持过期的那个）。他们提出 TASK 记忆：一段记忆不只是文本，还带一组可移除的知识编辑，以及一对激活引导向量。文本保存内容；知识编辑提供地址，并支持多跳组合；引导向量不写入新内容，只在本次查询里决定模型是采用这段记忆，还是坚持自己的答案。实验在冻结的现成模型上进行，并采用预先登记、只测一次的协议。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">论文</span>在所报告的设定里，忽略记忆最多约占查询的 <strong>46%</strong>；用错对象最多约 <strong>24%</strong>，在检索再叠加权重编辑后最多约 <strong>49%</strong>；版本混淆中，约 <strong>53%</strong> 的回答仍断言已被替代的旧值。TASK 在全部十个模型–数据集组合里，把忽略记忆的比例降到 <strong>不超过 1.5%</strong>；在 CounterFact 上，把邻居误用从 <strong>39.2%</strong> 降到 <strong>7.5%</strong>（文中称复合指标提高 10.8 个百分点）。在 300 条记忆的库上，它比 BM25 RAG 高 <strong>16.4</strong> 个百分点，这一优势在 3,000 条时仍然存在；在 MQuAKE 上，多跳准确率提高 <strong>7.5</strong> 个百分点。作者称，8B–27B、四个模型家族的 23 组跨模型比较中，有 21 组显著，并且在 10 组里有 9 组超过三种近期的上下文引导方法。</p><p><strong class="runin">局限。</strong> 这是预印本，方法依赖知识编辑和激活引导，部署成本高于「只往提示里塞文本」。评测以事实性记忆和特定数据集为主，不能直接等同于跨会话的个人偏好或长任务状态。上限数字（46%、49%、53%）是「最多达到」，不是平均水平。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它把问题从「有没有取回」推进到「取回了会不会用」。和上一则形成对照：上一则关心窗口里该留什么，这一则关心留对了模型会不会照着做。分类清楚，表格也够用；方法偏专门，不必当成通用记忆系统来深挖。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读三种错误的定义和主要表格，约 10 分钟。若你不打算在权重里做编辑，可以不读实现细节。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.34762" target="_blank" rel="noopener">TASK Memory: Beyond Text-Only Memory with Activation Steering and Knowledge Editing against Memory Hallucination <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s2">
+  <header class="sec-head">
+    <span class="sec-num">第 02 节</span>
+    <h2 class="sec-title">RSI（自我迭代 / 人参与的迭代）</h2>
+  </header>
+  <p class="sec-lead">记忆系统的行为，往往不取决于又换一个模型，而取决于写入、维护、取回和回答那一套代码、提示和配置，也就是 harness。今天有一篇论文试图自动改这一层。</p>
+
+  <article class="item" id="s2-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.34624" target="_blank" rel="noopener">HoMe：用评测结果迭代改记忆系统的 harness；在 BEAM-1M 上比原 harness 高 5.4 个百分点，查询时 token 约少 41%</a></h3>
+    <p class="item-meta">Yifei Xu、Li Yu、Zhaoyang Liu 等（上海交通大学、阿里巴巴、北京大学） · arXiv:2611.34624 · 11 月 26 日（Thu）批次 · 原文 摘要与实验设置约 10 分钟；结果与附录约 25 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>一个长期运行的助手要把跨会话的经验变成以后还能用的行为，通常会有一套记忆系统。真正起作用的，往往是它的 harness：负责记忆构建、维护、检索和回答生成的代码、提示和配置。改这一层至今多半靠人手。作者指出，允许任意编辑，也不等于会得到结构性的改进——在他们的对照里，另一种自动方法 MemPro 虽然允许改可执行代码，提出的候选却都只改了提示或参数。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>HoMe 按评测结果迭代：每次从已经评过的 harness 出发，编辑其中任意部分，得到新的候选。它用会话级的记忆版本和执行轨迹，把多条失败归到共同机制，并定位到相应的会话和组件。为了控制成本，它用候选门控、冒烟测试、自适应抽样，并复用已经构建好的记忆。作者在开源系统 ReMe 上验证，每个基准在完整的初次评测之后，再做六次正式的候选评测。训练集和测试集分开：LongMemEval-S 的 500 条案例对半划分，平均历史约 115K token；BEAM 在 BEAM-100K（20 个案例）上优化，在 BEAM-1M（35 个案例、每个 20 个查询，平均历史约 1.04M token）上测试。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">论文</span>相对原来已经较强的 harness，HoMe 找到的版本在 LongMemEval-S 上高 <strong>2.8</strong> 个百分点，查询时 token 少约 <strong>59%</strong>；在 BEAM-1M 上高 <strong>5.4</strong> 个百分点，token 少约 <strong>41%</strong>。与 MemPro 相比，LongMemEval-S 高 <strong>10.4</strong> 个百分点、token 少约 <strong>81.5%</strong>，BEAM 高 <strong>1.1</strong> 个百分点、token 少约 <strong>7.6%</strong>。作者报告：BEAM-1M 的分数提升显著（配对 bootstrap 95% 区间 [0.028, 0.082]，p=0.0002），token 下降也显著；LongMemEval-S 上 2.8 个百分点的分数提升不显著（95% 区间 [-0.016, 0.072]，p=0.25），但 token 下降显著（每查询约少 26,057 token，合 59.3%）。在 BEAM-100K 上优化的 harness，用到平均约长 8 倍的 BEAM-1M 对话时仍然有效。</p><p><strong class="runin">局限。</strong> 这是在 ReMe 和两个基准上的预印本结果，不能直接说成任意记忆产品都会同样涨分。LongMemEval-S 的分数提升本身站不住统计学门槛，更稳的是省 token，以及 BEAM-1M 上的那 5.4 个百分点。BEAM 的案例数也不多（训练 20、测试 35）。优化循环仍然要跑多轮评测，只是作者把成本压到了「每个基准六次正式评估」。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它和上一节的 NVIDIA 论文是互为补充的：一个把「压什么」交给模型，一个把「整套记忆流程怎么写」交给评测循环。对已经在用文件型或开源记忆系统的人，附录里改了哪些机制（例如事实级索引、带来源的检索）比框架名字更有用。方法是标准的评测驱动搜索，不必单独做深挖。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读摘要、两个基准的协议，以及作者自己报告的显著性，约 10 分钟。LongMemEval-S 那 2.8 个百分点不要单独当结论。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.34624" target="_blank" rel="noopener">HoMe: Toward Practical Harness Optimization of Memory Systems for AI Assistants <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://github.com/agentscope-ai/ReMe" target="_blank" rel="noopener">ReMe <span style="opacity:.65">(github.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s3">
+  <header class="sec-head">
+    <span class="sec-num">第 03 节</span>
+    <h2 class="sec-title">各领域模型能力进展</h2>
+  </header>
+  <p class="sec-lead">今天没有新的通用旗舰模型发布。语音和方言是窗口内比较具体的一项官方更新。</p>
+
+  <article class="item" id="s3-1">
+    <h3 class="item-title"><a href="https://x.com/Alibaba_Qwen/status/2125798914490249411" target="_blank" rel="noopener">通义千问：Qwen-Audio-3.1 扩展多语言和方言；官方称 ASR 覆盖 59 种语言和 8 种中国方言</a></h3>
+    <p class="item-meta">11 月 26 日 · 原文 原帖约 2 分钟；产品页约 5 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>Qwen 写道，Qwen-Audio-3.1 系列此前已经发布，当天带来增强的多语言能力，并特别强调中国方言。官方列出的覆盖范围是：ASR 为 59 种语言、8 种中国方言；TTS 为 65 种语言、6 种中国方言；Realtime 为 53 种语言、6 种中国方言。帖中强调方言识别与合成有所增强，并给出三个 Flash 产品页。</p><p><strong class="runin">局限。</strong> 原帖和产品页没有在同一处给出可核对的方言名单，也没有给出独立评测或错误率。这是一次能力范围更新，不是新的基础模型发布，不宜据此比较它和其它语音系统的谁强谁弱。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>对需要方言或多语言语音入口的人，这条的价值是官方把覆盖范围说清楚了。若要判断好不好用，还得自己听，或等带词错误率的评测。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 看官方帖和对应产品页即可，约 3 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://x.com/Alibaba_Qwen/status/2125798914490249411" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+      <a class="src" href="https://www.qwencloud.com/models/qwen-audio-3.1-asr-flash" target="_blank" rel="noopener">ASR <span style="opacity:.65">(qwencloud.com)</span></a>
+      <a class="src" href="https://www.qwencloud.com/models/qwen-audio-3.1-tts-flash" target="_blank" rel="noopener">TTS <span style="opacity:.65">(qwencloud.com)</span></a>
+      <a class="src" href="https://www.qwencloud.com/models/qwen-audio-3.1-realtime-flash" target="_blank" rel="noopener">Realtime <span style="opacity:.65">(qwencloud.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s4">
+  <header class="sec-head">
+    <span class="sec-num">第 04 节</span>
+    <h2 class="sec-title">世界模型 / 具身</h2>
+  </header>
+  <p class="sec-lead">通用 VLA 在分布内往往很顺，一换位置或加长程推理就掉得很快。今天有一篇论文把「先用 Agent 找补丁，再把补丁练回策略」写成一个闭环。</p>
+
+  <article class="item" id="s4-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.34675" target="_blank" rel="noopener">RoboEvo 2：让机器人的 harness 与策略互相迭代，而不再额外收集人工演示；LIBERO-PRO 上独立成功率从 11.0% 升到 84.1%</a></h3>
+    <p class="item-meta">Zhongrui Wang、Xiaojuan Qi 等（香港大学、浙江大学、南方科技大学） · arXiv:2611.34675 · 11 月 26 日（Thu）批次 · 原文 摘要与两段循环约 8–12 分钟；实验部分约 20 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>机器人既要在陌生环境里想出办法，又要在学会之后流畅执行。视觉–语言–动作（VLA）策略执行快，但遇到没见过的布置，往往还要再收人工演示。推理 Agent 可以调用控制接口去试、去修，但每一步都要再想一遍，延迟和接口费用都高。作者用一个常见反差来说明：策略在标准任务上可以很强，一旦场景或物体位置变了，成功率会掉下来。问题是：能不能在不再收集新的人工演示的前提下，让系统自己找到补丁，并逐步把补丁变成更便宜的策略？</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>RoboEvo 2 把这一过程写成 harness 与策略的双向进化。在策略到 harness（P2H）方向，策略失败会引导编码 Agent 搜索三种路线（代码、代码加上下文示例、代码加策略），并把验证过的解法沉淀成可复用技能、路由策略和经验记忆。在 harness 到策略（H2P）方向，验证过的轨迹做监督训练，同时用反事实偏好蒸馏（Counterfactual Preference Distillation）：从同一起始状态出发，让策略更偏好成功的修正、而不是失败动作。改进后的策略为下一轮搜索提供更好的动作，剩下的失败再送回 harness，形成循环。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">论文</span>在不再额外收集人工演示的前提下，作者报告 LIBERO-PRO 上独立成功率从 <strong>11.0%</strong> 升到 <strong>84.1%</strong>，混合成功率从 <strong>30.4%</strong> 升到 <strong>90.5%</strong>；在 RoboTwin C2R 上也有类似提升，并降低了 Agent 侧成本。文中还报告任务可被自主获取、harness 可跨本体迁移，以及在 Unitree G1-D 上混合成功率为 <strong>95.0%</strong>。</p><p><strong class="runin">局限。</strong> 这是预印本，LIBERO-PRO 等主要数字来自仿真；真机只报告了 G1-D 上的混合成功率，不能把 84.1% 或 95.0% 读成已经可部署的工厂指标。这些数字是在作者的协议下、相对他们自己的起点得到的，不是对所有 VLA 的通用涨幅。代码仓库已经可以打开，但「将公开发布」仍以仓库当时内容为准。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>它把第 2 节 HoMe 的思路搬到了机器人：先改 harness，再把验证过的行为蒸馏回策略。涨幅看起来很大，所以更要先看起点有多低、评测是不是仿真。对关心世界模型和具身闭环的人，两段循环的设计比单一分数更值得看。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读摘要和 P2H / H2P 两段循环，约 10 分钟。先把仿真和真机数字分开，再决定要不要看实验细节。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.34675" target="_blank" rel="noopener">RoboEvo²: Recursive Robot Self-Improvement via Harness-Policy Co-Evolution <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://github.com/kaiknower/RoboEvo2" target="_blank" rel="noopener">RoboEvo2 <span style="opacity:.65">(github.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s5">
+  <header class="sec-head">
+    <span class="sec-num">第 05 节</span>
+    <h2 class="sec-title">AIGC 视频生成</h2>
+  </header>
+  <p class="sec-lead">离线多镜头生成可以先读完整剧本、再计划、失败就重拍；直播式生成做不到这一点。今天有一篇把记忆 Agent 接到实时长视频上的论文。</p>
+
+  <article class="item" id="s5-1">
+    <h3 class="item-title"><a href="https://arxiv.org/abs/2611.34907" target="_blank" rel="noopener">Agentic LongLive：给实时长视频加一套异步的实体记忆；相对基线，主角身份一致性提高 44.9 分，重访地点提高 40.4 分</a></h3>
+    <p class="item-meta">Shaoteng Liu（香港中文大学）、Shuai Yang、Wei Huang、Luozhou Wang、Song Han（NVIDIA / MIT）、Yukang Chen（NVIDIA） · arXiv:2611.34907 · 11 月 26 日（Thu）批次 · 原文 摘要与设定约 8–10 分钟；基准与系统结果约 20 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>实时自回归视频生成已经可以连续输出数分钟，并在中途接受新提示，但人物、物体和地点在较长的互动故事里仍容易对不上。现有的 Agent 记忆多半用于离线多镜头：事先读完全部剧本，先规划再生成，失败就重拍。直播式生成做不到这些——下一句提示要到该镜头开始时才出现，也不能让画面停下来等记忆系统。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>Agentic LongLive 把记忆 Agent 放在单独的 GPU 上异步运行。它只读取到目前为止已经出现的提示，不读取已生成的视频，并为每个人、物、场景维护文本状态和不断更新的图像。它据此合成一张全局图和每镜的记忆图，由辅助 GPU 在下一镜开始前预填进生成器的 attention sink，同时为被点名的实体写实体卡片。这样生成不必等待记忆，视频错误也不会被写回记忆。一个用强化学习训练的小语言模型负责在下一条提示到来之前决定该记住什么，其图像奖励用下游视频结果校准。评测用新基准 LongStory-Online：25 个故事、共 857 个镜头，每次只揭示当前这一镜。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">论文</span>相对基线生成器 LongLive-2.0，Agentic LongLive 把持久状态准确率提高 <strong>26.3</strong> 分，主角身份提高 <strong>44.9</strong>，重访地点一致性提高 <strong>40.4</strong>；在 H100 上额外生成时间约 <strong>1%</strong>。作者称，完整系统在一台 8×B200 节点上以 BF16 运行生成器时为 <strong>34.3 FPS</strong>，快于实时；在约 14 分钟的故事里图像质量保持稳定，并且在两个 MiniMax-H3 生成器上也改善了身份一致性。文中称，就他们所知，这是首个由 LLM Agent 同时维护文本和图像记忆的实时视频生成器。</p><p><strong class="runin">局限。</strong> 数字主要来自作者自己的 LongStory-Online 基准和指定硬件，不能直接换成其它生成器或其它故事类型的通值。「快于实时」绑定在所报告的节点和精度上。记忆 Agent 故意不看生成画面，因此画面里已经出现的偏差，不会自动被写进记忆去纠正。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>对做长视频或短剧、又在意人物和场景回访是否对得上的人，这条比又一个单镜画质对比更有用。它把「记忆」写成生成管线里的前置条件，而不是事后修图。方法清楚，不必把全部系统配置都读完。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读摘要、记忆与生成如何错开，以及 LongStory-Online 的协议，约 10 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://arxiv.org/abs/2611.34907" target="_blank" rel="noopener">Agentic LongLive: Asynchronous Agentic Memory for Long Video Generation <span style="opacity:.65">(arxiv.org)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s6">
+  <header class="sec-head">
+    <span class="sec-num">第 06 节</span>
+    <h2 class="sec-title">高效使用 AI / Agent</h2>
+  </header>
+  <p class="sec-lead">长上下文和 Agent 工作负载里，解码往往最慢。投机解码可以少跑几次目标模型，但草稿模型自己再做一套检索，成本又会回来。</p>
+
+  <article class="item" id="s6-1">
+    <h3 class="item-title"><a href="https://x.com/TencentHunyuan/status/2125928146113585468" target="_blank" rel="noopener">腾讯混元开源 DFly2：草稿模型复用目标模型已经选好的稀疏位置；官方称长上下文和 Agent 任务上最高约 4.2 倍加速</a></h3>
+    <p class="item-meta">Hong Liu、Guanghua Yu 等（腾讯） · arXiv:2611.34776 · 11 月 26 日（Thu）批次 · 原文 原帖约 2 分钟；论文摘要约 8 分钟</p>
+    <div class="item-body"><p><strong class="runin">问题。</strong> <span class="tag tag-ok">论文</span>DeepSeek-V4、Hy4 这类模型已经用原生稀疏注意力来避开长上下文上的二次代价。投机解码可以再减少目标模型的前向次数，而且对质量无损，这在长上下文解码最慢的时候最有用。但现有的块并行草稿模型，仍常为自己保存一套上下文缓存，或者再做一次位置选择。目标模型压缩得越狠，草稿侧那份缓存占的比例就越大；如果草稿再按查询重新打分，成本又会随上下文变长。</p><p><strong class="runin">方法。</strong> <span class="tag tag-ok">论文</span>DFly2 让草稿层直接读配对目标层已经缓存的 KV，并只用该层索引器已经选好的位置（固定数量，可来自上下文各处）。这样草稿模型不再自己打分，也不再单独存一份缓存。作者在三种稀疏结构和架构不同的目标模型上评测：DS-V4.1-Flash、GLM-5.3-Flash 和 Hy4 flash，覆盖通用、长上下文和 Agent 基准，并使用两个温度。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">官方</span>混元在宣布帖中称，DFly2 是 Hy4 flash 的投机解码草稿器，长上下文和 Agent 工作负载最高约 <strong>4.2 倍</strong>加速；草稿成本不随上下文变长，也不额外占用 KV 内存。官方还写，在 Agent 任务上比同一配方的 DSpark 大约快 <strong>30%</strong>，比开源 DSpark 多接受 <strong>10.4%</strong> 的草稿 token。<span class="tag tag-ok">论文</span>在同一训练配方下，DFly2 每步接受的 token 多于 DFlash 和 DSpark；相对较强基线的优势，在通用负载上为 <strong>3.9%–10.5%</strong>，在最长 128K 的长上下文和 Agent 负载上扩大到 <strong>10.0%–31.5%</strong>。在高并发、且把每用户解码速度对齐的条件下，服务 DS-V4.1-Flash 时，它在 64K 的长上下文和 Agent 集合上分别比该基线多提供 <strong>62%</strong> 和 <strong>81%</strong> 的吞吐。</p><p><strong class="runin">局限。</strong> 4.2 倍是官方给出的上限，不是所有负载的平均值。论文中的百分比较的是接受率和吞吐，比较对象和并发条件都写在原文里，不宜和官方「最高 4.2 倍」混成一个数。目前公开的是针对特定稀疏目标模型的草稿器，不是对任意稠密模型即插即用。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>如果你已经在用 Hy4 flash，或同类原生稀疏的长上下文模型跑 Agent，这是今天最具体的推理加速更新。核心想法很清楚：目标模型已经付过选择位置的代价，草稿不必再付一次。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 先看官方帖和论文摘要，约 8 分钟。若要核对 4.2 倍出现在哪一组负载，再读实验表。</p>
+    <p class="item-sources">
+      <a class="src" href="https://x.com/TencentHunyuan/status/2125928146113585468" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+      <a class="src" href="https://arxiv.org/abs/2611.34776" target="_blank" rel="noopener">DFly2: Turbocharging Long-Context Speculative Decoding by Sharing the Target’s Sparsity <span style="opacity:.65">(arxiv.org)</span></a>
+      <a class="src" href="https://github.com/Tencent/AngelSpec" target="_blank" rel="noopener">AngelSpec <span style="opacity:.65">(github.com)</span></a>
+      <a class="src" href="https://huggingface.co/AngelSlim" target="_blank" rel="noopener">AngelSlim <span style="opacity:.65">(huggingface.co)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s7">
+  <header class="sec-head">
+    <span class="sec-num">第 07 节</span>
+    <h2 class="sec-title">模型发布与评测、AI 产品与落地</h2>
+  </header>
+  <p class="sec-lead">开源侧今天有一个完整的新权重系列；订阅产品侧则是一次已经影响用量的计费更正。</p>
+
+  <article class="item" id="s7-1">
+    <h3 class="item-title"><a href="https://giga.chat/blog/en/posts/gigachat-4-tech-report" target="_blank" rel="noopener">Sber 发布并开源 GigaChat 4：708B 总参、41B 激活，原生 100 万上下文，MIT 许可；官方自报 Terminal-Bench 2.0 推理模式为 71.26%</a></h3>
+    <p class="item-meta">26 Nov 2026 · 原文 摘要约 8 分钟；技术报告全文较长，评测表约 15 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>GigaChat 4 是 708B 总参数、每 token 激活 41B 的混合专家模型，接替 432B 的 GigaChat 3.5，原生上下文长度为 100 万 token（模型卡写明最大 1,048,576）。架构在 GigaChat 3.5 的混合主干上，为多头潜在注意力加入 DeepSeek Sparse Attention（DSA），并与 Gated DeltaNet 按 3:1 交错：线性注意力 48 层，稀疏注意力 16 层；256 个路由专家中每次激活 8 个，另加 1 个共享专家。和 3.5 不同，推理（Reasoning）与即时（Instant）两种模式做在同一个检查点里，可按请求选择。监督微调之后，先用强化学习训练专科模型，再用多教师在线蒸馏合并到一个模型中。权重以 MIT 许可发布，提供 FP8、BF16、GGUF、基座和中间检查点。</p><p><strong class="runin">关键数字。</strong> <span class="tag tag-ok">官方</span>技术报告摘要写，在其评测协议下，GigaChat 4 在 Terminal-Bench 2.0 上推理模式为 <strong>71.26%</strong>、即时模式为 <strong>60.47%</strong>；对应的 GigaChat 3.5 为 <strong>30.30%</strong> 和 <strong>12.94%</strong>。这些是官方自报，而且报告写明：部分基准使用了他们自己实现的评测程序，有的项目把超时提高到七小时。不宜把这些数字直接当成与其它实验室公布成绩可严格对齐的独立榜。</p><p><strong class="runin">局限。</strong> 截至撰写时未见同一协议下的独立复现。708B 总参、BF16 权重要求很高的显存，模型卡也写明了多节点部署条件；开源不等于能随手上线。对长上下文和 Agent 成绩，应等待独立评测，而不是只看对 3.5 的自比提升。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>这是窗口内最完整的开源权重发布：许可宽松，上下文和两种模式的设计也很清楚。对要跑本地或可控推理栈的人，先看技术报告摘要和模型卡即可；对日常订阅产品，它还不能替代你正在用的封闭模型，除非你打算自己部署。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 值得读摘要、架构表和 Terminal-Bench 那一行，约 10 分钟。交叉对比其它模型的大表，只适合当「官方自报」来看。</p>
+    <p class="item-sources">
+      <a class="src" href="https://giga.chat/blog/en/posts/gigachat-4-tech-report" target="_blank" rel="noopener">GigaChat 4: Technical Report <span style="opacity:.65">(giga.chat)</span></a>
+      <a class="src" href="https://huggingface.co/ai-sage/GigaChat4-708B-A41B" target="_blank" rel="noopener">Hugging Face：GigaChat4-708B-A41B <span style="opacity:.65">(huggingface.co)</span></a>
+    </p>
+  </article>
+  <article class="item" id="s7-2">
+    <h3 class="item-title"><a href="https://x.com/thsottiaux/status/2125784147889393806" target="_blank" rel="noopener">OpenAI 修正 GPT-6.2 上线时的计费错误：同一工作现在会消耗更多套餐额度；官方称 Astra 会比上周快 40% 碰到上限，Sol 为 25%</a></h3>
+    <p class="item-meta">11 月 26 日 10:50（Asia/Shanghai） · 原文 原帖约 2 分钟</p>
+    <div class="item-body"><p><strong class="runin">它说什么。</strong> <span class="tag tag-ok">官方</span>Sottiaux 写道：GPT-6.2 上线时出现计费错误，对大多数用户错误地折扣了 GPT-6.2 Astra 和 Sol 的用量。现在已经修好，所以同一份工作会占用更多套餐额度。和上周相比，GPT-6.2 Astra 会快 <strong>40%</strong> 碰到上限，Sol 会快 <strong>25%</strong>。他同时说，与 GPT-6 Astra 和 GPT-6.1 Sol 相比，这些新模型的用量仍应更耐用。其它模型不受影响，过去少算的部分也不会补收。作为致歉，Go、Plus、Pro 和 Business 用户将获得一次已存储的重置（one banked reset）。</p><p><strong class="runin">局限。</strong> 这是工程师在 X 上的说明，不是一篇单独的帮助文档；「快 40% 碰到上限」描述的是相对上周（折扣尚未修正时）的速度，不能理解成额度被永久削减 40%，也不能理解成比更早的 GPT-6 / 6.1 更不耐用——帖里把这两点分开写了。一次 banked reset 只补偿已经发生的误差，不改变修正之后的计量。</p><p><strong class="runin">短评。</strong> <span class="tag tag-guess">评论</span>若你这周刚适应 GPT-6.2 在 Chat 或 Codex 里能跑多远，需要按新的计量重新估计，尤其是用量大的 Codex 工作。这不是模型能力变化，而是计费被改回正确值。</p></div>
+    <p class="item-verdict"><strong>是否值得读原文</strong> · 直接读原帖即可，约 2 分钟。</p>
+    <p class="item-sources">
+      <a class="src" href="https://x.com/thsottiaux/status/2125784147889393806" target="_blank" rel="noopener">这里 <span style="opacity:.65">(x.com)</span></a>
+    </p>
+  </article>
+</section>
+<section class="section" id="s8">
+  <header class="sec-head">
+    <span class="sec-num">第 08 节</span>
+    <h2 class="sec-title">X 热点精选</h2>
+  </header>
+  <p class="sec-lead">美国感恩节让实验室官方账号今天比较安静。窗口内值得看的，主要是官方自己把更新讲清楚，以及几条对原论文或数据的到位转述。下列各条已尽量与上文去重，只保留需要回到原帖看的一句。</p>
+
+  <article class="item" id="s8-1">
+    <h3 class="item-title">今天值得看的帖子</h3>
+    <div class="item-body"><p><strong>Thibault Sottiaux（OpenAI，Codex / ChatGPT）</strong> · <a href="https://x.com/thsottiaux/status/2125784147889393806" target="_blank" rel="noopener">说明 GPT-6.2 上线时计费算错，修正后 Astra 会比上周快 40% 碰到额度</a></p><p>11 月 26 日 10:50（Asia/Shanghai），点赞 18,117，转发 935，引用 2,729。点评：<span class="tag tag-ok">官方</span>这是窗口内互动最高、也最需要马上知道的产品更正。完整措辞见第 7 节，不要只看转述标题。</p><p><strong>Qwen（官方）</strong> · <a href="https://x.com/Alibaba_Qwen/status/2125798914490249411" target="_blank" rel="noopener">宣布 Qwen-Audio-3.1 的多语言和方言更新，并给出 ASR / TTS / Realtime 覆盖范围</a></p><p>11 月 26 日 11:48（Asia/Shanghai），点赞 1,177，转发 109，引用 74。点评：<span class="tag tag-ok">官方</span>覆盖范围以本帖为准，见第 3 节。帖里没有独立评测。</p><p><strong>腾讯混元（官方）</strong> · <a href="https://x.com/TencentHunyuan/status/2125928146113585468" target="_blank" rel="noopener">开源 DFly2，称长上下文和 Agent 负载最高约 4.2 倍加速</a></p><p>11 月 26 日 20:22（Asia/Shanghai），点赞 761，转发 82，引用 49。点评：<span class="tag tag-ok">官方</span>这是论文和代码的入口帖。「最高 4.2 倍」是上限，实验细节见第 6 节。</p><p><strong>elvis（@omarsar0，DAIR.AI）</strong> · <a href="https://x.com/omarsar0/status/2125961781743075565" target="_blank" rel="noopener">推荐 NVIDIA 这篇让模型自己管理上下文的论文，并转述 21%→56% 和最多少用 41% 输入 token</a></p><p>11 月 26 日 22:36（Asia/Shanghai），点赞 317，转发 33，引用 13。点评：<span class="tag tag-guess">评论</span>转述与论文摘要一致，适合作为阅读入口。数字以原文为准，见第 1 节。</p><p><strong>OpenRouter（官方）</strong> · <a href="https://x.com/OpenRouter/status/2125998076896920034" target="_blank" rel="noopener">用自家 2026 年的用量、单价和总支出数据，讨论杰文斯悖论是否仍然成立</a></p><p>11 月 27 日 01:00（Asia/Shanghai），点赞 521，转发 71，引用 44。点评：<span class="tag tag-ok">官方</span>结论是：到目前为止仍然成立，但近几个月弱于年初。这是一个推理市场自己的观察，不是对整个行业的普遍证明。</p><p><strong>Mistral AI（官方）</strong> · <a href="https://x.com/MistralAI/status/2125915743212761359" target="_blank" rel="noopener">用演示说明 Mistral Large 4 在视觉定位任务上能在地图上标出精确匹配，并称其在该类任务上超过封闭前沿模型</a></p><p>11 月 26 日 19:33（Asia/Shanghai），点赞 2,029，转发 130，引用 67。点评：<span class="tag tag-ok">官方</span>这是带视频的能力展示，帖中没有给出可核对的基准分数。可以当演示看，不要当成独立评测。</p><p><strong>Ethan Mollick（沃顿商学院教授）</strong> · <a href="https://x.com/emollick/status/2125812805534183923" target="_blank" rel="noopener">认为型号和数字已经越来越不能说明能力高低</a></p><p>11 月 26 日 12:44（Asia/Shanghai），点赞 256，转发 2，引用 16。点评：<span class="tag tag-guess">评论</span>他举的例子包括 Neon / Carbon 这类名字，以及 Astra 6.2 对 6、Opus 5.5 对 5 这类编号。这是使用层面的观察，不是评测结论，但和「看独立任务、不要只看型号」是同一提醒。</p></div>
+  </article>
+</section>
+
+<section class="summary" id="summary">
+  <h2>今日收束</h2>
+  <table class="overview">
+    <thead><tr><th>方向</th><th>近况一句话</th></tr></thead>
+    <tbody>
+      <tr><td>Agent / 记忆</td><td>NVIDIA 让模型经 context API 自己压缩上下文，GPT 6.1 在 32K 预算的 OfficeQA Pro v2 上从 21% 升到 56%；TASK Memory 把「提示里已有记忆仍答错」分成三类，并称忽略记忆可降到不超过 1.5%</td></tr>
+      <tr><td>RSI</td><td>HoMe 用六次正式评测改 ReMe 的 harness：BEAM-1M 高 5.4 个百分点且显著，查询 token 约少 41%；LongMemEval-S 的 2.8 个百分点不显著，但省 token 显著</td></tr>
+      <tr><td>能力进展</td><td>Qwen-Audio-3.1 官方称 ASR 覆盖 59 种语言和 8 种中国方言，TTS 为 65 种语言和 6 种方言；未见独立评测</td></tr>
+      <tr><td>世界 / 具身</td><td>RoboEvo 2 在不再额外收集人工演示的前提下，报告 LIBERO-PRO 独立成功率从 11.0% 升到 84.1%；主要数字来自仿真，真机仅报告 G1-D 混合成功率 95.0%</td></tr>
+      <tr><td>视频生成</td><td>Agentic LongLive 为实时长视频加异步实体记忆，相对 LongLive-2.0，主角身份 +44.9、重访地点 +40.4，H100 上额外耗时约 1%</td></tr>
+      <tr><td>用法</td><td>混元开源 DFly2，官方称长上下文和 Agent 负载最高约 4.2 倍加速；论文里相对较强基线的接受率优势在长上下文 / Agent 上为 10.0%–31.5%</td></tr>
+      <tr><td>评测落地</td><td>Sber 以 MIT 许可开源 GigaChat 4（708B/41B，1M 上下文），官方自报 Terminal-Bench 2.0 推理模式 71.26%；OpenAI 修正 GPT-6.2 计费后，Astra 会比上周快 40% 碰到上限，并提供一次 banked reset</td></tr>
+    </tbody>
+  </table>
+  <!-- optional --><div class="note"><strong class="runin">阅读建议：</strong> 若关心个人 Agent 的上下文，先读 NVIDIA 这篇的两种策略对照和 32K 那组数字，再用 TASK Memory 的三种错误检查「取回了是不是真的被用上」。若你在改记忆系统本身，HoMe 值得看协议和显著性，不要只摘 2.8 个百分点。具身先把 RoboEvo 2 的仿真和真机分开。做长视频的人看 LongLive 的异步记忆如何与生成错开。部署开源模型看 GigaChat 4 的摘要和许可；已经在用 GPT-6.2 的人，先读 Sottiaux 的原帖，按新计量重新估计额度。</div>
+</section>
+</main>
+
+<footer class="site">AI资讯小能手 · 2026-11-27 · Asia/Shanghai</footer>
+</div>
+</div>
+
+<script>
+/* v3: sidebar TOC — collapse on narrow, highlight current section/item (page works without JS) */
+(function(){
+  var box=document.querySelector('.toc-box'); var mq=window.matchMedia('(min-width:900px)');
+  function sync(){ if(mq.matches) box.open=true; else box.open=false; } sync();
+  mq.addEventListener&&mq.addEventListener('change',sync);
+  document.querySelectorAll('.toc a').forEach(function(a){ a.addEventListener('click',function(){ if(!mq.matches) box.open=false; }); });
+  var links=[].slice.call(document.querySelectorAll('.toc a')); var map={};
+  links.forEach(function(a){ map[a.getAttribute('href').slice(1)]=a; });
+  var targets=Object.keys(map).map(function(id){return document.getElementById(id)}).filter(Boolean);
+  var nav=document.querySelector('.toc-nav'), tick=false;
+  function update(){ tick=false; var y=window.innerHeight*0.3, curSec=null, curItem=null;
+    targets.forEach(function(el){ if(el.getBoundingClientRect().top<=y){ if(el.tagName==='ARTICLE') curItem=el; else {curSec=el; curItem=null;} } });
+    links.forEach(function(a){a.classList.remove('is-current')});
+    [curSec,curItem].forEach(function(el){ if(el&&map[el.id]){ map[el.id].classList.add('is-current'); } });
+    var c=curItem&&map[curItem.id]||curSec&&map[curSec.id];
+    if(c&&mq.matches){ var r=c.getBoundingClientRect(), nr=nav.getBoundingClientRect(); if(r.top<nr.top+40||r.bottom>nr.bottom-40) nav.scrollTop+=r.top-nr.top-nr.height/3; }
+  }
+  window.addEventListener('scroll',function(){ if(!tick){tick=true; requestAnimationFrame(update);} },{passive:true}); update();
+})();
+</script>
+</body>
+</html>
